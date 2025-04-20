@@ -1,11 +1,8 @@
 import { Component } from '@angular/core';
 
 @Component({
-  selector: 'app-root',
-  templateUrl: 'app.component.html',
-  styleUrls: ['app.component.scss'],
-  standalone: false,
+    selector: 'app-root',
+    template: `<ion-router-outlet></ion-router-outlet>`,
+    standalone: false
 })
-export class AppComponent {
-  constructor() {}
-}
+export class AppComponent {}

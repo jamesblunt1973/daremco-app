@@ -1,6 +1,7 @@
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
-
 import { AppModule } from './app/app.module';
 
-platformBrowserDynamic().bootstrapModule(AppModule)
-  .catch(err => console.log(err));
+platformBrowserDynamic()
+    .bootstrapModule(AppModule)
+    // eslint-disable-next-line no-console
+    .catch(err => console.log(err));

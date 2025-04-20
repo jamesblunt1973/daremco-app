@@ -1,20 +1,30 @@
 <ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>
-      Blank
-    </ion-title>
-  </ion-toolbar>
+    <ion-toolbar>
+        <ion-title> Blank </ion-title>
+    </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Blank</ion-title>
-    </ion-toolbar>
-  </ion-header>
+    <ion-header collapse="condense">
+        <ion-toolbar>
+            <ion-title size="large">Blank</ion-title>
+        </ion-toolbar>
+    </ion-header>
 
-  <div id="container">
-    <strong>Ready to create an app?</strong>
-    <p>Start with Ionic <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">UI Components</a></p>
-  </div>
+    <div id="container">
+        @if (app.isUpdating()) {
+        <ion-spinner name="circular"></ion-spinner>
+        <p>Server Status: {{ app.serverStatus() }}</p>
+        <p>Total Products: {{ app.productsCount() }}</p>
+        <p>Missed Images: {{ app.missedImages() }}</p>
+        <p>Has Images: {{ app.hasImages() }}</p>
+        <p>Downloaded Images: {{ app.downloadedImages() }}</p>
+        <ion-progress-bar
+            [buffer]="progress().buffer"
+            [value]="progress().percent"></ion-progress-bar>
+        <p>Percent: {{ progress().percent }}</p>
+        <p>Buffer: {{ progress().buffer }}</p>
+        <p>Failed Images: {{ app.failedImages() }}</p>
+        }
+    </div>
 </ion-content>
