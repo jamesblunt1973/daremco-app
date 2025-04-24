@@ -1,7 +1,0 @@
-<?xml version='1.0' encoding='utf-8'?>
-<resources>
-    <string name="app_name">daremco-album</string>
-    <string name="title_activity_main">daremco-album</string>
-    <string name="package_name">com.daremco.album</string>
-    <string name="custom_url_scheme">com.daremco.album</string>
-</resources>
