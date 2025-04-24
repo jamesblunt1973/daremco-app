@@ -1,0 +1,44 @@
+.product {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    .name {
+        font-size: 1rem;
+        margin: 0.5rem 0;
+        & + div {
+            margin-bottom: 0.5rem;
+        }
+    }
+
+    .props {
+        display: flex;
+        gap: 10px;
+    }
+
+    .label {
+        flex-basis: 15%;
+        padding-right: 5px;
+    }
+
+    .property {
+        flex-basis: auto;
+    }
+
+    small {
+        font-size: 6px;
+    }
+
+    .title {
+        padding: 2px 5px;
+        font-weight: bold;
+    }
+
+    .data-row {
+        margin-bottom: 1rem;
+    }
+
+    .raj-select {
+        flex-basis: 0;
+    }
+}

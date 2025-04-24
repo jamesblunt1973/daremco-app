@@ -1,0 +1,25 @@
+<ion-list>
+    <ion-item>
+        <ion-select label="انتخاب دسته" interface="popover" (ionChange)="selectCategory($event)">
+            @for (category of categories.value(); track category.Id) {
+            <ion-select-option [value]="category.Id">
+                {{ category.Name }}
+            </ion-select-option>
+            }
+        </ion-select>
+    </ion-item>
+    <ion-item>
+        <ion-select label="انتخاب گالری" interface="popover" (ionChange)="selectGalley($event)">
+            @for (gallery of galleries(); track gallery.Id) {
+            <ion-select-option [value]="gallery.Id">
+                {{ gallery.Name }}
+            </ion-select-option>
+            }
+        </ion-select>
+    </ion-item>
+</ion-list>
+<div class="products">
+    @for (product of products(); track product.Id) {
+    <app-product [product]="product"></app-product>
+    }
+</div>

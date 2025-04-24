@@ -1,0 +1,115 @@
+@if (p) {
+<div class="product">
+    <img [src]="p.ImageData" />
+    <p class="name">{{ p.Name }} ({{ p.Id }})</p>
+    <div class="ion-display-flex ion-flex-gap-full">
+        <p>{{ p.TiesWidth }} گره در {{ p.TiesHeight }} رج</p>
+        <span>|</span>
+        <p>{{ p.Moghat }} مقاط</p>
+        <span>|</span>
+        <p>{{ p.ColorsCount }} رنگ</p>
+    </div>
+    @if(p.ProductTypes?.length) {
+    <div class="full-width properties">
+        <p class="title">انواع نخ خامه - تحویل با وزن دقیق</p>
+        @for (type of p.ProductTypes; track $index) { @let tieLength =
+        primaryData.tieLengths[type.MainTieLengthId];
+        <div class="data-row ion-display-flex ion-flex-column">
+            <div class="ion-display-flex">
+                <p class="label">رجشمار</p>
+                <p class="propery">{{ type.Raj }}</p>
+            </div>
+            <div class="ion-display-flex">
+                <p class="label">ابعاد</p>
+                <p class="propery">{{ type.DimsWidth }} در {{ type.DimsHeight }} سانت</p>
+            </div>
+            <div class="ion-display-flex">
+                <p class="label">جنس</p>
+                <p class="propery">
+                    @if(type.MaterialId) {
+                    {{ primaryData.materials[type.MaterialId].name }}
+                    } @else { پشم و ابریشم }
+                    <!-- TODO: Get list of used materials -->
+                </p>
+            </div>
+            <div class="ion-display-flex">
+                <p class="label">نوع بافت</p>
+                <p class="propery">{{ primaryData.tieTypes[type.TieTypeId] }}</p>
+            </div>
+            <div class="ion-display-flex">
+                <p class="label">طول گره</p>
+                <p class="propery">{{ tieLength.length }} سانت ( {{ tieLength.title }} )</p>
+            </div>
+            <div class="ion-display-flex">
+                <p class="label">موجودی</p>
+                <p class="propery">
+                    @if (type.Stock > 0) {
+                    {{ type.Stock }}
+                    } @else if(p.PaletteId) {
+                    <ion-button fill="clear" size="small" (click)="showMessage(p.PaletteId)">
+                        مشاهده
+                    </ion-button>
+                    } @else {
+                    {{ '-----' }}
+                    }
+                </p>
+            </div>
+            <div class="ion-display-flex">
+                <p class="label">قیمت</p>
+                <p class="propery">{{ type.Price / 10 | number }} تومان</p>
+            </div>
+        </div>
+        }
+    </div>
+    } @if(p.BulkTypes?.length) {
+    <div class="full-width properties">
+        <div class="ion-display-flex ion-justify-content-between ion-align-items-center">
+            <p class="title">انواع نخ خامه - تحویل به صورت بسته‌ای</p>
+            <ion-select
+                class="raj-select"
+                interface="popover"
+                [value]="0"
+                (ionChange)="selectRaj($event)">
+                <ion-select-option [value]="0">انتخاب رجشمار</ion-select-option>
+                @for (raj of rajs; track $index) {
+                <ion-select-option [value]="raj">رجشمار {{ raj }}</ion-select-option>
+                }
+            </ion-select>
+        </div>
+        @for (type of bulkTypeGroups; track $index) { @let tieLength =
+        primaryData.tieLengths[type.MainTieLengthId];
+        <div class="data-row">
+            <div class="ion-display-flex">
+                <p class="label">رجشمار</p>
+                <p class="propery">{{ type.Raj }}</p>
+            </div>
+            <div class="ion-display-flex">
+                <p class="label">ابعاد</p>
+                <p class="propery">{{ type.DimsWidth }} در {{ type.DimsHeight }}</p>
+            </div>
+            <div class="ion-display-flex">
+                <p class="label">جنس</p>
+                <p class="propery">
+                    {{
+                        type.MaterialId
+                            ? primaryData.materials[type.MaterialId].name
+                            : 'پشم و ابریشم'
+                    }}
+                </p>
+            </div>
+            <div class="ion-display-flex">
+                <p class="label">طول گره</p>
+                <p class="propery">{{ tieLength.length }} سانت ( {{ tieLength.title }} )</p>
+            </div>
+            @for(item of type.List; track $index) {
+            <div class="ion-display-flex">
+                <p class="label">{{ item.Count }} تخته</p>
+                <p class="propery">{{ item.Price / 10 | number }} تومان</p>
+            </div>
+            }
+        </div>
+        }
+    </div>
+    }
+</div>
+}

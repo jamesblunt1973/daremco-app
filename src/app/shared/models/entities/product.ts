@@ -1,5 +1,5 @@
-import { BulkType } from './bulkType';
-import { ProductType } from './productType';
+import { BulkType } from './bulk-type';
+import { ProductType } from './product-type';
 
 export interface Product {
     Id: number;
@@ -11,7 +11,8 @@ export interface Product {
     Name: string;
     TiesHeight: number;
     TiesWidth: number;
-    ProductTypes: ProductType[];
-    BulkTypes: BulkType[];
+    ProductTypes: ProductType[] | null;
+    BulkTypes: BulkType[] | null;
     ImageData: string;
+    PaletteId: number | null;
 }

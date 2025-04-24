@@ -1,30 +1,25 @@
 <ion-header [translucent]="true">
     <ion-toolbar>
-        <ion-title> Blank </ion-title>
+        <div
+            class="ion-display-flex ion-align-items-center ion-justify-content-between ion-padding-horizontal">
+            <h4>دارکوب امروز</h4>
+            <img src="../../assets/logo.png" />
+        </div>
     </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
     <ion-header collapse="condense">
         <ion-toolbar>
-            <ion-title size="large">Blank</ion-title>
+            <ion-title size="large">دارکوب امروز</ion-title>
         </ion-toolbar>
     </ion-header>
 
     <div id="container">
         @if (app.isUpdating()) {
-        <ion-spinner name="circular"></ion-spinner>
-        <p>Server Status: {{ app.serverStatus() }}</p>
-        <p>Total Products: {{ app.productsCount() }}</p>
-        <p>Missed Images: {{ app.missedImages() }}</p>
-        <p>Has Images: {{ app.hasImages() }}</p>
-        <p>Downloaded Images: {{ app.downloadedImages() }}</p>
-        <ion-progress-bar
-            [buffer]="progress().buffer"
-            [value]="progress().percent"></ion-progress-bar>
-        <p>Percent: {{ progress().percent }}</p>
-        <p>Buffer: {{ progress().buffer }}</p>
-        <p>Failed Images: {{ app.failedImages() }}</p>
+        <app-update></app-update>
+        } @else {
+        <app-gallery [allProducts]="products.value()!"></app-gallery>
         }
     </div>
 </ion-content>

@@ -1,0 +1,9 @@
+<div class="ion-display-flex ion-flex-column ion-align-items-start ion-padding" dir="ltr">
+    <div class="ion-display-flex ion-margin-auto">
+        <ion-spinner name="circular"></ion-spinner>
+    </div>
+    <p>Server Status: {{ app.serverStatus() }}</p>
+    <p>Total Products: {{ app.productsCount() }}</p>
+    <p>Processed Images: {{ app.processedImages() }}</p>
+    <ion-progress-bar [value]="progress().percent"></ion-progress-bar>
+</div>

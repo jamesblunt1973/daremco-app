@@ -1,4 +1,4 @@
-import { Component, computed, effect, inject } from '@angular/core';
+import { Component, effect, inject } from '@angular/core';
 import { AppService } from '../shared/services/app.service';
 import { DataService } from '../shared/services/data.service';
 import { UpdateService } from '../shared/services/update.service';
@@ -14,20 +14,16 @@ export class HomePage {
     public update = inject(UpdateService);
     public app = inject(AppService);
 
-    public categories = this.data.categories;
     public products = this.data.products;
-    public primaryData = this.data.primaryData;
-    public progress = computed(() => ({
-        percent: this.app.hasImages() / this.app.productsCount(),
-        buffer: (this.app.hasImages() + this.app.downloadedImages()) / this.app.productsCount()
-    }));
 
     public constructor() {
         effect(() => {
             if (!this.products.hasValue()) {
                 return;
             }
-            void this.update.updateProductImages();
+            const products = this.products.value();
+            this.app.productsCount.set(products.length);
+            void this.update.updateProductImages(products);
         });
     }
 }

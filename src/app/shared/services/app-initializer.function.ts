@@ -1,7 +1,7 @@
 import { inject } from '@angular/core';
 import { Network } from '@capacitor/network';
 import { Storage } from '@ionic/storage-angular';
-import { ServerStatus } from '../models/types/server-status.type';
+import { ServerStatus } from '../models/types/server-status';
 import { ApiService } from './api.service';
 import { UpdateService } from './update.service';
 

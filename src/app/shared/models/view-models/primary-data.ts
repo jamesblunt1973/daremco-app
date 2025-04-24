@@ -161,6 +161,10 @@ interface ShoppingMessage {
     dueDate: string;
 }
 
+interface DeliveryMessages {
+    [key: string]: string;
+}
+
 // Main container interface
 export interface PrimaryData {
     rajs: Rajs;
@@ -176,4 +180,5 @@ export interface PrimaryData {
     sizes: Size[];
     planOptions: PlanOption[];
     shoppingMessages: ShoppingMessage[];
+    deliveryMessages: DeliveryMessages;
 }
