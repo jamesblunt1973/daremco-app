@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { Directory, Filesystem } from '@capacitor/filesystem';
+import { Directory, Filesystem, ReadFileResult } from '@capacitor/filesystem';
 import { Storage } from '@ionic/storage-angular';
 import pLimit from 'p-limit';
 import { environment } from '../../../environments/environment';
@@ -18,8 +18,10 @@ export class UpdateService {
     public async updateProducts(): Promise<void> {
         const savedProducts = ((await this.storage.get(Endpoints.products)) as Product[]) || [];
         const lastProductId = savedProducts.length ? savedProducts[savedProducts.length - 1].Id : 0;
+        this.app.message.set(`Start downloading products from ${lastProductId}`);
 
         const newProducts = await this.api.getProducts(Endpoints.products, lastProductId);
+        this.app.message.set(`New products count: ${newProducts.length}`);
         if (!newProducts?.length) {
             return;
         }
@@ -29,18 +31,20 @@ export class UpdateService {
     }
 
     public async updateCategories(): Promise<void> {
+        this.app.message.set('Start downloading categories...');
         const categories = await this.api.getCategories(Endpoints.categories);
+        this.app.message.set('Downloading categories finished.');
         await this.setStorage(Endpoints.categories, categories);
     }
 
     public async updatePrimaryData(): Promise<void> {
+        this.app.message.set('Start downloading primary data...');
         const data = await this.api.getPrimaryData(Endpoints.primaryData);
+        this.app.message.set('Downloading primary data finished.');
         await this.setStorage(Endpoints.primaryData, data);
     }
 
     public async updateProductImages(products: Product[]): Promise<void> {
-        this.app.isUpdating.set(true);
-
         const limit = pLimit(100);
         const updateTasks = products.map(product =>
             limit(async () => ({
@@ -73,22 +77,36 @@ export class UpdateService {
             directory: Directory.Data
         };
 
-        this.app.processedImages.update(value => ++value);
         try {
             const imageData = await Filesystem.readFile(fileOptions);
-            product.ImageData = URL.createObjectURL(imageData.data as Blob);
+            product.ImageData = this.getImageObjectUrl(imageData);
+            this.app.processedImages.update(value => ++value);
             return true;
         } catch {
             try {
-                const res = await Filesystem.downloadFile({
+                const url = `${environment.imageUrl}${filePath}`;
+                await Filesystem.downloadFile({
                     ...fileOptions,
-                    url: `${environment.imageUrl}${filePath}`
+                    url
                 });
-                product.ImageData = URL.createObjectURL(res as Blob);
-                return true;
-            } catch {
+            } finally {
                 return false;
             }
+        }
+    }
+
+    private getImageObjectUrl(imageData: ReadFileResult): string {
+        if (typeof imageData.data === 'string') {
+            const byteCharacters = atob(imageData.data);
+            const byteNumbers = new Array(byteCharacters.length);
+            for (let i = 0; i < byteCharacters.length; i++) {
+                byteNumbers[i] = byteCharacters.charCodeAt(i);
+            }
+            const byteArray = new Uint8Array(byteNumbers);
+            const blob = new Blob([byteArray], { type: 'image/jpeg' });
+            return URL.createObjectURL(blob);
+        } else {
+            return URL.createObjectURL(imageData.data);
         }
     }
 }

@@ -6,4 +6,8 @@
     <p>Total Products: {{ app.productsCount() }}</p>
     <p>Processed Images: {{ app.processedImages() }}</p>
     <ion-progress-bar [value]="progress().percent"></ion-progress-bar>
+    <br />
+    @for (message of messages; track $index) {
+    <p>{{ message }}</p>
+    }
 </div>

@@ -1,12 +1,11 @@
 import { provideHttpClient } from '@angular/common/http';
-import { NgModule, provideAppInitializer } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { PreloadAllModules, RouteReuseStrategy, RouterModule, Routes } from '@angular/router';
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
 import { IonicStorageModule } from '@ionic/storage-angular';
 import { AppComponent } from './app.component';
-import { AppInitializer } from './shared/services/app-initializer.function';
 
 const routes: Routes = [
     {
@@ -32,11 +31,7 @@ const routes: Routes = [
         }),
         IonicStorageModule.forRoot()
     ],
-    providers: [
-        provideHttpClient(),
-        provideAppInitializer(() => AppInitializer()),
-        { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
-    ],
+    providers: [provideHttpClient(), { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }],
     bootstrap: [AppComponent]
 })
 export class AppModule {}
