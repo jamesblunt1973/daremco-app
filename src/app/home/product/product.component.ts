@@ -1,7 +1,8 @@
 import { Component, inject, input, OnInit } from '@angular/core';
-import { ModalController } from '@ionic/angular';
+import { ModalController, ToastController } from '@ionic/angular';
 import { BulkTypeGroup, PrimaryData, Product, ValueEvent } from '../../../app/shared/models';
 import { DataService } from '../../../app/shared/services/data.service';
+import { UpdateService } from '../../shared/services/update.service';
 import { MessageComponent } from '../message/message.component';
 
 @Component({
@@ -16,9 +17,12 @@ export class ProductComponent implements OnInit {
     public primaryData: PrimaryData;
     public rajs: number[] = [];
     public bulkTypeGroups: BulkTypeGroup[] = [];
+    public mainImage = '';
 
     private data = inject(DataService);
+    private update = inject(UpdateService);
     private modalCtrl = inject(ModalController);
+    private toastController = inject(ToastController);
 
     public constructor() {
         const primaryData = this.data.primaryData;
@@ -75,5 +79,26 @@ export class ProductComponent implements OnInit {
             });
         }
         this.bulkTypeGroups = Array.from(map.values());
+    }
+
+    public async showPicture(): Promise<void> {
+        const mainImageName = 'main';
+        if (this.p?.Images[mainImageName]) {
+            this.mainImage = this.p?.Images[mainImageName];
+            return;
+        }
+
+        const hasMainImage = await this.update.setProductImage(this.p!, 'main');
+        if (hasMainImage !== false) {
+            await this.showPicture();
+            return;
+        }
+
+        const toast = await this.toastController.create({
+            message: 'تصویر بزرگ محصول موجود نیست. لطفا اتصال اینترنت خود را بررسی نمایید.',
+            duration: 2000,
+            position: 'bottom'
+        });
+        await toast.present();
     }
 }

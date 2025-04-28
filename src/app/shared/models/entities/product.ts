@@ -13,6 +13,6 @@ export interface Product {
     TiesWidth: number;
     ProductTypes: ProductType[] | null;
     BulkTypes: BulkType[] | null;
-    ImageData: string;
+    Images: Record<string, string>;
     PaletteId: number | null;
 }

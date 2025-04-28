@@ -1,6 +1,6 @@
 @if (p) {
 <div class="product">
-    <img [src]="p.ImageData" />
+    <img [src]="p.Images['300']" (click)="showPicture()" />
     <p class="name">{{ p.Name }} ({{ p.Id }})</p>
     <div class="ion-display-flex ion-flex-gap-full">
         <p>{{ p.TiesWidth }} گره در {{ p.TiesHeight }} رج</p>
@@ -111,5 +111,11 @@
         }
     </div>
     }
+    <div class="string">
+        <div class="darkoob"></div>
+    </div>
+    <div *ngIf="mainImage" class="main-image" (click)="mainImage = ''">
+        <img [src]="mainImage" />
+    </div>
 </div>
 }

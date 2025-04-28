@@ -49,7 +49,7 @@ export class UpdateService {
         const updateTasks = products.map(product =>
             limit(async () => ({
                 product,
-                hasImage: await this.setProductImage(product)
+                hasImage: await this.setProductImage(product, '300')
             }))
         );
 
@@ -65,13 +65,9 @@ export class UpdateService {
         this.app.isUpdating.set(false);
     }
 
-    private async setStorage(key: string, data: unknown): Promise<void> {
-        await this.storage.set(key, data);
-    }
-
-    private async setProductImage(product: Product): Promise<boolean> {
-        const fileName = `${product.Id}.jpg`;
-        const filePath = `products/${product.Id}/300.jpg`;
+    public async setProductImage(product: Product, size: string): Promise<boolean | null> {
+        const fileName = `${product.Id}_${size}.jpg`;
+        const filePath = `products/${product.Id}/${size}.jpg`;
         const fileOptions = {
             path: fileName,
             directory: Directory.Data
@@ -79,7 +75,15 @@ export class UpdateService {
 
         try {
             const imageData = await Filesystem.readFile(fileOptions);
-            product.ImageData = this.getImageObjectUrl(imageData);
+            const imageObjUrl = this.getImageObjectUrl(imageData);
+            product.Images = product.Images
+                ? {
+                      ...product.Images,
+                      [size]: imageObjUrl
+                  }
+                : {
+                      [size]: imageObjUrl
+                  };
             this.app.processedImages.update(value => ++value);
             return true;
         } catch {
@@ -89,10 +93,15 @@ export class UpdateService {
                     ...fileOptions,
                     url
                 });
-            } finally {
+                return null;
+            } catch {
                 return false;
             }
         }
+    }
+
+    private async setStorage(key: string, data: unknown): Promise<void> {
+        await this.storage.set(key, data);
     }
 
     private getImageObjectUrl(imageData: ReadFileResult): string {

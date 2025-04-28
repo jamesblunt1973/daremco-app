@@ -44,7 +44,7 @@ export class HomePage implements OnInit {
         if (networkStatus.connected) {
             try {
                 const serverStatus = (await this.api.healthCheck()) as ServerStatus;
-                this.app.message.set(`Server status: ${serverStatus}`);
+                this.app.serverStatus.set(serverStatus);
                 if (serverStatus === 'Healthy') {
                     await Promise.all([
                         this.update.updateProducts(),
