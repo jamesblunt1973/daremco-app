@@ -1,0 +1,17 @@
+.update-content {
+    position: relative;
+
+    & > p {
+        background-color: transparent;
+    }
+}
+
+#logo-rotate {
+    position: absolute;
+    left: 0;
+    top: -56px;
+    width: 100%;
+    height: 100vh;
+    object-fit: cover;
+    z-index: -1;
+}
