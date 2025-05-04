@@ -77,6 +77,16 @@ body {
     margin: auto;
 }
 
+.ion-margin-x-auto {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.ion-margin-y-auto {
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
 .ion-flex-column {
     flex-direction: column;
 }
@@ -108,28 +118,4 @@ body {
 
 ion-modal.modal-sheet {
     --height: auto;
-}
-
-.properties {
-    background-color: #eee;
-}
-
-.data-row {
-    background-color: var(--ion-color-primary-contrast);
-    & > div {
-        border-bottom: 1px solid #eee;
-    }
-}
-
-@media (prefers-color-scheme: dark) {
-    .properties {
-        background-color: #666;
-    }
-
-    .data-row {
-        background-color: var(--ion-background-color);
-        & > div {
-            border-bottom: 1px solid #666;
-        }
-    }
 }

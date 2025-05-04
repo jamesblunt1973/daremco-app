@@ -1,12 +1,10 @@
 <div
     class="ion-display-flex ion-flex-column ion-align-items-start ion-padding update-content"
     dir="ltr">
-    <video autoplay muted loop id="logo-rotate">
-        <source src="../../../assets/bg.mp4" type="video/mp4" />
-    </video>
-    <div class="ion-display-flex ion-margin-auto">
+    <div class="ion-display-flex ion-margin-x-auto">
         <ion-spinner name="circular"></ion-spinner>
     </div>
+    <h5 class="ion-margin-x-auto">در حال آماده سازی اطلاعات و تصاویر محصولات</h5>
     <p>Server Status: {{ app.serverStatus() }}</p>
     <p>Total Products: {{ app.productsCount() }}</p>
     <p>Processed Images: {{ app.processedImages() }}</p>
@@ -15,4 +13,5 @@
     @for (message of messages; track $index) {
     <p>{{ message }}</p>
     }
+    <p>در صورت اتصال به اینترنت، محصولات جدید دریافت خواهند شد.</p>
 </div>

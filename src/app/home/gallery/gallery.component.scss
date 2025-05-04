@@ -1,0 +1,11 @@
+.gallery-bg {
+    min-height: 100%;
+    background-image: url('../../../assets/gallery-bg.jpg');
+    background-repeat: repeat;
+}
+
+@media (prefers-color-scheme: dark) {
+    .gallery-bg {
+        background-image: url('../../../assets/gallery-bg-dark.jpg');
+    }
+}

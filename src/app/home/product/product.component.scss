@@ -34,10 +34,6 @@
         font-weight: bold;
     }
 
-    .data-row:not(:last-child) {
-        margin-bottom: 1rem;
-    }
-
     .raj-select {
         flex-basis: 0;
     }
@@ -54,9 +50,10 @@
             background-image: url('../../../assets/darkoob.png');
             background-repeat: no-repeat;
             background-size: contain;
-            width: 50px;
+            width: 69px;
             height: 50px;
-            left: 30px;
+            left: 15px;
+            bottom: 2px;
             position: absolute;
         }
     }
@@ -79,6 +76,24 @@
             max-height: 100%;
             transform: translate(-50%, -50%) rotate(45deg) scale(0);
             animation: diamondExpand 0.6s ease-out forwards;
+        }
+    }
+
+    .data-row:not(:last-child) {
+        margin-bottom: 1rem;
+    }
+
+    .data-row {
+        & > div {
+            border-bottom: 1px solid #eee;
+        }
+    }
+
+    @media (prefers-color-scheme: dark) {
+        .data-row {
+            & > div {
+                border-bottom: 1px solid #666;
+            }
         }
     }
 }

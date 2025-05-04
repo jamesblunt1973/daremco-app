@@ -1,17 +1,14 @@
 .update-content {
     position: relative;
-
-    & > p {
-        background-color: transparent;
-    }
+    height: calc(100% - 32px);
+    background-image: url('../../../assets/bg.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
 }
 
-#logo-rotate {
-    position: absolute;
-    left: 0;
-    top: -56px;
-    width: 100%;
-    height: 100vh;
-    object-fit: cover;
-    z-index: -1;
+@media (prefers-color-scheme: dark) {
+    .update-content {
+        background-image: url('../../../assets/bg-dark.jpg');
+    }
 }
