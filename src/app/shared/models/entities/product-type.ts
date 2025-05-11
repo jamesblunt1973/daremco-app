@@ -8,4 +8,5 @@ export interface ProductType {
     MainTieLengthId: number;
     Price: number;
     Stock: number;
+    ProductionGroupId?: number;
 }

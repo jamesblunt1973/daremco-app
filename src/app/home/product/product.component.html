@@ -10,7 +10,7 @@
         <p>{{ p.ColorsCount }} رنگ</p>
     </div>
     @if(p.ProductTypes?.length) {
-    <div class="full-width properties">
+    <div class="full-width properties ion-margin-bottom">
         <p class="title">انواع نخ خامه - تحویل با وزن دقیق</p>
         @for (type of p.ProductTypes; track $index) { @let tieLength =
         primaryData.tieLengths[type.MainTieLengthId];
@@ -45,12 +45,13 @@
                 <p class="propery">
                     @if (type.Stock > 0) {
                     {{ type.Stock }}
-                    } @else if(p.PaletteId) {
-                    <ion-button fill="clear" size="small" (click)="showMessage(p.PaletteId)">
+                    } @else {
+                    <ion-button
+                        fill="clear"
+                        size="small"
+                        (click)="showStockMessage(undefined, type.ProductionGroupId)">
                         مشاهده
                     </ion-button>
-                    } @else {
-                    {{ '-----' }}
                     }
                 </p>
             </div>
@@ -62,9 +63,15 @@
         }
     </div>
     } @if(p.BulkTypes?.length) {
-    <div class="full-width properties">
+    <div class="full-width properties ion-margin-bottom">
         <div class="ion-display-flex ion-justify-content-between ion-align-items-center">
             <p class="title">انواع نخ خامه - تحویل به صورت بسته‌ای</p>
+            <ion-button
+                fill="clear"
+                size="small"
+                (click)="showStockMessage(p.PaletteId ?? 0, undefined)">
+                زمان تحویل
+            </ion-button>
             <ion-select
                 class="raj-select"
                 interface="popover"
@@ -109,6 +116,25 @@
             }
         </div>
         }
+    </div>
+    } @if(p.Plans?.length) {
+    <div class="full-width properties">
+        <p class="title">انواع نقشه برای این محصول</p>
+        <div class="data-row">
+            @for (plan of p.Plans; track $index) {
+            <div class="ion-display-flex">
+                <p class="label">
+                    {{ primaryData.planTypes[plan.PlanTypeId] }}
+                </p>
+                <p class="propery">
+                    {{ plan.Price ? (plan.Price / 10 | number) : 'رایگان' }}
+                </p>
+                <p class="ion-margin-start">
+                    {{ plan.Name }}
+                </p>
+            </div>
+            }
+        </div>
     </div>
     }
     <div class="string">

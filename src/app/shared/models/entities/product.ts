@@ -1,4 +1,5 @@
 import { BulkType } from './bulk-type';
+import { Plan } from './plan';
 import { ProductType } from './product-type';
 
 export interface Product {
@@ -15,4 +16,5 @@ export interface Product {
     BulkTypes: BulkType[] | null;
     Images: Record<string, string>;
     PaletteId: number | null;
+    Plans: Plan[] | null;
 }

@@ -13,7 +13,7 @@ interface RajDetail {
 }
 
 interface Rajs {
-    [key: string]: RajDetail;
+    [key: number]: RajDetail;
 }
 
 // Tie lengths
@@ -26,7 +26,7 @@ interface TieLength {
 }
 
 interface TieLengths {
-    [key: string]: TieLength;
+    [key: number]: TieLength;
 }
 
 // Layouts and tie types
@@ -41,7 +41,7 @@ interface SendMethod {
 }
 
 interface SendMethods {
-    [key: string]: SendMethod;
+    [key: number]: SendMethod;
 }
 
 // Settings
@@ -95,7 +95,7 @@ interface Messages {
 }
 
 // Plan types
-type PlanTypes = Record<string, string>;
+type PlanTypes = Record<number, string>;
 
 // Materials
 interface Material {
@@ -119,7 +119,7 @@ interface Material {
 }
 
 interface Materials {
-    [key: string]: Material;
+    [key: number]: Material;
 }
 
 // Attributes
@@ -162,7 +162,11 @@ interface ShoppingMessage {
 }
 
 interface DeliveryMessages {
-    [key: string]: string;
+    [key: number]: string;
+}
+
+interface ProductionGroups {
+    [key: number]: string;
 }
 
 // Main container interface
@@ -181,4 +185,5 @@ export interface PrimaryData {
     planOptions: PlanOption[];
     shoppingMessages: ShoppingMessage[];
     deliveryMessages: DeliveryMessages;
+    productionGroups: ProductionGroups;
 }

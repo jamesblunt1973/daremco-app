@@ -1,6 +1,7 @@
 export * from './entities/bulk-type';
 export * from './entities/category';
 export * from './entities/gallery';
+export * from './entities/plan';
 export * from './entities/product';
 export * from './entities/product-type';
 export * from './types/custom-event';

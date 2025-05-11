@@ -34,11 +34,17 @@ export class ProductComponent implements OnInit {
         this.rajs = [...new Set(this.p.BulkTypes?.map(a => a.Raj))];
     }
 
-    public async showMessage(paletteId: number): Promise<void> {
+    public async showStockMessage(paletteId?: number, pgId?: number): Promise<void> {
+        let message = this.primaryData.settings.ProductionMessage;
+        if (paletteId) {
+            message = this.primaryData.deliveryMessages[paletteId];
+        } else if (pgId) {
+            message = this.primaryData.productionGroups[pgId];
+        }
         const modal = await this.modalCtrl.create({
             component: MessageComponent,
             componentProps: {
-                message: this.primaryData.deliveryMessages[paletteId]
+                message
             },
             initialBreakpoint: 1,
             breakpoints: [0, 1]
