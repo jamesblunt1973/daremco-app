@@ -17,15 +17,15 @@
         <div class="data-row ion-display-flex ion-flex-column">
             <div class="ion-display-flex">
                 <p class="label">رجشمار</p>
-                <p class="propery">{{ type.Raj }}</p>
+                <p class="property">{{ type.Raj }}</p>
             </div>
             <div class="ion-display-flex">
                 <p class="label">ابعاد</p>
-                <p class="propery">{{ type.DimsWidth }} در {{ type.DimsHeight }} سانت</p>
+                <p class="property">{{ type.DimsWidth }} در {{ type.DimsHeight }} سانت</p>
             </div>
             <div class="ion-display-flex">
                 <p class="label">جنس</p>
-                <p class="propery">
+                <p class="property">
                     @if(type.MaterialId) {
                     {{ primaryData.materials[type.MaterialId].name }}
                     } @else { پشم و ابریشم }
@@ -34,15 +34,15 @@
             </div>
             <div class="ion-display-flex">
                 <p class="label">نوع بافت</p>
-                <p class="propery">{{ primaryData.tieTypes[type.TieTypeId] }}</p>
+                <p class="property">{{ primaryData.tieTypes[type.TieTypeId] }}</p>
             </div>
             <div class="ion-display-flex">
                 <p class="label">طول گره</p>
-                <p class="propery">{{ tieLength.length }} سانت ( {{ tieLength.title }} )</p>
+                <p class="property">{{ tieLength.length }} سانت ( {{ tieLength.title }} )</p>
             </div>
             <div class="ion-display-flex">
                 <p class="label">موجودی</p>
-                <p class="propery">
+                <p class="property">
                     @if (type.Stock > 0) {
                     {{ type.Stock }}
                     } @else {
@@ -57,7 +57,7 @@
             </div>
             <div class="ion-display-flex">
                 <p class="label">قیمت</p>
-                <p class="propery">{{ type.Price / 10 | number }} تومان</p>
+                <p class="property">{{ type.Price / 10 | number }} تومان</p>
             </div>
         </div>
         }
@@ -88,15 +88,15 @@
         <div class="data-row">
             <div class="ion-display-flex">
                 <p class="label">رجشمار</p>
-                <p class="propery">{{ type.Raj }}</p>
+                <p class="property">{{ type.Raj }}</p>
             </div>
             <div class="ion-display-flex">
                 <p class="label">ابعاد</p>
-                <p class="propery">{{ type.DimsWidth }} در {{ type.DimsHeight }}</p>
+                <p class="property">{{ type.DimsWidth }} در {{ type.DimsHeight }}</p>
             </div>
             <div class="ion-display-flex">
                 <p class="label">جنس</p>
-                <p class="propery">
+                <p class="property">
                     {{
                         type.MaterialId
                             ? primaryData.materials[type.MaterialId].name
@@ -106,12 +106,12 @@
             </div>
             <div class="ion-display-flex">
                 <p class="label">طول گره</p>
-                <p class="propery">{{ tieLength.length }} سانت ( {{ tieLength.title }} )</p>
+                <p class="property">{{ tieLength.length }} سانت ( {{ tieLength.title }} )</p>
             </div>
             @for(item of type.List; track $index) {
             <div class="ion-display-flex">
                 <p class="label">{{ item.Count }} تخته</p>
-                <p class="propery">{{ item.Price / 10 | number }} تومان</p>
+                <p class="property">{{ item.Price / 10 | number }} تومان</p>
             </div>
             }
         </div>
@@ -126,7 +126,7 @@
                 <p class="label">
                     {{ primaryData.planTypes[plan.PlanTypeId] }}
                 </p>
-                <p class="propery">
+                <p class="property">
                     {{ plan.Price ? (plan.Price / 10 | number) : 'رایگان' }}
                 </p>
                 <p class="ion-margin-start">
