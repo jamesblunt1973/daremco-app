@@ -47,17 +47,25 @@
         url('../src/assets/iransans/ttf/IRANSansWeb(FaNum).ttf') format('truetype');
 }
 
+:root {
+    --ion-font-family: IRANSans;
+}
+
 * {
     margin: 0;
     padding: 0;
-    font-family: IRANSans;
     box-sizing: inherit;
 }
 
 body {
     color: #333;
-    direction: rtl;
     font-size: 12.8px;
+}
+
+ion-content,
+ion-modal,
+ion-popover {
+    direction: rtl;
 }
 
 .input-wrapper {
@@ -116,6 +124,6 @@ body {
     width: 100%;
 }
 
-ion-modal.modal-sheet {
+ion-modal.auto-height {
     --height: auto;
 }

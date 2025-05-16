@@ -1,25 +1,52 @@
-<ion-header [translucent]="true">
-    <ion-toolbar>
-        <div
-            class="ion-display-flex ion-justify-content-between ion-padding-horizontal ion-margin-top">
-            <h4 class="ion-no-margin">دارکوب امروز</h4>
-            <img height="24" src="../../assets/logo.png" />
-        </div>
-    </ion-toolbar>
-</ion-header>
+<ion-menu contentId="main-content" side="end">
+    <ion-content class="ion-padding">
+        <ion-list>
+            <ion-item routerLink="#">
+                <ion-label>کاتالوگ محصولات</ion-label>
+            </ion-item>
 
-<ion-content [fullscreen]="true">
-    <ion-header collapse="condense">
+            <ion-item routerLink="#">
+                <ion-label>نقشه خوان صوتی</ion-label>
+            </ion-item>
+
+            <ion-item routerLink="#">
+                <ion-label>پیام رسان دارکوب</ion-label>
+            </ion-item>
+
+            <ion-item routerLink="#">
+                <ion-label>دارمکو پلاس</ion-label>
+            </ion-item>
+        </ion-list>
+    </ion-content>
+</ion-menu>
+
+<div class="ion-page" id="main-content">
+    <ion-header [translucent]="true">
         <ion-toolbar>
-            <ion-title size="large">دارکوب امروز</ion-title>
+            <div
+                class="ion-display-flex ion-justify-content-between ion-padding-horizontal ion-margin-top">
+                <h4 class="ion-no-margin">دارکوب امروز</h4>
+                <img height="24" src="../../assets/logo.png" />
+                <ion-buttons>
+                    <ion-menu-button></ion-menu-button>
+                </ion-buttons>
+            </div>
         </ion-toolbar>
     </ion-header>
 
-    <div id="container">
-        @if (app.isUpdating()) {
-        <app-update></app-update>
-        } @else {
-        <app-gallery [allProducts]="products.value()!"></app-gallery>
-        }
-    </div>
-</ion-content>
+    <ion-content [fullscreen]="true">
+        <ion-header collapse="condense">
+            <ion-toolbar>
+                <ion-title size="large">دارکوب امروز</ion-title>
+            </ion-toolbar>
+        </ion-header>
+
+        <div id="container">
+            @if (app.isUpdating()) {
+            <app-update></app-update>
+            } @else {
+            <app-gallery [allProducts]="products.value()!"></app-gallery>
+            }
+        </div>
+    </ion-content>
+</div>

@@ -4,6 +4,10 @@
     background-repeat: repeat;
 }
 
+ion-fab {
+    position: fixed;
+}
+
 @media (prefers-color-scheme: dark) {
     .gallery-bg {
         background-image: url('../../../assets/gallery-bg-dark.jpg');

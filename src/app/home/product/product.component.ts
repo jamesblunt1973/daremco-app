@@ -47,7 +47,8 @@ export class ProductComponent implements OnInit {
                 message
             },
             initialBreakpoint: 1,
-            breakpoints: [0, 1]
+            breakpoints: [0, 1],
+            cssClass: 'auto-height'
         });
         await modal.present();
     }
