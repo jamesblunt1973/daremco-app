@@ -1,0 +1,26 @@
+.materials {
+    width: 360px;
+    max-width: 100%;
+    margin: auto;
+
+    tr {
+        height: 2rem;
+        td {
+            text-align: center;
+        }
+        td:first-child {
+            text-align: right;
+            padding-right: 5px;
+            max-width: 200px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+    }
+}
+
+.close-modal {
+    position: fixed;
+    bottom: 15px;
+    left: 45%;
+}

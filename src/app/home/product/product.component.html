@@ -2,7 +2,7 @@
 <div class="product">
     <img [src]="p.Images['300']" (click)="showPicture()" />
     <p class="name">{{ p.Name }} ({{ p.Id }})</p>
-    <div class="ion-display-flex ion-flex-gap-full">
+    <div class="ion-display-flex ion-align-items-center ion-flex-gap-full">
         <p>{{ p.TiesWidth }} گره در {{ p.TiesHeight }} رج</p>
         <span>|</span>
         <p>{{ p.Moghat }} مقاط</p>
@@ -29,7 +29,6 @@
                     @if(type.MaterialId) {
                     {{ primaryData.materials[type.MaterialId].name }}
                     } @else { پشم و ابریشم }
-                    <!-- TODO: Get list of used materials -->
                 </p>
             </div>
             <div class="ion-display-flex">
@@ -58,6 +57,16 @@
             <div class="ion-display-flex">
                 <p class="label">قیمت</p>
                 <p class="property">{{ type.Price / 10 | number }} تومان</p>
+            </div>
+            <div class="ion-display-flex">
+                <ion-button fill="clear" size="small" (click)="showColorsPalette(type)">
+                    نمایش پالت
+                </ion-button>
+                @if(!type.MaterialId) {
+                <ion-button fill="clear" size="small" (click)="showMaterialsChart(type)">
+                    نمودار توزیع جنس
+                </ion-button>
+                }
             </div>
         </div>
         }
@@ -114,6 +123,16 @@
                 <p class="property">{{ item.Price / 10 | number }} تومان</p>
             </div>
             }
+            <div class="ion-display-flex">
+                <ion-button fill="clear" size="small" (click)="showColorsPalette(type)">
+                    نمایش پالت
+                </ion-button>
+                @if(!type.MaterialId) {
+                <ion-button fill="clear" size="small" (click)="showMaterialsChart(type)">
+                    نمودار توزیع جنس
+                </ion-button>
+                }
+            </div>
         </div>
         }
     </div>

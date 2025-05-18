@@ -1,0 +1,28 @@
+<ion-content class="ion-padding">
+    <app-pie-chart [data]="chartData"></app-pie-chart>
+    <table class="materials ion-margin-top">
+        <thead>
+            <tr>
+                <th>نام جنس</th>
+                <th>تعداد رنگ</th>
+                <th>درصد مصرف</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (material of materials; track $index) {
+            <tr [ngStyle]="{ backgroundColor: chartColors[$index] }">
+                <td>
+                    {{ material.material }}
+                </td>
+                <td>
+                    {{ material.colorsCount }}
+                </td>
+                <td>{{ material.percent }}%</td>
+            </tr>
+            }
+        </tbody>
+    </table>
+    <ion-button class="close-modal" shape="round" (click)="close()">
+        <ion-icon slot="icon-only" name="close"></ion-icon>
+    </ion-button>
+</ion-content>

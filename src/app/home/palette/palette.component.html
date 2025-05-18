@@ -1,0 +1,25 @@
+<ion-content class="ion-padding">
+    <table class="palette">
+        <thead>
+            <tr>
+                <th>شماره</th>
+                <th>کد رنگ</th>
+                <th>جنس</th>
+                <th>وزن (گرم)</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (color of colors(); track $index) {
+            <tr>
+                <td>{{ $index + 1 }}</td>
+                <td [ngStyle]="{ backgroundColor: color.color }">{{ color.position }}</td>
+                <td>{{ color.material }}</td>
+                <td>{{ color.weight | number }}</td>
+            </tr>
+            }
+        </tbody>
+    </table>
+    <ion-button class="close-modal" shape="round" (click)="close()">
+        <ion-icon slot="icon-only" name="close"></ion-icon>
+    </ion-button>
+</ion-content>

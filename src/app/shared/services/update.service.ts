@@ -100,6 +100,20 @@ export class UpdateService {
         }
     }
 
+    public async getProductColors(product: Product): Promise<boolean> {
+        try {
+            const colors = await this.api.getProductColors(Endpoints.productColors(product.Id));
+            product.Colors = colors;
+            const savedProducts = ((await this.storage.get(Endpoints.products)) as Product[]) || [];
+            const index = savedProducts.findIndex(a => a.Id === product.Id);
+            savedProducts[index] = product;
+            await this.setStorage(Endpoints.products, savedProducts);
+            return true;
+        } catch {
+            return false;
+        }
+    }
+
     private async setStorage(key: string, data: unknown): Promise<void> {
         await this.storage.set(key, data);
     }

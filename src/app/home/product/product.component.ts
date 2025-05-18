@@ -1,9 +1,17 @@
 import { Component, inject, input, OnInit } from '@angular/core';
 import { ModalController, ToastController } from '@ionic/angular';
-import { BulkTypeGroup, PrimaryData, Product, ValueEvent } from '../../../app/shared/models';
+import {
+    BulkTypeGroup,
+    PrimaryData,
+    Product,
+    ProductType,
+    ValueEvent
+} from '../../../app/shared/models';
 import { DataService } from '../../../app/shared/services/data.service';
 import { UpdateService } from '../../shared/services/update.service';
+import { MaterialsChartComponent } from '../materials-chart/materials-chart.component';
 import { MessageComponent } from '../message/message.component';
+import { PaletteComponent } from '../palette/palette.component';
 
 @Component({
     selector: 'app-product',
@@ -101,8 +109,68 @@ export class ProductComponent implements OnInit {
             return;
         }
 
+        await this.presentToast(
+            'تصویر بزرگ محصول موجود نیست. لطفا اتصال اینترنت خود را بررسی نمایید.'
+        );
+    }
+
+    public async showColorsPalette(type: ProductType | BulkTypeGroup): Promise<void> {
+        if (this.p?.Colors) {
+            const modal = await this.modalCtrl.create({
+                component: PaletteComponent,
+                componentProps: {
+                    colors: this.p.Colors,
+                    spec: {
+                        materialId: type.MaterialId,
+                        raj: type.Raj,
+                        tieLengthId: type.MainTieLengthId
+                    }
+                },
+                initialBreakpoint: 1,
+                breakpoints: [0, 1]
+            });
+            await modal.present();
+            return;
+        }
+        const hasColors = await this.update.getProductColors(this.p!);
+        if (hasColors) {
+            await this.showColorsPalette(type);
+            return;
+        }
+
+        await this.presentToast(
+            'پالت رنگ محصول موجود نیست. لطفا اتصال اینترنت خود را بررسی نمایید.'
+        );
+    }
+
+    public async showMaterialsChart(type: ProductType | BulkTypeGroup): Promise<void> {
+        if (this.p?.Colors) {
+            const modal = await this.modalCtrl.create({
+                component: MaterialsChartComponent,
+                componentProps: {
+                    colors: this.p.Colors,
+                    raj: type.Raj
+                },
+                initialBreakpoint: 1,
+                breakpoints: [0, 1]
+            });
+            await modal.present();
+            return;
+        }
+        const hasColors = await this.update.getProductColors(this.p!);
+        if (hasColors) {
+            await this.showMaterialsChart(type);
+            return;
+        }
+
+        await this.presentToast(
+            'پالت رنگ محصول موجود نیست. لطفا اتصال اینترنت خود را بررسی نمایید.'
+        );
+    }
+
+    private async presentToast(message: string): Promise<void> {
         const toast = await this.toastController.create({
-            message: 'تصویر بزرگ محصول موجود نیست. لطفا اتصال اینترنت خود را بررسی نمایید.',
+            message,
             duration: 2000,
             position: 'bottom'
         });

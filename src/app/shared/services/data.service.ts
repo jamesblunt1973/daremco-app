@@ -20,4 +20,10 @@ export class DataService {
     });
 
     private storage = inject(Storage);
+
+    public reload = (): void => {
+        this.categories.reload();
+        this.products.reload();
+        this.primaryData.reload();
+    };
 }

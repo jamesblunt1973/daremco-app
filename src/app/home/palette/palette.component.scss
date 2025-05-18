@@ -1,0 +1,29 @@
+.palette {
+    width: 100%;
+    border: 1px solid;
+    margin-bottom: 50px;
+
+    td {
+        text-align: center;
+    }
+
+    td,
+    th {
+        border-right: 1px solid;
+        border-left: 1px solid;
+    }
+
+    tr {
+        height: 2rem;
+    }
+
+    tbody tr:nth-child(odd) {
+        background-color: #999;
+    }
+}
+
+.close-modal {
+    position: fixed;
+    bottom: 15px;
+    left: 45%;
+}

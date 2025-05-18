@@ -24,7 +24,7 @@ export class HomePage implements OnInit {
 
     public constructor() {
         effect(() => {
-            if (!this.products.hasValue()) {
+            if (!this.products?.hasValue()) {
                 return;
             }
             const products = this.products.value();
@@ -51,9 +51,7 @@ export class HomePage implements OnInit {
                         this.update.updateCategories(),
                         this.update.updatePrimaryData()
                     ]);
-                    this.data.products.reload();
-                    this.data.categories.reload();
-                    this.data.primaryData.reload();
+                    this.data.reload();
                 }
             } catch {}
         }

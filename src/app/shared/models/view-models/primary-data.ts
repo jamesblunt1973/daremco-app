@@ -98,7 +98,7 @@ interface Messages {
 type PlanTypes = Record<number, string>;
 
 // Materials
-interface Material {
+export interface Material {
     id: number;
     name: string;
     price: number;
