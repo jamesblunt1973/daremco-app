@@ -11,7 +11,7 @@
     </div>
     @if(p.ProductTypes?.length) {
     <div class="full-width properties ion-margin-bottom">
-        <p class="title">انواع نخ خامه - تحویل با وزن دقیق</p>
+        <p class="title">انواع نخ خامه</p>
         @for (type of p.ProductTypes; track $index) { @let tieLength =
         primaryData.tieLengths[type.MainTieLengthId];
         <div class="data-row ion-display-flex ion-flex-column">
@@ -74,7 +74,7 @@
     } @if(p.BulkTypes?.length) {
     <div class="full-width properties ion-margin-bottom">
         <div class="ion-display-flex ion-justify-content-between ion-align-items-center">
-            <p class="title">انواع نخ خامه - تحویل به صورت بسته‌ای</p>
+            <p class="title">انواع نخ خامه</p>
             <ion-button
                 fill="clear"
                 size="small"
@@ -92,7 +92,9 @@
                 }
             </ion-select>
         </div>
-        @for (type of bulkTypeGroups; track $index) { @let tieLength =
+        @if(!bulkTypeGroups.length) {
+        <p class="pointer">لطفا رجشمار مورد نظر خود را انتخاب کنید 👆</p>
+        } @for (type of bulkTypeGroups; track $index) { @let tieLength =
         primaryData.tieLengths[type.MainTieLengthId];
         <div class="data-row">
             <div class="ion-display-flex">
@@ -162,5 +164,10 @@
     <div *ngIf="mainImage" class="main-image" (click)="mainImage = ''">
         <img [src]="mainImage" />
     </div>
+    @if(loading) {
+    <div class="loading">
+        <ion-spinner name="dots"></ion-spinner>
+    </div>
+    }
 </div>
 }

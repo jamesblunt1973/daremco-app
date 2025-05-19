@@ -7,6 +7,7 @@ type ProductSpec = {
     materialId: number;
     raj: number;
     tieLengthId: number;
+    bulk: boolean;
 };
 
 @Component({
@@ -18,6 +19,7 @@ type ProductSpec = {
 export class PaletteComponent {
     public colors = input.required<ProductColor[]>();
     public spec = input.required<ProductSpec>();
+    public bulk = true;
 
     private data = inject(DataService);
     private modalCtrl = inject(ModalController);
@@ -32,6 +34,7 @@ export class PaletteComponent {
             if (!colors.length) {
                 return;
             }
+            this.bulk = spec.bulk;
             colors.forEach(color => {
                 let material: Material;
 

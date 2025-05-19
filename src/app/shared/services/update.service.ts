@@ -62,7 +62,6 @@ export class UpdateService {
         if (productsToDownload.length > 0) {
             await this.updateProductImages(productsToDownload);
         }
-        this.app.isUpdating.set(false);
     }
 
     public async setProductImage(product: Product, size: string): Promise<boolean | null> {
@@ -84,7 +83,6 @@ export class UpdateService {
                 : {
                       [size]: imageObjUrl
                   };
-            this.app.processedImages.update(value => ++value);
             return true;
         } catch {
             try {

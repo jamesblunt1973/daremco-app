@@ -29,8 +29,6 @@ export class HomePage implements OnInit {
             }
             const products = this.products.value();
             this.app.productsCount.set(products.length);
-            this.app.message.set('Start updating images...');
-            void this.update.updateProductImages(products);
         });
     }
 
@@ -55,5 +53,6 @@ export class HomePage implements OnInit {
                 }
             } catch {}
         }
+        this.app.isUpdating.set(false);
     }
 }

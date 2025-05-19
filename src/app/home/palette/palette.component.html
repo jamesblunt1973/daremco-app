@@ -12,7 +12,9 @@
             @for (color of colors(); track $index) {
             <tr>
                 <td>{{ $index + 1 }}</td>
-                <td [ngStyle]="{ backgroundColor: color.color }">{{ color.position }}</td>
+                <td [ngStyle]="{ backgroundColor: bulk ? color.color : '' }">
+                    {{ color.position }}
+                </td>
                 <td>{{ color.material }}</td>
                 <td>{{ color.weight | number }}</td>
             </tr>

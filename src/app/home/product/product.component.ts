@@ -26,6 +26,7 @@ export class ProductComponent implements OnInit {
     public rajs: number[] = [];
     public bulkTypeGroups: BulkTypeGroup[] = [];
     public mainImage = '';
+    public loading = false;
 
     private data = inject(DataService);
     private update = inject(UpdateService);
@@ -103,7 +104,9 @@ export class ProductComponent implements OnInit {
             return;
         }
 
+        this.loading = true;
         const hasMainImage = await this.update.setProductImage(this.p!, 'main');
+        this.loading = false;
         if (hasMainImage !== false) {
             await this.showPicture();
             return;
@@ -123,7 +126,8 @@ export class ProductComponent implements OnInit {
                     spec: {
                         materialId: type.MaterialId,
                         raj: type.Raj,
-                        tieLengthId: type.MainTieLengthId
+                        tieLengthId: type.MainTieLengthId,
+                        bulk: !('Price' in type)
                     }
                 },
                 initialBreakpoint: 1,
@@ -132,7 +136,9 @@ export class ProductComponent implements OnInit {
             await modal.present();
             return;
         }
+        this.loading = true;
         const hasColors = await this.update.getProductColors(this.p!);
+        this.loading = false;
         if (hasColors) {
             await this.showColorsPalette(type);
             return;
@@ -157,7 +163,9 @@ export class ProductComponent implements OnInit {
             await modal.present();
             return;
         }
+        this.loading = true;
         const hasColors = await this.update.getProductColors(this.p!);
+        this.loading = false;
         if (hasColors) {
             await this.showMaterialsChart(type);
             return;

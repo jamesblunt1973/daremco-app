@@ -46,14 +46,20 @@
     (didDismiss)="searchPanelOpen = false">
     <ng-template>
         <ion-content class="ion-padding">
-            <ion-input #code name="code" placeholder="کد محصول" type="number"></ion-input>
-            <ion-input #name name="name" placeholder="نام محصول"></ion-input>
-            <ion-button
-                expand="block"
-                class="ion-margin-top"
-                (click)="search(name.value, code.value)"
-                >جستجو</ion-button
-            >
+            <ion-input
+                [(ngModel)]="code"
+                name="code"
+                placeholder="کد محصول"
+                type="number"
+                (keyup.enter)="search()"></ion-input>
+            <ion-input
+                [(ngModel)]="name"
+                name="name"
+                placeholder="نام محصول"
+                (keyup.enter)="search()"></ion-input>
+            <ion-button expand="block" class="ion-margin-top" (click)="search()">
+                جستجو
+            </ion-button>
         </ion-content>
     </ng-template>
 </ion-modal>

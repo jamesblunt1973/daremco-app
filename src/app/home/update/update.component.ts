@@ -1,4 +1,4 @@
-import { Component, computed, effect, inject } from '@angular/core';
+import { Component, effect, inject } from '@angular/core';
 import { AppService } from '../../shared/services/app.service';
 
 @Component({
@@ -10,9 +10,6 @@ import { AppService } from '../../shared/services/app.service';
 export class UpdateComponent {
     public messages: string[] = [];
     public app = inject(AppService);
-    public progress = computed(() => ({
-        percent: this.app.processedImages() / this.app.productsCount()
-    }));
 
     public constructor() {
         effect(() => {

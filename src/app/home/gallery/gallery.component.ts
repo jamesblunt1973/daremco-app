@@ -1,8 +1,8 @@
 import { Component, inject, input, signal } from '@angular/core';
 import { Gallery, Product, ValueEvent } from '../../../app/shared/models';
 import { DataService } from '../../../app/shared/services/data.service';
-
-type IonInput = string | number | null | undefined;
+import { AppService } from '../../shared/services/app.service';
+import { UpdateService } from '../../shared/services/update.service';
 
 @Component({
     selector: 'app-gallery',
@@ -18,8 +18,12 @@ export class GalleryComponent {
     public categoryId: string | null = null;
     public galleryId: string | null = null;
     public searchPanelOpen = false;
+    public code: number | null = null;
+    public name = '';
 
+    public app = inject(AppService);
     private data = inject(DataService);
+    private update = inject(UpdateService);
 
     public constructor() {
         this.categories = this.data.categories;
@@ -34,28 +38,39 @@ export class GalleryComponent {
         }
     }
 
-    public selectGalley(event: CustomEvent): void {
+    public async selectGalley(event: CustomEvent): Promise<void> {
         const galleryId = (event.detail as ValueEvent).value;
         const products = this.allProducts().filter(a => a.GalleryId === galleryId);
-        if (products) {
-            this.products.set(products);
-        }
+        await this.setProducts(products);
     }
 
-    public search(name: IonInput, code: IonInput): void {
-        if (!name && !code) {
+    public async search(): Promise<void> {
+        if (!this.name && !this.code) {
             return;
         }
         let products = this.allProducts();
-        if (name) {
-            products = products.filter(a => a.Name.includes(name.toString()));
+        if (this.name) {
+            products = products.filter(a => a.Name.includes(this.name));
         }
-        if (code) {
-            products = products.filter(a => a.Id == code);
+        if (this.code) {
+            products = products.filter(a => a.Id === this.code);
         }
-        this.products.set(products);
+        await this.setProducts(products);
         this.categoryId = null;
         this.galleryId = null;
+        this.name = '';
+        this.code = null;
         this.searchPanelOpen = false;
+    }
+
+    private async setProducts(products: Product[]): Promise<void> {
+        if (!products || !products.length) {
+            return;
+        }
+        const productsWithoutImage = products.filter(a => !a.Images || !a.Images['300']);
+        if (productsWithoutImage.length) {
+            await this.update.updateProductImages(products);
+        }
+        this.products.set(products);
     }
 }
