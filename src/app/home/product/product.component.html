@@ -164,10 +164,7 @@
     <div *ngIf="mainImage" class="main-image" (click)="mainImage = ''">
         <img [src]="mainImage" />
     </div>
-    @if(loading) {
-    <div class="loading">
-        <ion-spinner name="dots"></ion-spinner>
-    </div>
-    }
+
+    <app-loading [loading]="loading"></app-loading>
 </div>
 }

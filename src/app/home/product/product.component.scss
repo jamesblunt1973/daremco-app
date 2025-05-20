@@ -2,7 +2,6 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    position: relative;
 
     .name {
         font-size: 1rem;
@@ -69,7 +68,7 @@
         transform: translate(-50%, -50%) scale(0);
         animation: linearExpand 0.6s ease-out forwards;
         z-index: 1000;
-        background-color: rgba(255, 255, 255, 0.5);
+        background-color: rgba(0, 0, 0, 0.32);
 
         img {
             margin: auto;
@@ -93,26 +92,6 @@
     .pointer {
         text-align: left;
         padding-left: 3rem;
-    }
-
-    .loading {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        opacity: 0.8;
-        background: var(--ion-color-medium);
-
-        ion-spinner {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translateY(-50%) translateX(-50%);
-            width: 100px;
-            height: 100px;
-            --color: var(--ion-color-success);
-        }
     }
 
     @media (prefers-color-scheme: dark) {

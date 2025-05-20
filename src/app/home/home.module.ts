@@ -1,8 +1,6 @@
-import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
-import { IonicModule } from '@ionic/angular';
+import { SharedModule } from '../shared/shared.module';
 import { GalleryComponent } from './gallery/gallery.component';
 import { HomePage } from './home.page';
 import { MaterialsChartComponent } from './materials-chart/materials-chart.component';
@@ -20,7 +18,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-    imports: [CommonModule, FormsModule, IonicModule, RouterModule.forChild(routes)],
+    imports: [SharedModule, RouterModule.forChild(routes)],
     declarations: [
         HomePage,
         UpdateComponent,

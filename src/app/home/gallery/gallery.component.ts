@@ -20,6 +20,7 @@ export class GalleryComponent {
     public searchPanelOpen = false;
     public code: number | null = null;
     public name = '';
+    public loading = false;
 
     public app = inject(AppService);
     private data = inject(DataService);
@@ -39,9 +40,11 @@ export class GalleryComponent {
     }
 
     public async selectGalley(event: CustomEvent): Promise<void> {
+        this.loading = true;
         const galleryId = (event.detail as ValueEvent).value;
         const products = this.allProducts().filter(a => a.GalleryId === galleryId);
         await this.setProducts(products);
+        this.loading = false;
     }
 
     public async search(): Promise<void> {

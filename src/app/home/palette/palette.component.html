@@ -3,7 +3,7 @@
         <thead>
             <tr>
                 <th>شماره</th>
-                <th>کد رنگ</th>
+                <th *ngIf="bulk">کد رنگ</th>
                 <th>جنس</th>
                 <th>وزن (گرم)</th>
             </tr>
@@ -12,7 +12,7 @@
             @for (color of colors(); track $index) {
             <tr>
                 <td>{{ $index + 1 }}</td>
-                <td [ngStyle]="{ backgroundColor: bulk ? color.color : '' }">
+                <td *ngIf="bulk" [ngStyle]="{ backgroundColor: color.color }">
                     {{ color.position }}
                 </td>
                 <td>{{ color.material }}</td>
