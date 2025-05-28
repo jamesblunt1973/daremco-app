@@ -1,30 +1,40 @@
 <ion-menu contentId="main-content" side="end">
     <ion-content class="ion-padding">
-        <ion-list>
-            <ion-item routerLink="/home">
-                <ion-label>کاتالوگ محصولات</ion-label>
-            </ion-item>
+        <div class="menu-content">
+            <ion-list>
+                <ion-item routerLink="/home">
+                    <ion-label>کاتالوگ محصولات</ion-label>
+                </ion-item>
 
-            <ion-item routerLink="#">
-                <ion-label>نقشه خوان صوتی - بزودی …</ion-label>
-            </ion-item>
+                <ion-item routerLink="#">
+                    <ion-label>نقشه خوان صوتی - بزودی …</ion-label>
+                </ion-item>
 
-            <ion-item routerLink="#">
-                <ion-label>پیام رسان دارکوب - بزودی …</ion-label>
-            </ion-item>
+                <ion-item routerLink="#">
+                    <ion-label>پیام رسان دارکوب - بزودی …</ion-label>
+                </ion-item>
 
-            <ion-item routerLink="#">
-                <ion-label>دارمکو پلاس - بزودی …</ion-label>
-            </ion-item>
-        </ion-list>
+                <ion-item routerLink="#">
+                    <ion-label>دارمکو پلاس - بزودی …</ion-label>
+                </ion-item>
+            </ion-list>
+            <div class="bottom-access">
+                <pre>version 1.2.0</pre>
+                @if(showExit) {
+                <ion-button shape="round" color="danger" (click)="exit()">
+                    Exit
+                    <ion-icon name="close-circle-outline"></ion-icon>
+                </ion-button>
+                }
+            </div>
+        </div>
     </ion-content>
 </ion-menu>
 
 <div class="ion-page" id="main-content">
     <ion-header [translucent]="true">
         <ion-toolbar>
-            <div
-                class="ion-display-flex ion-justify-content-between ion-padding-horizontal ion-margin-top">
+            <div class="ion-display-flex ion-justify-content-between ion-padding-horizontal">
                 <img height="24" src="../../assets/logo.png" />
                 <h4 class="ion-no-margin">دارکوب امروز</h4>
                 <ion-buttons>
@@ -45,7 +55,7 @@
             @if (app.isUpdating()) {
             <app-update></app-update>
             } @else {
-            <app-gallery [allProducts]="products.value()!"></app-gallery>
+            <app-gallery></app-gallery>
             }
         </div>
     </ion-content>

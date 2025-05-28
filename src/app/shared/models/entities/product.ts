@@ -19,4 +19,5 @@ export interface Product {
     PaletteId: number | null;
     Plans: Plan[] | null;
     Colors: ProductColor[] | null;
+    AttributeIds: number[] | null;
 }

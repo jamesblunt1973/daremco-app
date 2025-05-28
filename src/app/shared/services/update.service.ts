@@ -21,7 +21,7 @@ export class UpdateService {
         this.app.message.set(`Start downloading products from ${lastProductId}`);
 
         const newProducts = await this.api.getProducts(Endpoints.products, lastProductId);
-        this.app.message.set(`New products count: ${newProducts.length}`);
+        this.app.message.set(`New products count: ${newProducts?.length ?? 0}`);
         if (!newProducts?.length) {
             return;
         }
@@ -33,6 +33,10 @@ export class UpdateService {
     public async updateCategories(): Promise<void> {
         this.app.message.set('Start downloading categories...');
         const categories = await this.api.getCategories(Endpoints.categories);
+        if (!categories || !categories.length) {
+            this.app.message.set('Error loading categories!');
+            throw new Error('Error downloading categories.');
+        }
         this.app.message.set('Downloading categories finished.');
         await this.setStorage(Endpoints.categories, categories);
     }
@@ -40,8 +44,21 @@ export class UpdateService {
     public async updatePrimaryData(): Promise<void> {
         this.app.message.set('Start downloading primary data...');
         const data = await this.api.getPrimaryData(Endpoints.primaryData);
+        if (!data) {
+            this.app.message.set('Error downloading primary data!');
+            throw new Error('Error downloading primary data.');
+        }
         this.app.message.set('Downloading primary data finished.');
         await this.setStorage(Endpoints.primaryData, data);
+    }
+
+    public async updateMostUsedLinks(): Promise<void> {
+        this.app.message.set('Start downloading most used links...');
+        const data = await this.api.getLinks(Endpoints.mostUsedlinks);
+        this.app.message.set('Downloading most used links finished.');
+        if (data && data.length) {
+            await this.setStorage(Endpoints.mostUsedlinks, data);
+        }
     }
 
     public async updateProductImages(products: Product[]): Promise<void> {

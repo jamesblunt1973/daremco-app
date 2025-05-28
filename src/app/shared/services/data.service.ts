@@ -12,11 +12,17 @@ export class DataService {
     });
 
     public products = resource<Product[], unknown>({
-        loader: () => this.storage.get(Endpoints.products)
+        loader: () => this.storage.get(Endpoints.products),
+        defaultValue: []
     });
 
     public primaryData = resource<PrimaryData, unknown>({
         loader: () => this.storage.get(Endpoints.primaryData)
+    });
+
+    public mostUsedlinks = resource<string, unknown>({
+        loader: () => this.storage.get(Endpoints.mostUsedlinks),
+        defaultValue: ''
     });
 
     private storage = inject(Storage);

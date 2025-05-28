@@ -34,4 +34,12 @@ export class ApiService {
     public getProductColors(endpoint: string): Promise<ProductColor[]> {
         return firstValueFrom(this.httpClient.get<ProductColor[]>(`${this.apiUrl}${endpoint}`));
     }
+
+    public getLinks(endpoint: string): Promise<string> {
+        return firstValueFrom(
+            this.httpClient.get(`${this.apiUrl}${endpoint}`, {
+                responseType: 'text'
+            })
+        );
+    }
 }

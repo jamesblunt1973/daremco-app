@@ -6,7 +6,7 @@
                 interface="popover"
                 [(ngModel)]="categoryId"
                 (ionChange)="selectCategory($event)">
-                @for (category of categories.value(); track category.Id) {
+                @for (category of categories; track category.Id) {
                 <ion-select-option [value]="category.Id">
                     {{ category.Name }}
                 </ion-select-option>
@@ -32,17 +32,43 @@
         <app-product [product]="product"></app-product>
         }
     </div>
+    @if(!products().length) {
+    <!-- Most used links -->
+    <ion-list class="ion-margin-top">
+        <ion-list-header class="ion-padding-start">
+            <ion-label>موضوعات و صفت ها</ion-label>
+        </ion-list-header>
+        <div class="attributes">
+            @for(attribute of attributes; track $index) {
+            <ion-item (click)="selectAttribute(attribute.id)">
+                <ion-label>{{ attribute.name }}</ion-label>
+            </ion-item>
+            }
+        </div>
+    </ion-list>
+    }
 </div>
 <ion-fab vertical="bottom" horizontal="end">
-    <ion-fab-button (click)="searchPanelOpen = true">
-        <ion-icon name="search-outline"></ion-icon>
+    <ion-fab-button>
+        <ion-icon name="add"></ion-icon>
     </ion-fab-button>
+    <ion-fab-list side="top">
+        <ion-fab-button (click)="searchPanelOpen = true">
+            <ion-icon name="search-outline"></ion-icon>
+        </ion-fab-button>
+        <ion-fab-button (click)="resetProduct()">
+            <ion-icon name="home-outline"></ion-icon>
+        </ion-fab-button>
+        <!-- <ion-fab-button (click)="scrollTop()">
+            <ion-icon name="arrow-up-outline"></ion-icon>
+        </ion-fab-button> -->
+    </ion-fab-list>
 </ion-fab>
 
 <ion-modal
     [isOpen]="searchPanelOpen"
-    [initialBreakpoint]="0.25"
-    [breakpoints]="[0, 0.25]"
+    [initialBreakpoint]="0.3"
+    [breakpoints]="[0, 0.3]"
     (didDismiss)="searchPanelOpen = false">
     <ng-template>
         <ion-content class="ion-padding">

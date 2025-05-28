@@ -123,7 +123,7 @@ interface Materials {
 }
 
 // Attributes
-interface Attribute {
+export interface Attribute {
     id: number;
     name: string;
     description: string;
