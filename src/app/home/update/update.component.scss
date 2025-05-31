@@ -1,7 +1,7 @@
 .update-content {
     position: relative;
     height: calc(100% - 32px);
-    background-image: url('../../../assets/bg.jpg');
+    background-image: url('../../../assets/gallery-bg.jpg');
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
@@ -9,6 +9,6 @@
 
 @media (prefers-color-scheme: dark) {
     .update-content {
-        background-image: url('../../../assets/bg-dark.jpg');
+        background-image: url('../../../assets/gallery-bg-dark.jpg');
     }
 }

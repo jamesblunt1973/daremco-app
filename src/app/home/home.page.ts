@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, ResourceStatus } from '@angular/core';
 import { App } from '@capacitor/app';
 import { Network } from '@capacitor/network';
 import { isPlatform } from '@ionic/angular';
@@ -48,43 +48,9 @@ export class HomePage implements OnInit {
                         this.update.updateMostUsedLinks()
                     ]);
                     this.data.reload();
-                    this.dataCheck();
-                } else {
-                    this.dataCheck();
+                    this.app.isUpdating.set(false);
                 }
-            } catch {
-                this.dataCheck();
-            }
-        } else {
-            this.dataCheck();
+            } catch {}
         }
-    }
-
-    private dataCheck(): void {
-        this.app.productsCount.set(0);
-        this.app.isUpdating.set(true);
-        this.app.dataError.set('');
-
-        const products = this.data.products.value();
-        const categories = this.data.categories.value();
-        const primaryData = this.data.primaryData.value();
-
-        if (!products?.length) {
-            this.app.dataError.set('خطا، اطلاعات محصولات در دسترس نمی‌باشد!');
-            return;
-        } else {
-            this.app.productsCount.set(products.length);
-        }
-
-        if (!categories?.length) {
-            this.app.dataError.set('خطا، اطلاعات دسته‌ها در دسترس نمی‌باشد!');
-            return;
-        }
-
-        if (!primaryData) {
-            this.app.dataError.set('خطا، اطلاعات پایه در دسترس نمی‌باشد!');
-            return;
-        }
-        this.app.isUpdating.set(false);
     }
 }

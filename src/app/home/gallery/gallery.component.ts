@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, effect, inject, signal } from '@angular/core';
 import { ToastController } from '@ionic/angular';
 import { Attribute, Category, Gallery, Product, ValueEvent } from '../../../app/shared/models';
 import { DataService } from '../../../app/shared/services/data.service';
@@ -31,20 +31,25 @@ export class GalleryComponent {
     private toastController = inject(ToastController);
 
     public constructor() {
-        this.allProducts = this.data.products.value();
-        this.categories = this.data.categories.value();
-
         this.attributes = [];
-        const primaryData = this.data.primaryData.value();
-        if (primaryData && primaryData.attributes && primaryData.attributes.length) {
-            this.attributes = primaryData.attributes.filter(a => !a.link);
-        }
-
         this.mostUsedLinks = [];
-        const links = this.data.mostUsedlinks.value();
-        if (links) {
-            this.mostUsedLinks = this.extractLinksFromHtml(links);
-        }
+        this.allProducts = [];
+        this.categories = [];
+        
+        effect(() => {
+            this.allProducts = this.data.products.value();
+            this.categories = this.data.categories.value();
+            const primaryData = this.data.primaryData.value();
+            
+            if (primaryData && primaryData.attributes && primaryData.attributes.length) {
+                this.attributes = primaryData.attributes.filter(a => !a.link);
+            }
+    
+            const links = this.data.mostUsedlinks.value();
+            if (links) {
+                this.mostUsedLinks = this.extractLinksFromHtml(links);
+            }
+        });
     }
 
     public selectCategory(event: CustomEvent): void {

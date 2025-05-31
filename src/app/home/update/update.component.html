@@ -1,8 +1,4 @@
 <div class="ion-display-flex ion-flex-column ion-align-items-start ion-padding update-content">
-    @if(app.dataError()) {
-    <h2>خطا، {{ app.dataError() }}.</h2>
-    <h3>لطفا دوباره تلاش کنید.</h3>
-    } @else {
     <div class="ion-display-flex ion-margin-x-auto">
         <ion-spinner name="circular"></ion-spinner>
     </div>
@@ -16,5 +12,4 @@
         }
     </div>
     <p>در صورت اتصال به اینترنت، محصولات جدید دریافت خواهند شد.</p>
-    }
 </div>
