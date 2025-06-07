@@ -111,9 +111,10 @@ export class GalleryComponent {
             return;
         }
         this.loading = true;
-        const productsWithoutImage = products.filter(a => !a.Images || !a.Images['300']);
+        const size = '300';
+        const productsWithoutImage = products.filter(a => !a.Images || !a.Images[size]);
         if (productsWithoutImage.length) {
-            await this.update.updateProductImages(products);
+            await this.update.updateProductImages(products, size);
         }
         this.products.set(products);
         this.loading = false;

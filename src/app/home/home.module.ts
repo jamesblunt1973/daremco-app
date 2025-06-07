@@ -9,6 +9,7 @@ import { PaletteComponent } from './palette/palette.component';
 import { PieChartComponent } from './pie-chart/pie-chart.component';
 import { ProductComponent } from './product/product.component';
 import { UpdateComponent } from './update/update.component';
+import { HelpComponent } from './help/help.component';
 
 const routes: Routes = [
     {
@@ -27,7 +28,8 @@ const routes: Routes = [
         MessageComponent,
         PaletteComponent,
         MaterialsChartComponent,
-        PieChartComponent
+        PieChartComponent,
+        HelpComponent
     ]
 })
 export class HomePageModule {}

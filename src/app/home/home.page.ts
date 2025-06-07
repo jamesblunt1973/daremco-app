@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, ResourceStatus } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { App } from '@capacitor/app';
 import { Network } from '@capacitor/network';
 import { isPlatform } from '@ionic/angular';
@@ -33,6 +33,10 @@ export class HomePage implements OnInit {
         await App.exitApp();
     }
 
+    public canDismiss(data?: undefined, role?: string): boolean {
+        return role !== 'gesture';
+    }
+
     private async initialize(): Promise<void> {
         await this.storage.create();
         const networkStatus = await Network.getStatus();
@@ -48,9 +52,12 @@ export class HomePage implements OnInit {
                         this.update.updateMostUsedLinks()
                     ]);
                     this.data.reload();
-                    this.app.isUpdating.set(false);
                 }
-            } catch {}
+            } finally {
+                this.app.isUpdating.set(false);
+            }
+        } else {
+            this.app.isUpdating.set(false);
         }
     }
 }

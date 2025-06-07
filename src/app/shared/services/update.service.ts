@@ -61,12 +61,12 @@ export class UpdateService {
         }
     }
 
-    public async updateProductImages(products: Product[]): Promise<void> {
+    public async updateProductImages(products: Product[], size: string): Promise<void> {
         const limit = pLimit(100);
         const updateTasks = products.map(product =>
             limit(async () => ({
                 product,
-                hasImage: await this.setProductImage(product, '300')
+                hasImage: await this.setProductImage(product, size)
             }))
         );
 
@@ -77,7 +77,41 @@ export class UpdateService {
             .map(result => result.product);
 
         if (productsToDownload.length > 0) {
-            await this.updateProductImages(productsToDownload);
+            await this.updateProductImages(productsToDownload, size);
+        }
+    }
+
+    public async updateProductColors(): Promise<void> {
+        const savedProducts = ((await this.storage.get(Endpoints.products)) as Product[]) || [];
+        const missingColors = savedProducts.filter(a => !a.Colors?.length);
+        if (!missingColors.length) {
+            return;
+        }
+
+        const limit = pLimit(100);
+        const updateTasks = missingColors.map(product =>
+            limit(async () => ({
+                product,
+                hasColors: await this.setProductColors(product)
+            }))
+        );
+
+        const updateResults = await Promise.all(updateTasks);
+
+        const updatedProducts = updateResults
+            .filter(result => result.hasColors)
+            .map(result => result.product);
+
+        if (updatedProducts.length > 0) {
+            updatedProducts.forEach(product => {
+                const index = savedProducts.findIndex(a => a.Id === product.Id);
+                savedProducts[index] = product;
+            });
+            await this.setStorage(Endpoints.products, savedProducts);
+        }
+
+        if (updatedProducts.length < missingColors.length){
+            await this.updateProductColors();
         }
     }
 
@@ -116,13 +150,20 @@ export class UpdateService {
     }
 
     public async getProductColors(product: Product): Promise<boolean> {
-        try {
-            const colors = await this.api.getProductColors(Endpoints.productColors(product.Id));
-            product.Colors = colors;
-            const savedProducts = ((await this.storage.get(Endpoints.products)) as Product[]) || [];
+        const savedProducts = ((await this.storage.get(Endpoints.products)) as Product[]) || [];
+        const result = await this.setProductColors(product);
+        if (result) {
             const index = savedProducts.findIndex(a => a.Id === product.Id);
             savedProducts[index] = product;
             await this.setStorage(Endpoints.products, savedProducts);
+        }
+        return result;
+    }
+
+    private async setProductColors(product: Product): Promise<boolean> {
+        try {
+            const colors = await this.api.getProductColors(Endpoints.productColors(product.Id));
+            product.Colors = colors;
             return true;
         } catch {
             return false;

@@ -13,7 +13,10 @@ declare global {
 
 @Component({
     selector: 'app-root',
-    template: `<ion-router-outlet></ion-router-outlet>`,
+    template: `
+        <ion-app>
+            <ion-router-outlet></ion-router-outlet>
+        </ion-app>`,
     standalone: false
 })
 export class AppComponent {

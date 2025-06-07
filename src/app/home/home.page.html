@@ -19,7 +19,7 @@
                 </ion-item>
             </ion-list>
             <div class="bottom-access">
-                <pre>version 1.2.1</pre>
+                <pre>version 1.2.3</pre>
                 @if(showExit) {
                 <ion-button shape="round" color="danger" (click)="exit()">
                     Exit
@@ -60,3 +60,18 @@
         </div>
     </ion-content>
 </div>
+
+<ion-fab vertical="bottom" horizontal="start">
+    <ion-button size="small" color="warning" id="help-modal">
+        راهنما
+        <ion-icon slot="end" name="help-circle-outline"></ion-icon>
+    </ion-button>
+</ion-fab>
+
+<ion-modal trigger="help-modal" [initialBreakpoint]="1" [breakpoints]="[0, 1]" [canDismiss]="canDismiss">
+    <ng-template>
+        <ion-content class="ion-padding">
+            <app-help></app-help>
+        </ion-content>
+    </ng-template>
+</ion-modal>

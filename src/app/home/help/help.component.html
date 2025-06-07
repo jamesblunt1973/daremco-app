@@ -1,0 +1,46 @@
+<p>
+    در اولین اجرای برنامه بعد از نصب،‌حتما باید به اینترنت متصل باشید تا برنامه دیتای محصولات و
+    دسته‌ها را دریافت کند.
+</p>
+<p>
+    سپس برای نمایش لیستی از محصولات، لازم است که تصاویر محصولات مورد نظر موجود باشد. چنانچه به
+    اینترنت متصل باشید،‌برنامه به طور اتوماتیک تصاویر و اطلاعات لازم را دانلود خواهد کرد.
+</p>
+<p>
+    به عنوان راه حل جایگزین،‌می‌توانید از طریق دکمه‌های زیر، تمام اطلاعات و تصاویر مورد نیاز را یک
+    جا دانلود کنید. پس از آن برای استفاده از تمامی امکانات برنامه،‌دیگر نیازی به اتصال به اینترنت
+    نخواهدی داشت.
+</p>
+<div class="ion-display-flex" [style.visibility]="isUpdating ? 'visible' : 'hidden'">
+    <ion-spinner name="circular" class="ion-margin-x-auto"></ion-spinner>
+</div>
+<ion-row class="ion-margin-bottom ion-flex-column">
+    <ion-button [disabled]="isUpdating" (click)="downloadMain()">
+        دانلود تصویر اصلی تمام محصولات
+    </ion-button>
+    <p>* حجم تقریبی دست کم ۱۴۰ مگا بایت</p>
+</ion-row>
+<ion-row class="ion-margin-bottom ion-flex-column">
+    <ion-button [disabled]="isUpdating" (click)="downloadLarge()">
+        دانلود تصویر بزرگ تمام محصولات
+    </ion-button>
+    <p>* حجم تقریبی دست کم ۱/۷ گیگا بایت</p>
+</ion-row>
+<ion-row class="ion-margin-bottom ion-flex-column">
+    <ion-button [disabled]="isUpdating" (click)="downloadPalette()">
+        دانلود پالت تمام محصولات
+    </ion-button>
+    <p>* حجم تقریبی دست کم ۱۲ مگابایت</p>
+</ion-row>
+<ion-fab vertical="bottom" horizontal="end">
+    <ion-button
+        shape="round"
+        size="small"
+        color="danger"
+        id="help-modal"
+        [disabled]="isUpdating"
+        (click)="closeHelp()">
+        بستن راهنما
+        <ion-icon slot="end" name="close-circle-outline"></ion-icon>
+    </ion-button>
+</ion-fab>

@@ -43,13 +43,13 @@
 </div>
 <ion-fab vertical="bottom" horizontal="end">
     @if(!products().length){
-        <ion-fab-button (click)="searchPanelOpen = true">
-            <ion-icon name="search-outline"></ion-icon>
-        </ion-fab-button>
+    <ion-fab-button (click)="searchPanelOpen = true">
+        <ion-icon name="search-outline"></ion-icon>
+    </ion-fab-button>
     } @else {
-        <ion-fab-button (click)="resetProduct()">
-            <ion-icon name="home-outline"></ion-icon>
-        </ion-fab-button>
+    <ion-fab-button (click)="resetProduct()">
+        <ion-icon name="home-outline"></ion-icon>
+    </ion-fab-button>
     }
 </ion-fab>
 
