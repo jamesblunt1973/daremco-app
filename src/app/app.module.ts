@@ -1,7 +1,5 @@
-import { provideHttpClient } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { PreloadAllModules, RouteReuseStrategy, RouterModule, Routes } from '@angular/router';
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
 import { IonicStorageModule } from '@ionic/storage-angular';
@@ -23,7 +21,6 @@ const routes: Routes = [
     declarations: [AppComponent],
     imports: [
         BrowserModule,
-        BrowserAnimationsModule,
         IonicModule.forRoot({
             useSetInputAPI: true
         }),
@@ -33,7 +30,7 @@ const routes: Routes = [
         }),
         IonicStorageModule.forRoot()
     ],
-    providers: [provideHttpClient(), { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }],
+    providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }],
     bootstrap: [AppComponent]
 })
 export class AppModule {}
