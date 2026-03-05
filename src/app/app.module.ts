@@ -4,21 +4,28 @@ import { PreloadAllModules, RouteReuseStrategy, RouterModule, Routes } from '@an
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
 import { IonicStorageModule } from '@ionic/storage-angular';
 import { AppComponent } from './app.component';
+import { LayoutComponent } from './layout/layout';
 
 const routes: Routes = [
     {
-        path: 'home',
-        loadChildren: () => import('./home/home.module').then(m => m.HomePageModule)
-    },
-    {
         path: '',
-        redirectTo: 'home',
-        pathMatch: 'full'
+        component: LayoutComponent,
+        children: [
+            {
+                path: '',
+                redirectTo: 'home',
+                pathMatch: 'full'
+            },
+            {
+                path: 'home',
+                loadChildren: () => import('./home/home.module').then(m => m.HomePageModule)
+            }
+        ]
     }
 ];
 
 @NgModule({
-    declarations: [AppComponent],
+    declarations: [AppComponent, LayoutComponent],
     imports: [
         BrowserModule,
         IonicModule.forRoot({

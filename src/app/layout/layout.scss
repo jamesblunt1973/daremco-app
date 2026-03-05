@@ -1,0 +1,32 @@
+#container {
+    width: 460px;
+    max-width: 100%;
+    height: calc(100vh - 56px);
+    margin: auto;
+}
+
+ion-buttons {
+    height: 24px;
+    width: 30px;
+    margin-left: 25px;
+}
+
+.menu-content {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    .bottom-access {
+        display: flex;
+        justify-content: space-between;
+        flex-direction: row-reverse;
+        align-items: center;
+
+        pre {
+            font-style: italic;
+            font-size: 0.6 rem;
+            color: #ccc;
+        }
+    }
+}

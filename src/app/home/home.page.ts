@@ -1,7 +1,5 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { App } from '@capacitor/app';
 import { Network } from '@capacitor/network';
-import { isPlatform } from '@ionic/angular';
 import { Storage } from '@ionic/storage-angular';
 import { ServerStatus } from '../shared/models/types/server-status';
 import { ApiService } from '../shared/services/api.service';
@@ -22,15 +20,8 @@ export class HomePage implements OnInit {
     public storage = inject(Storage);
     public api = inject(ApiService);
 
-    public showExit = false;
-
     public ngOnInit(): void {
         void this.initialize();
-        this.showExit = isPlatform('capacitor');
-    }
-
-    public async exit(): Promise<void> {
-        await App.exitApp();
     }
 
     public canDismiss(data?: undefined, role?: string): boolean {
