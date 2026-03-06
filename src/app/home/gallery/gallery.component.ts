@@ -53,15 +53,15 @@ export class GalleryComponent {
     }
 
     public selectCategory(event: CustomEvent): void {
-        const category = this.categories.find(a => a.Id === (event.detail as ValueEvent).value);
-        if (category?.Galleries) {
-            this.galleries.set(category?.Galleries);
+        const category = this.categories.find(a => a.id === (event.detail as ValueEvent).value);
+        if (category?.galleries) {
+            this.galleries.set(category.galleries);
         }
     }
 
     public async selectGalley(event: CustomEvent): Promise<void> {
         const galleryId = (event.detail as ValueEvent).value;
-        const products = this.allProducts.filter(a => a.GalleryId === galleryId);
+        const products = this.allProducts.filter(a => a.galleryId === galleryId);
         await this.setProducts(products);
     }
 
@@ -71,10 +71,10 @@ export class GalleryComponent {
         }
         let products = this.allProducts;
         if (this.name) {
-            products = products.filter(a => a.Name.includes(this.name));
+            products = products.filter(a => a.name.includes(this.name));
         }
         if (this.code) {
-            products = products.filter(a => a.Id === this.code);
+            products = products.filter(a => a.id === this.code);
         }
         await this.setProducts(products);
         this.categoryId = null;
@@ -86,7 +86,7 @@ export class GalleryComponent {
 
     public async selectAttribute(id: number): Promise<void> {
         let products = this.allProducts;
-        products = products.filter(a => a.AttributeIds && a.AttributeIds.includes(id));
+        products = products.filter(a => a.attributeIds && a.attributeIds.includes(id));
         await this.setProducts(products);
     }
 
@@ -112,7 +112,7 @@ export class GalleryComponent {
         }
         this.loading = true;
         const size = '300';
-        const productsWithoutImage = products.filter(a => !a.Images || !a.Images[size]);
+        const productsWithoutImage = products.filter(a => !a.images || !a.images[size]);
         if (productsWithoutImage.length) {
             await this.update.updateProductImages(products, size);
         }

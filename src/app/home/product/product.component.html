@@ -1,39 +1,39 @@
 @if (p) {
 <div class="product">
-    <img [src]="p.Images['300']" (click)="showPicture()" />
-    <p class="name">{{ p.Name }} ({{ p.Id }})</p>
+    <img [src]="p.images['300']" (click)="showPicture()" />
+    <p class="name">{{ p.name }} ({{ p.id }})</p>
     <div class="ion-display-flex ion-align-items-center ion-flex-gap-full">
-        <p>{{ p.TiesWidth }} گره در {{ p.TiesHeight }} رج</p>
+        <p>{{ p.tiesWidth }} گره در {{ p.tiesHeight }} رج</p>
         <span>|</span>
-        <p>{{ p.Moghat }} مقاط</p>
+        <p>{{ p.moghat }} مقاط</p>
         <span>|</span>
-        <p>{{ p.ColorsCount }} رنگ</p>
+        <p>{{ p.colorsCount }} رنگ</p>
     </div>
-    @if(p.ProductTypes?.length) {
+    @if(p.productTypes?.length) {
     <div class="full-width properties ion-margin-bottom">
         <p class="title">انواع نخ خامه</p>
-        @for (type of p.ProductTypes; track $index) { @let tieLength =
-        primaryData.tieLengths[type.MainTieLengthId];
+        @for (type of p.productTypes; track $index) { @let tieLength =
+        primaryData.tieLengths[type.mainTieLengthId];
         <div class="data-row ion-display-flex ion-flex-column">
             <div class="ion-display-flex">
                 <p class="label">رجشمار</p>
-                <p class="property">{{ type.Raj }}</p>
+                <p class="property">{{ type.raj }}</p>
             </div>
             <div class="ion-display-flex">
                 <p class="label">ابعاد</p>
-                <p class="property">{{ type.DimsWidth }} در {{ type.DimsHeight }} سانت</p>
+                <p class="property">{{ type.dimsWidth }} در {{ type.dimsHeight }} سانت</p>
             </div>
             <div class="ion-display-flex">
                 <p class="label">جنس</p>
                 <p class="property">
-                    @if(type.MaterialId) {
-                    {{ primaryData.materials[type.MaterialId].name }}
+                    @if(type.materialId) {
+                    {{ primaryData.materials[type.materialId].name }}
                     } @else { پشم و ابریشم }
                 </p>
             </div>
             <div class="ion-display-flex">
                 <p class="label">نوع بافت</p>
-                <p class="property">{{ primaryData.tieTypes[type.TieTypeId] }}</p>
+                <p class="property">{{ primaryData.tieTypes[type.tieTypeId] }}</p>
             </div>
             <div class="ion-display-flex">
                 <p class="label">طول گره</p>
@@ -42,13 +42,13 @@
             <div class="ion-display-flex">
                 <p class="label">موجودی</p>
                 <p class="property">
-                    @if (type.Stock > 0) {
-                    {{ type.Stock }}
+                    @if (type.stock > 0) {
+                    {{ type.stock }}
                     } @else {
                     <ion-button
                         fill="clear"
                         size="small"
-                        (click)="showStockMessage(undefined, type.ProductionGroupId)">
+                        (click)="showStockMessage(undefined, type.productionGroupId)">
                         مشاهده
                     </ion-button>
                     }
@@ -56,13 +56,13 @@
             </div>
             <div class="ion-display-flex">
                 <p class="label">قیمت</p>
-                <p class="property">{{ type.Price / 10 | number }} تومان</p>
+                <p class="property">{{ type.price / 10 | number }} تومان</p>
             </div>
             <div class="ion-display-flex">
                 <ion-button fill="clear" size="small" (click)="showColorsPalette(type)">
                     نمایش پالت
                 </ion-button>
-                @if(!type.MaterialId) {
+                @if(!type.materialId) {
                 <ion-button fill="clear" size="small" (click)="showMaterialsChart(type)">
                     نمودار توزیع جنس
                 </ion-button>
@@ -71,14 +71,14 @@
         </div>
         }
     </div>
-    } @if(p.BulkTypes?.length) {
+    } @if(p.bulkTypes?.length) {
     <div class="full-width properties ion-margin-bottom">
         <div class="ion-display-flex ion-justify-content-between ion-align-items-center">
             <p class="title">انواع نخ خامه</p>
             <ion-button
                 fill="clear"
                 size="small"
-                (click)="showStockMessage(p.PaletteId ?? 0, undefined)">
+                (click)="showStockMessage(p.paletteId ?? 0, undefined)">
                 زمان تحویل
             </ion-button>
             <ion-select
@@ -95,22 +95,22 @@
         @if(!bulkTypeGroups.length) {
         <p class="pointer">لطفا رجشمار مورد نظر خود را انتخاب کنید 👆</p>
         } @for (type of bulkTypeGroups; track $index) { @let tieLength =
-        primaryData.tieLengths[type.MainTieLengthId];
+        primaryData.tieLengths[type.mainTieLengthId];
         <div class="data-row">
             <div class="ion-display-flex">
                 <p class="label">رجشمار</p>
-                <p class="property">{{ type.Raj }}</p>
+                <p class="property">{{ type.raj }}</p>
             </div>
             <div class="ion-display-flex">
                 <p class="label">ابعاد</p>
-                <p class="property">{{ type.DimsWidth }} در {{ type.DimsHeight }}</p>
+                <p class="property">{{ type.dimsWidth }} در {{ type.dimsHeight }}</p>
             </div>
             <div class="ion-display-flex">
                 <p class="label">جنس</p>
                 <p class="property">
                     {{
-                        type.MaterialId
-                            ? primaryData.materials[type.MaterialId].name
+                        type.materialId
+                            ? primaryData.materials[type.materialId].name
                             : 'پشم و ابریشم'
                     }}
                 </p>
@@ -119,17 +119,17 @@
                 <p class="label">طول گره</p>
                 <p class="property">{{ tieLength.length }} سانت ( {{ tieLength.title }} )</p>
             </div>
-            @for(item of type.List; track $index) {
+            @for(item of type.list; track $index) {
             <div class="ion-display-flex">
-                <p class="label">{{ item.Count }} تخته</p>
-                <p class="property">{{ item.Price / 10 | number }} تومان</p>
+                <p class="label">{{ item.count }} تخته</p>
+                <p class="property">{{ item.price / 10 | number }} تومان</p>
             </div>
             }
             <div class="ion-display-flex">
                 <ion-button fill="clear" size="small" (click)="showColorsPalette(type)">
                     نمایش پالت
                 </ion-button>
-                @if(!type.MaterialId) {
+                @if(!type.materialId) {
                 <ion-button fill="clear" size="small" (click)="showMaterialsChart(type)">
                     نمودار توزیع جنس
                 </ion-button>
@@ -138,20 +138,20 @@
         </div>
         }
     </div>
-    } @if(p.Plans?.length) {
+    } @if(p.plans?.length) {
     <div class="full-width properties">
         <p class="title">انواع نقشه برای این محصول</p>
         <div class="data-row">
-            @for (plan of p.Plans; track $index) {
+            @for (plan of p.plans; track $index) {
             <div class="ion-display-flex">
                 <p class="label">
-                    {{ primaryData.planTypes[plan.PlanTypeId] }}
+                    {{ primaryData.planTypes[plan.planTypeId] }}
                 </p>
                 <p class="property">
-                    {{ plan.Price ? (plan.Price / 10 | number) : 'رایگان' }}
+                    {{ plan.price ? (plan.price / 10 | number) : 'رایگان' }}
                 </p>
                 <p class="ion-margin-start">
-                    {{ plan.Name }}
+                    {{ plan.name }}
                 </p>
             </div>
             }
@@ -161,9 +161,12 @@
     <div class="string">
         <div class="darkoob"></div>
     </div>
-    <div *ngIf="mainImage" class="main-image" (click)="mainImage = ''">
+    
+    @if(mainImage) {
+    <div class="main-image" (click)="mainImage = ''">
         <img [src]="mainImage" />
     </div>
+    }
 
     <app-loading [loading]="loading"></app-loading>
 </div>

@@ -40,7 +40,7 @@ export class ProductComponent implements OnInit {
 
     public ngOnInit(): void {
         this.p = this.product();
-        this.rajs = [...new Set(this.p.BulkTypes?.map(a => a.Raj))];
+        this.rajs = [...new Set(this.p.bulkTypes?.map(a => a.raj))];
     }
 
     public async showStockMessage(paletteId?: number, pgId?: number): Promise<void> {
@@ -68,30 +68,30 @@ export class ProductComponent implements OnInit {
         if (selectedRaj === 0) {
             return;
         }
-        const bulkTypes = this.p?.BulkTypes?.filter(a => a.Raj === selectedRaj);
+        const bulkTypes = this.p?.bulkTypes?.filter(a => a.raj === selectedRaj);
         if (!bulkTypes || !bulkTypes.length) {
             return;
         }
         const map = new Map<string, BulkTypeGroup>();
         for (const bt of bulkTypes) {
-            const key = `${bt.DimsHeight}-${bt.DimsWidth}-${bt.Raj}-${bt.MaterialId}-${bt.Materials}-${bt.TieTypeId}-${bt.MainTieLengthId}`;
+            const key = `${bt.dimsHeight}-${bt.dimsWidth}-${bt.raj}-${bt.materialId}-${bt.materials}-${bt.tieTypeId}-${bt.mainTieLengthId}`;
 
             if (!map.has(key)) {
                 map.set(key, {
-                    DimsHeight: bt.DimsHeight,
-                    DimsWidth: bt.DimsWidth,
-                    Raj: bt.Raj,
-                    MaterialId: bt.MaterialId,
-                    Materials: bt.Materials,
-                    TieTypeId: bt.TieTypeId,
-                    MainTieLengthId: bt.MainTieLengthId,
-                    List: []
+                    dimsHeight: bt.dimsHeight,
+                    dimsWidth: bt.dimsWidth,
+                    raj: bt.raj,
+                    materialId: bt.materialId,
+                    materials: bt.materials,
+                    tieTypeId: bt.tieTypeId,
+                    mainTieLengthId: bt.mainTieLengthId,
+                    list: []
                 });
             }
 
-            map.get(key)!.List.push({
-                Price: bt.Price,
-                Count: bt.Count
+            map.get(key)!.list.push({
+                price: bt.price,
+                count: bt.count
             });
         }
         this.bulkTypeGroups = Array.from(map.values());
@@ -99,8 +99,8 @@ export class ProductComponent implements OnInit {
 
     public async showPicture(): Promise<void> {
         const mainImageName = 'main';
-        if (this.p?.Images[mainImageName]) {
-            this.mainImage = this.p?.Images[mainImageName];
+        if (this.p?.images[mainImageName]) {
+            this.mainImage = this.p?.images[mainImageName];
             return;
         }
 
@@ -118,16 +118,16 @@ export class ProductComponent implements OnInit {
     }
 
     public async showColorsPalette(type: ProductType | BulkTypeGroup): Promise<void> {
-        if (this.p?.Colors) {
+        if (this.p?.colors) {
             const modal = await this.modalCtrl.create({
                 component: PaletteComponent,
                 componentProps: {
-                    colors: this.p.Colors,
+                    colors: this.p.colors,
                     spec: {
-                        materialId: type.MaterialId,
-                        raj: type.Raj,
-                        tieLengthId: type.MainTieLengthId,
-                        bulk: !('Price' in type)
+                        materialId: type.materialId,
+                        raj: type.raj,
+                        tieLengthId: type.mainTieLengthId,
+                        bulk: !('price' in type)
                     }
                 },
                 initialBreakpoint: 1,
@@ -150,12 +150,12 @@ export class ProductComponent implements OnInit {
     }
 
     public async showMaterialsChart(type: ProductType | BulkTypeGroup): Promise<void> {
-        if (this.p?.Colors) {
+        if (this.p?.colors) {
             const modal = await this.modalCtrl.create({
                 component: MaterialsChartComponent,
                 componentProps: {
-                    colors: this.p.Colors,
-                    raj: type.Raj
+                    colors: this.p.colors,
+                    raj: type.raj
                 },
                 initialBreakpoint: 1,
                 breakpoints: [0, 1]

@@ -1,6 +1,6 @@
 export interface Plan {
-    Name: string;
-    Parameter: number;
-    PlanTypeId: number;
-    Price: number;
+    name: string;
+    parameter: number;
+    planTypeId: number;
+    price: number;
 }

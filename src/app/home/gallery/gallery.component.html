@@ -3,9 +3,9 @@
         <ion-item>
             <ion-select label="انتخاب دسته" interface="popover" [(ngModel)]="categoryId"
                 (ionChange)="selectCategory($event)">
-                @for (category of categories; track category.Id) {
-                <ion-select-option [value]="category.Id">
-                    {{ category.Name }}
+                @for (category of categories; track category.id) {
+                <ion-select-option [value]="category.id">
+                    {{ category.name }}
                 </ion-select-option>
                 }
             </ion-select>
@@ -13,16 +13,16 @@
         <ion-item>
             <ion-select label="انتخاب گالری" interface="popover" [(ngModel)]="galleryId"
                 (ionChange)="selectGalley($event)">
-                @for (gallery of galleries(); track gallery.Id) {
-                <ion-select-option [value]="gallery.Id">
-                    {{ gallery.Name }}
+                @for (gallery of galleries(); track gallery.id) {
+                <ion-select-option [value]="gallery.id">
+                    {{ gallery.name }}
                 </ion-select-option>
                 }
             </ion-select>
         </ion-item>
     </ion-list>
     <div class="products">
-        @for (product of products(); track product.Id) {
+        @for (product of products(); track product.id) {
         <app-product [product]="product"></app-product>
         }
     </div>

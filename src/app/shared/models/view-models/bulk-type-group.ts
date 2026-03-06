@@ -1,13 +1,13 @@
 export interface BulkTypeGroup {
-    DimsHeight: number;
-    DimsWidth: number;
-    Raj: number;
-    MaterialId: number;
-    Materials: number;
-    TieTypeId: number;
-    MainTieLengthId: number;
-    List: {
-        Price: number;
-        Count: number;
+    dimsHeight: number;
+    dimsWidth: number;
+    raj: number;
+    materialId: number;
+    materials: number;
+    tieTypeId: number;
+    mainTieLengthId: number;
+    list: {
+        price: number;
+        count: number;
     }[];
 }

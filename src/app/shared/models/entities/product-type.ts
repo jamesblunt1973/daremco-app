@@ -1,12 +1,12 @@
 export interface ProductType {
-    DimsHeight: number;
-    DimsWidth: number;
-    Raj: number;
-    MaterialId: number;
-    Materials: number;
-    TieTypeId: number;
-    MainTieLengthId: number;
-    Price: number;
-    Stock: number;
-    ProductionGroupId?: number;
+    dimsHeight: number;
+    dimsWidth: number;
+    raj: number;
+    materialId: number;
+    materials: number;
+    tieTypeId: number;
+    mainTieLengthId: number;
+    price: number;
+    stock: number;
+    productionGroupId?: number;
 }

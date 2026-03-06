@@ -17,7 +17,7 @@ export class UpdateService {
 
     public async updateProducts(): Promise<void> {
         const savedProducts = ((await this.storage.get(Endpoints.products)) as Product[]) || [];
-        const lastProductId = savedProducts.length ? savedProducts[savedProducts.length - 1].Id : 0;
+        const lastProductId = savedProducts.length ? savedProducts[savedProducts.length - 1].id : 0;
         this.app.message.set(`Start downloading products from ${lastProductId}`);
 
         const newProducts = await this.api.getProducts(Endpoints.products, lastProductId);
@@ -83,7 +83,7 @@ export class UpdateService {
 
     public async updateProductColors(): Promise<void> {
         const savedProducts = ((await this.storage.get(Endpoints.products)) as Product[]) || [];
-        const missingColors = savedProducts.filter(a => !a.Colors?.length);
+        const missingColors = savedProducts.filter(a => !a.colors?.length);
         if (!missingColors.length) {
             return;
         }
@@ -104,7 +104,7 @@ export class UpdateService {
 
         if (updatedProducts.length > 0) {
             updatedProducts.forEach(product => {
-                const index = savedProducts.findIndex(a => a.Id === product.Id);
+                const index = savedProducts.findIndex(a => a.id === product.id);
                 savedProducts[index] = product;
             });
             await this.setStorage(Endpoints.products, savedProducts);
@@ -116,8 +116,8 @@ export class UpdateService {
     }
 
     public async setProductImage(product: Product, size: string): Promise<boolean | null> {
-        const fileName = `${product.Id}_${size}.jpg`;
-        const filePath = `products/${product.Id}/${size}.jpg`;
+        const fileName = `${product.id}_${size}.jpg`;
+        const filePath = `products/${product.id}/${size}.jpg`;
         const fileOptions = {
             path: fileName,
             directory: Directory.Data
@@ -126,9 +126,9 @@ export class UpdateService {
         try {
             const imageData = await Filesystem.readFile(fileOptions);
             const imageObjUrl = this.getImageObjectUrl(imageData);
-            product.Images = product.Images
+            product.images = product.images
                 ? {
-                      ...product.Images,
+                      ...product.images,
                       [size]: imageObjUrl
                   }
                 : {
@@ -153,7 +153,7 @@ export class UpdateService {
         const savedProducts = ((await this.storage.get(Endpoints.products)) as Product[]) || [];
         const result = await this.setProductColors(product);
         if (result) {
-            const index = savedProducts.findIndex(a => a.Id === product.Id);
+            const index = savedProducts.findIndex(a => a.id === product.id);
             savedProducts[index] = product;
             await this.setStorage(Endpoints.products, savedProducts);
         }
@@ -162,8 +162,8 @@ export class UpdateService {
 
     private async setProductColors(product: Product): Promise<boolean> {
         try {
-            const colors = await this.api.getProductColors(Endpoints.productColors(product.Id));
-            product.Colors = colors;
+            const colors = await this.api.getProductColors(Endpoints.productColors(product.id));
+            product.colors = colors;
             return true;
         } catch {
             return false;
