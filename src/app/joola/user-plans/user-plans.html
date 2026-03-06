@@ -1,0 +1,60 @@
+<div class="content-bg">
+    <div *ngIf="userPlans.length == 0">
+        <h1>هیچ نقشه‌ای در دست بافت نیست</h1>
+        <p>با استفاده از دکمه‌ی پایین صفحه، می‌توانید نقشه‌ی مورد نظر خود را برای بافت انتخاب کنید.</p>
+    </div>
+    <div class="help daremco-theme-foreground daremco-theme-border">
+        <i class="mdi mdi-help-circle"></i>
+        <a href="https://shop.daremco.com/post/12165" target="_blank">
+            راهنمای برنامه را از اینجا مطالعه کنید
+        </a>
+    </div>
+    <div fxLayout="column" fxLayoutGap="10px">
+        <mat-card class="product-list-item" *ngFor="let userPlan of userPlans" fxLayout="row">
+            <img [src]="productsPath + userPlan.productId + '/160.jpg' " />
+            <mat-card-content fxFlex="*" fxLayout="row" fxLayoutAlign="start center">
+                <div>
+                    <p>کد: {{userPlan.productId}}</p>
+                    <b class="product-name">{{userPlan.product.name}}</b>
+                    <p>
+                        شروع از: {{userPlan.addDateTime | momentJalaali:'jYYYY/jMM/jDD'}}
+                    </p>
+                    <p>
+                        آخرین اجرا: {{userPlan.lastAccess | momentJalaali:'jYYYY/jMM/jDD'}}
+                    </p>
+                </div>
+                <app-arc-chart [diameter]="64"
+                    [percent]="Math.round(userPlan.position / (userPlan.product.tiesWidth * userPlan.product.tiesHeight) * 1000)/10">
+                </app-arc-chart>
+                <div class="commands" fxLayout="column">
+                    <button mat-icon-button color="accent" [routerLink]="['waeve/' + userPlan.id]">
+                        <mat-icon class="mdi mdi-play mdi-flip-h"></mat-icon>
+                    </button>
+                    <button mat-icon-button color="warn" (click)="removeUserPlan(userPlan)">
+                        <mat-icon class="mdi mdi-delete"></mat-icon>
+                    </button>
+                </div>
+            </mat-card-content>
+        </mat-card>
+    </div>
+    <div class="actions" [ngClass]="{'open' : isMenuOpen}">
+        <button mat-icon-button color="accent" class="add-btn" (click)="isMenuOpen = !isMenuOpen">
+            <mat-icon [inline]="true" class="mdi mdi-plus-circle"></mat-icon>
+        </button>
+        <div class="add-cart">
+            <a routerLink="add-basket" title="افزودن از لیست خرید">
+                <mat-icon class="mdi mdi-cart-variant mdi-flip-h"></mat-icon>
+            </a>
+        </div>
+        <div class="add-product" title="افزودن از لیست محصولات">
+            <a routerLink="add-product">
+                <mat-icon class="mdi mdi-file-plus"></mat-icon>
+            </a>
+        </div>
+        <div class="add-archive" title="افزودن از لیست آرشیو">
+            <a routerLink="add-archive">
+                <mat-icon class="mdi mdi-file-check"></mat-icon>
+            </a>
+        </div>
+    </div>
+</div>
