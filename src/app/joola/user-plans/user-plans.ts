@@ -1,4 +1,5 @@
 import { Component, inject, OnInit } from '@angular/core';
+import { AlertController } from '@ionic/angular';
 import { UserPlan } from 'src/app/shared/models';
 import { JoolaService } from 'src/app/shared/services/joola.service';
 import { environment } from 'src/environments/environment';
@@ -16,7 +17,7 @@ export class UserPlansComponent implements OnInit {
     public isMenuOpen = false;
 
     private joolaService = inject(JoolaService);
-    private dialog = inject(MatDialog);
+    private alertController = inject(AlertController);
 
     public ngOnInit(): void {
         this.joolaService.getUserPlans().subscribe(res => {
@@ -24,21 +25,27 @@ export class UserPlansComponent implements OnInit {
         });
     }
 
-    public removeUserPlan(userPlan: UserPlan): void {
-        const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-            width: '250px',
-            data: {
-                title: '',
-                message: 'نقشه‌ی مورد نظر حذف شود؟',
-                okText: 'بله',
-                cancelText: 'خیر'
-            }
+    public async removeUserPlan(userPlan: UserPlan): Promise<void> {
+        const alert = await this.alertController.create({
+            header: '',
+            message: 'نقشه مورد نظر حذف شود؟',
+            buttons: [
+                {
+                    text: 'خیر',
+                    role: 'cancel'
+                },
+                {
+                    text: 'بله',
+                    role: 'confirm'
+                }
+            ]
         });
 
-        dialogRef.afterClosed().subscribe(result => {
-            if (result) {
-                this.joolaService.deleteUserPlan(userPlan.id);
-            }
-        });
+        await alert.present();
+        const { role } = await alert.onDidDismiss();
+
+        if (role === 'confirm') {
+            await this.joolaService.deleteUserPlan(userPlan.id);
+        }
     }
 }
