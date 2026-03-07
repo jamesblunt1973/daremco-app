@@ -1,52 +1,48 @@
 import { Component, effect, input } from '@angular/core';
+import { ArcRingBase } from '../arc-ring/arc-ring-base';
 
 @Component({
   selector: 'app-arc-progress',
-  templateUrl: './arc-progress.html',
-  styleUrls: ['./arc-progress.scss'],
+  templateUrl: '../arc-ring/arc-ring.html',
+  styleUrls: ['../arc-ring/arc-ring.scss'],
   standalone: false
 })
-export class ArcProgressComponent {
+export class ArcProgressComponent extends ArcRingBase {
   public diameter = input(50);
   public time = input(0);
-  public circumference = 0;
-  public arc = 0;
-  public strokeWidth = 0;
-  public fontSize = 0;
   public seconds = 0;
   public intervalId = 0;
 
   public constructor() {
+    super();
+
     effect((onCleanup) => {
       const diameter = this.diameter();
       const time = this.time();
 
-      this.circumference = (diameter - 8) * Math.PI;
-      this.strokeWidth = Math.round(diameter / 8);
-      this.fontSize = Math.round(diameter / 4);
-      this.seconds = Math.round(time / 100) / 10;
+      this.updateGeometry(diameter);
       this.arc = 0;
+      this.seconds = Math.round(Math.max(time, 0) / 100) / 10;
+      this.label = `${this.seconds}`;
 
       if (time <= 0) {
         this.intervalId = 0;
         return;
       }
 
-      let step = this.seconds >= 1 ? 1 : 0.1;
-      let boundry = step * 100;
       let tick = time;
-      let counter = 0;
 
       this.intervalId = window.setInterval(() => {
-        this.arc = this.circumference - tick / time * this.circumference;
         tick -= 10;
-        counter++;
-        if (counter >= boundry) {
-          this.seconds = Math.round((this.seconds - step) * 10) / 10;
-          step = this.seconds >= 1 ? 1 : 0.1;
-          boundry = step * 100;
-          counter = 0;
+        if (tick <= 0) {
+          tick = 0;
+          window.clearInterval(this.intervalId);
+          this.intervalId = 0;
         }
+
+        this.arc = this.circumference - tick / time * this.circumference;
+        this.seconds = Math.round(tick / 100) / 10;
+        this.label = `${this.seconds}`;
       }, 10);
 
       onCleanup(() => {
