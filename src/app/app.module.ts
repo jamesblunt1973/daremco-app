@@ -13,12 +13,12 @@ const routes: Routes = [
         children: [
             {
                 path: '',
-                redirectTo: 'home',
+                redirectTo: 'catalog',
                 pathMatch: 'full'
             },
             {
-                path: 'home',
-                loadChildren: () => import('./home/home.module').then(m => m.HomePageModule)
+                path: 'catalog',
+                loadChildren: () => import('./catalog/catalog.module').then(m => m.CatalogModule)
             },
             {
                 path: 'joola',

@@ -32,4 +32,4 @@ const routes: Routes = [
         HelpComponent
     ]
 })
-export class HomePageModule {}
+export class CatalogModule {}
