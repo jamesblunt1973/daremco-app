@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { isPlatform } from '@ionic/angular';
+import { Component, inject, OnInit } from '@angular/core';
+import { MenuController, isPlatform } from '@ionic/angular';
 import { App } from '@capacitor/app';
 
 @Component({
@@ -10,6 +10,8 @@ import { App } from '@capacitor/app';
 })
 export class LayoutComponent implements OnInit {
     public showExit = false;
+    
+    private readonly menuController = inject(MenuController) 
 
     public ngOnInit(): void {
         this.showExit = isPlatform('capacitor');
@@ -17,5 +19,9 @@ export class LayoutComponent implements OnInit {
 
     public async exit(): Promise<void> {
         await App.exitApp();
+    }
+
+    public async closeMenu(): Promise<void> {
+        await this.menuController.close();
     }
 }

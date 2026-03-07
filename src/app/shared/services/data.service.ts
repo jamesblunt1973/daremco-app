@@ -32,4 +32,21 @@ export class DataService {
         this.products.reload();
         this.primaryData.reload();
     };
+
+    public hasCoreData = (): boolean => {
+        try {
+            const hasCategories =
+                this.categories.status() !== 'error' && this.categories.value().length > 0;
+            const hasProducts =
+                this.products.status() !== 'error' && this.products.value().length > 0;
+            const hasPrimaryData =
+                this.primaryData.status() !== 'error' &&
+                this.primaryData.hasValue() &&
+                Object.keys(this.primaryData.value()).length > 0;
+
+            return hasCategories && hasProducts && hasPrimaryData;
+        } catch {
+            return false;
+        }
+    };
 }

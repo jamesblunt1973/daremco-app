@@ -29,26 +29,56 @@ export class HomePage implements OnInit {
     }
 
     private async initialize(): Promise<void> {
-        await this.storage.create();
-        const networkStatus = await Network.getStatus();
-        if (networkStatus.connected) {
-            try {
-                const serverStatus = (await this.api.healthCheck()) as ServerStatus;
-                this.app.serverStatus.set(serverStatus);
-                if (serverStatus === 'Healthy') {
-                    await Promise.all([
-                        this.update.updateProducts(),
-                        this.update.updateCategories(),
-                        this.update.updatePrimaryData(),
-                        this.update.updateMostUsedLinks()
-                    ]);
-                    this.data.reload();
-                }
-            } finally {
-                this.app.isUpdating.set(false);
+        try {
+            await this.storage.create();
+            const isConnected = await this.isNetworkConnected();
+
+            if (!isConnected) {
+                this.setUpdatingStatus('Network status: Not connected');
+                return;
             }
-        } else {
-            this.app.isUpdating.set(false);
+
+            await this.handleOnlineInitialization();
+        } catch (error: unknown) {
+            this.setUpdatingStatus((error as Error).message);
         }
+    }
+
+    private async isNetworkConnected(): Promise<boolean> {
+        const networkStatus = await Network.getStatus();
+        return networkStatus.connected;
+    }
+
+    private async handleOnlineInitialization(): Promise<void> {
+        const serverStatus = (await this.api.healthCheck()) as ServerStatus;
+        this.app.serverStatus.set(serverStatus);
+
+        if (serverStatus !== 'Healthy') {
+            this.setUpdatingStatus(`Server status: ${serverStatus}`);
+            return;
+        }
+
+        await this.synchronizeData();
+        this.data.reload();
+        this.app.isInitializing.set(false);
+    }
+
+    private async synchronizeData(): Promise<void> {
+        await Promise.all([
+            this.update.updateProducts(),
+            this.update.updateCategories(),
+            this.update.updatePrimaryData(),
+            this.update.updateMostUsedLinks()
+        ]);
+    }
+
+    private setUpdatingStatus(message: string): void {
+        const hasCoreData = this.data.hasCoreData();
+        if (!hasCoreData) {
+            this.app.isUpdating.set(message);
+            return;
+        }
+
+        this.app.isUpdating.set('');
     }
 }

@@ -1,4 +1,6 @@
+@let errorStr = app.isUpdating();
 <div class="ion-display-flex ion-flex-column ion-align-items-start ion-padding update-content">
+    @if(errorStr === '') {
     <div class="ion-display-flex ion-margin-x-auto">
         <ion-spinner name="circular"></ion-spinner>
     </div>
@@ -11,6 +13,10 @@
         <p>{{ message }}</p>
         }
     </div>
+    } @else {
+    <h1>خطا در آماده سازی اطلاعات</h1>
+    <p style="color: red; margin-bottom: 60px;">{{ errorStr }}</p>
+    }
     <p>در صورت اتصال به اینترنت، محصولات جدید دریافت خواهند شد.</p>
     <b>در اولین اجرا، بسته به سرعت اینترنت، ممکن است چند دقیقه به طول بیانجامد.</b>
     <b>جهت بارگزاری تصاویر محصولات، برای بار نخست نیازمند اتصال اینترنت می‌باشید.</b>

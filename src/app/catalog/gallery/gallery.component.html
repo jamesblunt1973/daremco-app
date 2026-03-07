@@ -1,7 +1,10 @@
 <div class="gallery-bg">
     <ion-list>
         <ion-item>
-            <ion-select label="انتخاب دسته" interface="popover" [(ngModel)]="categoryId"
+            <ion-select
+                label="انتخاب دسته"
+                interface="popover"
+                [(ngModel)]="categoryId"
                 (ionChange)="selectCategory($event)">
                 @for (category of categories; track category.id) {
                 <ion-select-option [value]="category.id">
@@ -11,7 +14,10 @@
             </ion-select>
         </ion-item>
         <ion-item>
-            <ion-select label="انتخاب گالری" interface="popover" [(ngModel)]="galleryId"
+            <ion-select
+                label="انتخاب گالری"
+                interface="popover"
+                [(ngModel)]="galleryId"
                 (ionChange)="selectGalley($event)">
                 @for (gallery of galleries(); track gallery.id) {
                 <ion-select-option [value]="gallery.id">
@@ -24,42 +30,54 @@
     <div class="products">
         @for (product of products(); track product.id) {
         <app-product [product]="product"></app-product>
+        } @empty {
+        <ion-accordion-group class="ion-margin-top">
+            <ion-accordion value="first">
+                <ion-item slot="header" color="light">
+                    <ion-label>برچسب ها</ion-label>
+                </ion-item>
+                <div class="ion-padding" slot="content">
+                    @for(attribute of attributes; track $index) {
+                    <ion-button fill="clear" (click)="selectAttribute(attribute.id)">
+                        {{ attribute.name }}
+                    </ion-button>
+                    }
+                </div>
+            </ion-accordion>
+        </ion-accordion-group>
         }
     </div>
-    @if(!products().length) {
-    <ion-accordion-group class="ion-margin-top">
-        <ion-accordion value="first">
-            <ion-item slot="header" color="light">
-                <ion-label>برچسب ها</ion-label>
-            </ion-item>
-            <div class="ion-padding" slot="content">
-                @for(attribute of attributes; track $index) {
-                <ion-button fill="clear" (click)="selectAttribute(attribute.id)">{{ attribute.name }}</ion-button>
-                }
-            </div>
-        </ion-accordion>
-    </ion-accordion-group>
-    }
 </div>
 <ion-fab vertical="bottom" horizontal="end">
-    @if(!products().length){
-    <ion-fab-button (click)="searchPanelOpen = true">
-        <ion-icon name="search-outline"></ion-icon>
-    </ion-fab-button>
-    } @else {
+    @if(products().length){
     <ion-fab-button (click)="resetProduct()">
         <ion-icon name="home-outline"></ion-icon>
+    </ion-fab-button>
+    } @else {
+    <ion-fab-button (click)="searchPanelOpen = true">
+        <ion-icon name="search-outline"></ion-icon>
     </ion-fab-button>
     }
 </ion-fab>
 
-<ion-modal [isOpen]="searchPanelOpen" [initialBreakpoint]="0.3" [breakpoints]="[0, 0.3]"
+<ion-modal
+    [isOpen]="searchPanelOpen"
+    [initialBreakpoint]="0.3"
+    [breakpoints]="[0, 0.3]"
     (didDismiss)="searchPanelOpen = false">
     <ng-template>
         <ion-content class="ion-padding">
-            <ion-input [(ngModel)]="code" name="code" placeholder="کد محصول" type="number"
+            <ion-input
+                [(ngModel)]="code"
+                name="code"
+                placeholder="کد محصول"
+                type="number"
                 (keyup.enter)="search()"></ion-input>
-            <ion-input [(ngModel)]="name" name="name" placeholder="نام محصول" (keyup.enter)="search()"></ion-input>
+            <ion-input
+                [(ngModel)]="name"
+                name="name"
+                placeholder="نام محصول"
+                (keyup.enter)="search()"></ion-input>
             <ion-button expand="block" class="ion-margin-top" (click)="search()">
                 جستجو
             </ion-button>
