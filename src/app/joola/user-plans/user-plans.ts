@@ -20,9 +20,7 @@ export class UserPlansComponent implements OnInit {
     private alertController = inject(AlertController);
 
     public ngOnInit(): void {
-        this.joolaService.getUserPlans().subscribe(res => {
-            this.userPlans = res;
-        });
+        this.userPlans = this.joolaService.userPlans.value();
     }
 
     public async removeUserPlan(userPlan: UserPlan): Promise<void> {
