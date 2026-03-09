@@ -20,7 +20,7 @@
             </ion-list>
             <div class="bottom-access">
                 <pre>version 1.2.3</pre>
-                @if(showExit) {
+                @if(isApp) {
                 <ion-button shape="round" color="danger" (click)="exit()">
                     Exit
                     <ion-icon name="close-circle-outline"></ion-icon>
@@ -35,7 +35,8 @@
     <ion-header [translucent]="true">
         <ion-toolbar>
             <div
-                class="ion-display-flex ion-justify-content-between ion-padding-horizontal ion-margin-top">
+                class="ion-display-flex ion-justify-content-between ion-padding-horizontal"
+                [ngClass]="{ 'ion-margin-vertical': !isApp, 'ion-margin-top': isApp }">
                 <img height="24" src="../../assets/logo.png" />
                 <h4 class="ion-no-margin">دارکوب امروز</h4>
                 <ion-buttons>

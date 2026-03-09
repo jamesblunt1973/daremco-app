@@ -1,6 +1,6 @@
 .content-bg {
     display: flow-root;
-    min-height: 100%;
+    height: calc(100% - 32px);
     background-image: url('../../../assets/gallery-bg.jpg');
     background-repeat: repeat;
 }

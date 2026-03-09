@@ -1,14 +1,18 @@
-<div class="content-bg">
-    @if(userPlans.length === 0) {
-    <div class="ion-padding">
-        <h1>هیچ نقشه‌ای در دست بافت نیست</h1>
-        <p>
-            با استفاده از دکمه‌ی پایین صفحه، می‌توانید نقشه‌ی مورد نظر خود را برای بافت انتخاب کنید.
-        </p>
+<div class="ion-display-flex ion-flex-column ion-align-items-start ion-padding content-bg">
+    @if(isLoading()){
+    <div class="ion-display-flex ion-margin-x-auto">
+        <ion-spinner name="circular"></ion-spinner>
     </div>
+    <h5 class="ion-margin-x-auto">در حال آماده سازی اطلاعات و تصاویر محصولات</h5>
+    } @else if(error()){
+    <h1>خطا در دریافت اطلاعات</h1>
+    <p style="color: red; margin-bottom: 60px">{{ error()?.message }}</p>
+    } @else if(userPlans().length === 0) {
+    <h1>هیچ نقشه‌ای در دست بافت نیست</h1>
+    <p>با استفاده از دکمه‌ی پایین صفحه، می‌توانید نقشه‌ی مورد نظر خود را برای بافت انتخاب کنید.</p>
     }
     <div fxLayout="column" fxLayoutGap="10px">
-        @for (userPlan of userPlans; track $index) {
+        @for (userPlan of userPlans(); track $index) {
         <ion-card class="product-list-item" fxLayout="row">
             <img [src]="productsPath + userPlan.productId + '/160.jpg' " />
             <ion-card-content fxFlex="*" fxLayout="row" fxLayoutAlign="start center">
