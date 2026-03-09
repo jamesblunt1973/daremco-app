@@ -1,11 +1,11 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { Network } from '@capacitor/network';
 import { Storage } from '@ionic/storage-angular';
-import { ServerStatus } from '../shared/models/types/server-status';
-import { ApiService } from '../shared/services/api.service';
-import { AppService } from '../shared/services/app.service';
-import { DataService } from '../shared/services/data.service';
-import { UpdateService } from '../shared/services/update.service';
+import { ServerStatus } from '../../shared/models/types/server-status';
+import { ApiService } from '../../shared/services/api.service';
+import { AppService } from '../../shared/services/app.service';
+import { DataService } from '../../shared/services/data.service';
+import { UpdateService } from '../../shared/services/update.service';
 
 @Component({
     selector: 'app-home',
