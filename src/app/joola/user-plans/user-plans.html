@@ -11,11 +11,12 @@
     <h1>هیچ نقشه‌ای در دست بافت نیست</h1>
     <p>با استفاده از دکمه‌ی پایین صفحه، می‌توانید نقشه‌ی مورد نظر خود را برای بافت انتخاب کنید.</p>
     }
-    <div fxLayout="column" fxLayoutGap="10px">
+    <div class="ion-display-flex ion-flex-column ion-flex-gap-full">
         @for (userPlan of userPlans(); track $index) {
-        <ion-card class="product-list-item" fxLayout="row">
+        <ion-card class="product-list-item ion-display-flex">
             <img [src]="productsPath + userPlan.productId + '/160.jpg' " />
-            <ion-card-content fxFlex="*" fxLayout="row" fxLayoutAlign="start center">
+            <ion-card-content
+                class="ion-display-flex ion-justify-content-start ion-align-items-center ion-flex-1">
                 <div>
                     <p>کد: {{userPlan.productId}}</p>
                     <b class="product-name">{{userPlan.product.name}}</b>
@@ -26,7 +27,7 @@
                     [diameter]="64"
                     [percent]="Math.round(userPlan.position / (userPlan.product.tiesWidth * userPlan.product.tiesHeight) * 1000)/10">
                 </app-arc-chart>
-                <div class="commands" fxLayout="column">
+                <div class="commands ion-display-flex ion-flex-column">
                     <ion-button fill="clear" color="accent" [routerLink]="['waeve/' + userPlan.id]">
                         <ion-icon slot="icon-only" class="mdi mdi-play mdi-flip-h"></ion-icon>
                     </ion-button>
