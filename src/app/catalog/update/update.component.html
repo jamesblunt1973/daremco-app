@@ -4,7 +4,7 @@
     <div class="ion-display-flex ion-margin-x-auto">
         <ion-spinner name="circular"></ion-spinner>
     </div>
-    <h5 class="ion-margin-x-auto">در حال آماده سازی اطلاعات و تصاویر محصولات</h5>
+    <h5 class="ion-margin-x-auto">در حال دریافت اطلاعات و تصاویر محصولات</h5>
     <div class="full-width" dir="ltr">
         <p>Server Status: {{ app.serverStatus() }}</p>
         <p>Total Products: {{ app.productsCount() }}</p>
@@ -14,8 +14,8 @@
         }
     </div>
     } @else {
-    <h1>خطا در آماده سازی اطلاعات</h1>
-    <p style="color: red; margin-bottom: 60px;">{{ errorStr }}</p>
+    <h1>خطا در دریافت اطلاعات</h1>
+    <p style="color: red; margin-bottom: 60px">{{ errorStr }}</p>
     }
     <p>در صورت اتصال به اینترنت، محصولات جدید دریافت خواهند شد.</p>
     <b>در اولین اجرا، بسته به سرعت اینترنت، ممکن است چند دقیقه به طول بیانجامد.</b>

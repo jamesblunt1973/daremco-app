@@ -4,3 +4,80 @@
     background-image: url('../../../assets/gallery-bg.jpg');
     background-repeat: repeat;
 }
+
+.actions {
+    position: fixed;
+    bottom: 10px;
+
+    div {
+        position: absolute;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        bottom: 0;
+        right: 0;
+        z-index: 0;
+        opacity: 0;
+        transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+
+        a {
+            color: #fff;
+            position: relative;
+            display: flex;
+            height: 40px;
+            align-items: center;
+            right: 4px;
+
+            span {
+                color: #000;
+            }
+        }
+
+        &.add-cart {
+            background-color: #ba55d3;
+        }
+
+        &.add-product {
+            background-color: #6a5acd;
+        }
+
+        &.add-archive {
+            background-color: #800080;
+        }
+    }
+
+    &.open {
+        div {
+            opacity: 1;
+        }
+
+        .add-cart {
+            bottom: 85px;
+        }
+
+        .add-product {
+            bottom: 55px;
+            right: 55px;
+            transition-delay: 0.1s;
+        }
+
+        .add-archive {
+            right: 85px;
+            transition-delay: 0.2s;
+        }
+    }
+}
+
+.add-btn {
+    transition: all 0.25s;
+    transform-origin: center;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    z-index: 1;
+    position: relative;
+
+    &.open {
+        transform: rotate(-45deg);
+    }
+}

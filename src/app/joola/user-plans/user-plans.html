@@ -3,7 +3,7 @@
     <div class="ion-display-flex ion-margin-x-auto">
         <ion-spinner name="circular"></ion-spinner>
     </div>
-    <h5 class="ion-margin-x-auto">در حال آماده سازی اطلاعات و تصاویر محصولات</h5>
+    <h5 class="ion-margin-x-auto">در حال دریافت اطلاعات و تصاویر محصولات</h5>
     } @else if(error()){
     <h1>خطا در دریافت اطلاعات</h1>
     <p style="color: red; margin-bottom: 60px">{{ error()?.message }}</p>
@@ -40,22 +40,19 @@
         }
     </div>
     <div class="actions" [ngClass]="{'open' : isMenuOpen}">
-        <ion-button fill="clear" color="accent" class="add-btn" (click)="isMenuOpen = !isMenuOpen">
-            <ion-icon slot="icon-only" class="mdi mdi-plus-circle"></ion-icon>
-        </ion-button>
-        <div class="add-cart">
-            <a routerLink="add-basket" title="افزودن از لیست خرید">
-                <ion-icon class="mdi mdi-cart-variant mdi-flip-h"></ion-icon>
+        <div class="add-cart" title="افزودن از لیست خرید">
+            <a routerLink="add-basket">
+                <ion-icon size="large" name="cart-outline"></ion-icon>
             </a>
         </div>
         <div class="add-product" title="افزودن از لیست محصولات">
             <a routerLink="add-product">
-                <ion-icon class="mdi mdi-file-plus"></ion-icon>
+                <ion-icon size="large" name="document-outline"></ion-icon>
             </a>
         </div>
         <div class="add-archive" title="افزودن از لیست آرشیو">
             <a routerLink="add-archive">
-                <ion-icon class="mdi mdi-file-check"></ion-icon>
+                <ion-icon size="large" name="archive-outline"></ion-icon>
             </a>
         </div>
     </div>
@@ -64,6 +61,16 @@
 <ion-fab vertical="bottom" horizontal="start">
     <ion-button size="small" color="warning">
         راهنما
-        <ion-icon slot="end" name="help-circle-outline"></ion-icon>
+        <ion-icon size="small" slot="end" name="help-circle-outline"></ion-icon>
     </ion-button>
+</ion-fab>
+
+<ion-fab vertical="bottom" horizontal="end">
+    <ion-fab-button size="small" (click)="isMenuOpen = !isMenuOpen">
+        <ion-icon
+            size="large"
+            class="add-btn"
+            name="add-circle-outline"
+            [ngClass]="{'open' : isMenuOpen}"></ion-icon>
+    </ion-fab-button>
 </ion-fab>
