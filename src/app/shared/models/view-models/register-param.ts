@@ -1,6 +1,6 @@
 export interface RegisterParam {
     name: string;
     cell: string;
-    gender: boolean;
+    gender?: boolean;
     password: string;
 }

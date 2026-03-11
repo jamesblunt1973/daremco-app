@@ -1,11 +1,7 @@
-import { Component } from '@angular/core';
-import { Subscription } from 'rxjs';
-import { finalize } from 'rxjs/operators';
-import { AuthService } from '../../core/auth.service';
-import { AutoUnsubscribe } from '../../shared/auto-unsubscribe';
-import { IRegisterData } from '../../shared/models/register.model';
+import { Component, inject } from '@angular/core';
+import { RegisterParam } from 'src/app/shared/models';
+import { AuthService } from 'src/app/shared/services/auth.service';
 
-@AutoUnsubscribe
 @Component({
     selector: 'app-register',
     templateUrl: './register.component.html',
@@ -13,27 +9,18 @@ import { IRegisterData } from '../../shared/models/register.model';
     standalone: false
 })
 export class RegisterComponent {
-    model: IRegisterData = {
+    public loading = false;
+    public model: RegisterParam = {
         cell: '',
-        gender: null,
         name: '',
         password: ''
     };
-    save = false;
-    loading = false;
-    subscriptions: Subscription[] = [];
 
-    constructor(private authService: AuthService) {}
-    register() {
+    private authService = inject(AuthService);
+
+    public async register(): Promise<void> {
         this.loading = true;
-        let sub = this.authService
-            .register(this.model)
-            .pipe(
-                finalize(() => {
-                    this.loading = false;
-                })
-            )
-            .subscribe();
-        this.subscriptions.push(sub);
+        await this.authService.register(this.model);
+        this.loading = false;
     }
 }

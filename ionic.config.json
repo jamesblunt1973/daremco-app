@@ -1,7 +1,7 @@
 {
-  "name": "daremco-app",
-  "integrations": {
-    "capacitor": {}
-  },
-  "type": "angular"
+    "name": "daremco-app",
+    "integrations": {
+        "capacitor": {}
+    },
+    "type": "angular"
 }

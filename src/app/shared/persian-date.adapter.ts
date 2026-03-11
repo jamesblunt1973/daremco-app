@@ -153,7 +153,10 @@ export class PersianDateAdapter {
         return new Date();
     }
 
-    public parse(value: unknown, parseFormat: string | string[] = PERSIAN_DATE_FORMATS.parse.dateInput): Date | null {
+    public parse(
+        value: unknown,
+        parseFormat: string | string[] = PERSIAN_DATE_FORMATS.parse.dateInput
+    ): Date | null {
         if (!value) {
             return null;
         }
@@ -353,7 +356,10 @@ export class PersianDateAdapter {
     }
 
     private jalCal(jy: number): { leap: number; gy: number; march: number } {
-        const breaks = [-61, 9, 38, 199, 426, 686, 756, 818, 1111, 1181, 1210, 1635, 2060, 2097, 2192, 2262, 2324, 2394, 2456, 3178];
+        const breaks = [
+            -61, 9, 38, 199, 426, 686, 756, 818, 1111, 1181, 1210, 1635, 2060, 2097, 2192, 2262,
+            2324, 2394, 2456, 3178
+        ];
         const bl = breaks.length;
         const gy = jy + 621;
         let leapJ = -14;

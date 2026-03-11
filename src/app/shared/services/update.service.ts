@@ -110,7 +110,7 @@ export class UpdateService {
             await this.setStorage(Endpoints.products, savedProducts);
         }
 
-        if (updatedProducts.length < missingColors.length){
+        if (updatedProducts.length < missingColors.length) {
             await this.updateProductColors();
         }
     }

@@ -1,24 +1,21 @@
 <form #loginForm="ngForm" (ngSubmit)="login()">
-  <mat-form-field>
-    <input matInput
-           autofocus
-           placeholder="شماره همراه"
-           required
-           [(ngModel)]="model.userName"
-           name="userName"
-           dir="ltr" />
-  </mat-form-field>
-  <mat-form-field>
-    <input matInput
-           type="password"
-           placeholder="کلمه عبور"
-           required
-           [(ngModel)]="model.password"
-           name="password" />
-  </mat-form-field>
-  <div fxLayout="row" fxLayoutAlign="space-between" class="commands">
-    <button mat-raised-button color="primary" [disabled]="!loginForm.valid || loading">ورود به برنامه</button>
-    <mat-spinner *ngIf="loading" diameter="35"></mat-spinner>
-    <button type="button" mat-button routerLink="/auth/register">ثبت نام</button>
-  </div>
+    <ion-input
+        [(ngModel)]="model.userName"
+        name="username"
+        placeholder="شماره همراه"
+        type="text"></ion-input>
+    <ion-input
+        [(ngModel)]="model.password"
+        name="password"
+        placeholder="کد محصول"
+        type="password"></ion-input>
+    <div fxLayout="row" fxLayoutAlign="space-between" class="commands">
+        <button mat-raised-button color="primary" [disabled]="!loginForm.valid || loading">
+            ورود به برنامه
+        </button>
+        @if(loading) {
+        <ion-spinner name="circular" class="ion-margin-x-auto"></ion-spinner>
+        }
+        <button type="button" mat-button routerLink="/auth/register">ثبت نام</button>
+    </div>
 </form>

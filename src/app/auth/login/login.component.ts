@@ -1,11 +1,7 @@
-import { Component } from '@angular/core';
-import { Subscription } from 'rxjs';
-import { finalize } from 'rxjs/operators';
-import { AuthService } from '../../core/auth.service';
-import { AutoUnsubscribe } from '../../shared/auto-unsubscribe';
-import { ILoginData } from '../../shared/models/login.model';
+import { Component, inject } from '@angular/core';
+import { LoginParam } from 'src/app/shared/models';
+import { AuthService } from 'src/app/shared/services/auth.service';
 
-@AutoUnsubscribe
 @Component({
     selector: 'app-login',
     templateUrl: './login.component.html',
@@ -13,25 +9,17 @@ import { ILoginData } from '../../shared/models/login.model';
     standalone: false
 })
 export class LoginComponent {
-    model: ILoginData = {
+    public loading = false;
+    public model: LoginParam = {
         password: '',
         userName: ''
     };
 
-    loading = false;
-    subscriptions: Subscription[] = [];
+    private readonly authService = inject(AuthService);
 
-    constructor(private authService: AuthService) {}
-    login() {
+    public async login(): Promise<void> {
         this.loading = true;
-        let sub = this.authService
-            .login(this.model)
-            .pipe(
-                finalize(() => {
-                    this.loading = false;
-                })
-            )
-            .subscribe();
-        this.subscriptions.push(sub);
+        await this.authService.login(this.model);
+        this.loading = false;
     }
 }

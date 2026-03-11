@@ -20,13 +20,13 @@ export interface Product {
     plans: Plan[] | null;
     colors: ProductColor[] | null;
     attributeIds: number[] | null;
-    createDate: Date,
-    freePlans: boolean,
-    layoutId: number,
-    ownerId: number,
-    rate: number,
-    rateNum: number,
-    showDescription: string,
-    skein: boolean,
-    visible: boolean
+    createDate: Date;
+    freePlans: boolean;
+    layoutId: number;
+    ownerId: number;
+    rate: number;
+    rateNum: number;
+    showDescription: string;
+    skein: boolean;
+    visible: boolean;
 }

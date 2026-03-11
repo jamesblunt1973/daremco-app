@@ -1,5 +1,5 @@
 export interface UserPurchase {
-    productId: number,
-    name: string,
-    requestTime: Date
+    productId: number;
+    name: string;
+    requestTime: Date;
 }

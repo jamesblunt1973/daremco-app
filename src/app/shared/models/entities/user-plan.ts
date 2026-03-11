@@ -1,20 +1,20 @@
-import { Product } from "./product";
-import { User } from "./user";
+import { Product } from './product';
+import { User } from './user';
 
 export interface UserPlan {
-    id: number,
-    userId: number,
-    productId: number,
-    raj: number,
-    turned: boolean,
-    addDateTime: Date,
-    lastAccess: Date,
-    position: number,
-    finished: boolean,
-    playSound: boolean,
-    autoPlay: boolean,
-    speed: number,
-    user: User,
-    product: Product,
-    data: number[]
+    id: number;
+    userId: number;
+    productId: number;
+    raj: number;
+    turned: boolean;
+    addDateTime: Date;
+    lastAccess: Date;
+    position: number;
+    finished: boolean;
+    playSound: boolean;
+    autoPlay: boolean;
+    speed: number;
+    user: User;
+    product: Product;
+    data: number[];
 }

@@ -35,16 +35,16 @@ export class GalleryComponent {
         this.mostUsedLinks = [];
         this.allProducts = [];
         this.categories = [];
-        
+
         effect(() => {
             this.allProducts = this.data.products.value();
             this.categories = this.data.categories.value();
             const primaryData = this.data.primaryData.value();
-            
+
             if (primaryData && primaryData.attributes && primaryData.attributes.length) {
                 this.attributes = primaryData.attributes.filter(a => !a.link);
             }
-    
+
             const links = this.data.mostUsedlinks.value();
             if (links) {
                 this.mostUsedLinks = this.extractLinksFromHtml(links);

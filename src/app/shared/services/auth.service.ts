@@ -1,19 +1,19 @@
 import { HttpClient } from '@angular/common/http';
 import { computed, inject, Injectable, signal } from '@angular/core';
-import { firstValueFrom } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { catchError, firstValueFrom, map, of, tap } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { AuthResult, LoginParam, RegisterParam, User } from '../models';
+
+export const AUTH_TOKEN_KEY = 'auth_token';
 
 @Injectable({
     providedIn: 'root'
 })
 export class AuthService {
-    public redirectUrl = '/';
-    public user = computed(() => this.userSignal);
+    public user = computed(() => this.userSignal());
 
     private userSignal = signal<User | null>(null);
-    private readonly tokenKey = 'auth_token';
+    private readonly tokenKey = AUTH_TOKEN_KEY;
 
     private apiUrl = environment.apiUrl + 'auth/';
     private http = inject(HttpClient);
@@ -45,20 +45,25 @@ export class AuthService {
         this.userSignal.set(null);
     }
 
-    public checkUser(): boolean | Promise<AuthResult> {
+    public checkUser(): Promise<boolean> {
         if (this.user()) {
-            return true;
+            return Promise.resolve(true);
         }
 
         const token = localStorage.getItem(this.tokenKey);
         if (!token) {
-            return false;
+            return Promise.resolve(false);
         }
 
         const res = this.http.get<AuthResult>(this.apiUrl + 'check-user').pipe(
             tap(res => {
                 localStorage.setItem(this.tokenKey, res.token);
                 this.userSignal.set(res.user);
+            }),
+            map(() => true),
+            catchError(() => {
+                this.logout();
+                return of(false);
             })
         );
 

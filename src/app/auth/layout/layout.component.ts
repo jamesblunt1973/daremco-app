@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@ang
+import { Component } from '@angular/core';
 
 @Component({
     selector: 'app-layout',
@@ -6,12 +6,4 @@ import { Component, OnInit, OnDestroy } from '@ang
     styleUrls: ['./layout.component.scss'],
     standalone: false
 })
-export class LayoutComponent implements OnInit {
-    constructor() {}
-
-    ngOnInit() {}
-
-    ngOnDestroy() {
-        // unsubscribe
-    }
-}
+export class LayoutComponent {}
