@@ -31,6 +31,7 @@ export class DataService {
         this.categories.reload();
         this.products.reload();
         this.primaryData.reload();
+        this.mostUsedlinks.reload();
     };
 
     public hasCoreData = (): boolean => {

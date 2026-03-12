@@ -1,4 +1,4 @@
-import { Component, effect, inject, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { ToastController } from '@ionic/angular';
 import { Attribute, Category, Gallery, Product, ValueEvent } from '../../../app/shared/models';
 import { DataService } from '../../../app/shared/services/data.service';
@@ -12,10 +12,6 @@ import { UpdateService } from '../../shared/services/update.service';
     standalone: false
 })
 export class GalleryComponent {
-    public allProducts: Product[];
-    public categories: Category[];
-    public mostUsedLinks: HTMLAnchorElement[];
-    public attributes: Attribute[];
     public galleries = signal<Gallery[]>([]);
     public products = signal<Product[]>([]);
     public categoryId: string | null = null;
@@ -30,26 +26,25 @@ export class GalleryComponent {
     private update = inject(UpdateService);
     private toastController = inject(ToastController);
 
-    public constructor() {
-        this.attributes = [];
-        this.mostUsedLinks = [];
-        this.allProducts = [];
-        this.categories = [];
+    public get categories(): Category[] {
+        return this.data.categories.value();
+    }
 
-        effect(() => {
-            this.allProducts = this.data.products.value();
-            this.categories = this.data.categories.value();
-            const primaryData = this.data.primaryData.value();
+    public get attributes(): Attribute[] {
+        if (this.data.primaryData.status() === 'error' || !this.data.primaryData.hasValue()) {
+            return [];
+        }
 
-            if (primaryData && primaryData.attributes && primaryData.attributes.length) {
-                this.attributes = primaryData.attributes.filter(a => !a.link);
-            }
+        const primaryData = this.data.primaryData.value();
+        if (!primaryData?.attributes?.length) {
+            return [];
+        }
 
-            const links = this.data.mostUsedlinks.value();
-            if (links) {
-                this.mostUsedLinks = this.extractLinksFromHtml(links);
-            }
-        });
+        return primaryData.attributes.filter(a => !a.link);
+    }
+
+    private get allProducts(): Product[] {
+        return this.data.products.value();
     }
 
     public selectCategory(event: CustomEvent): void {
