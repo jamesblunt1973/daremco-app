@@ -14,21 +14,18 @@
         pattern="^.{4,}$"></ion-input>
     <ion-radio-group
         aria-label="Select Gender"
-        fxLayout="row wrap"
-        fxLayoutAlign="space-between"
+        class="ion-display-flex ion-justify-content-between ion-margin-top"
         [(ngModel)]="model.gender"
         name="gender">
         <ion-radio [value]="true">آقا</ion-radio>
         <ion-radio [value]="false">خانم</ion-radio>
         <ion-radio [value]="null">حقوقی</ion-radio>
     </ion-radio-group>
-    <div class="commands ion-display-flex ion-justify-content-between">
-        <button mat-raised-button color="primary" [disabled]="!registerForm.valid || loading">
-            ثبت نام
-        </button>
+    <div class="commands ion-display-flex ion-justify-content-around">
+        <ion-button [disabled]="!registerForm.valid || loading"> ثبت نام </ion-button>
         @if(loading) {
         <ion-spinner name="circular" class="ion-margin-x-auto"></ion-spinner>
         }
-        <button type="button" mat-button routerLink="/auth/login">ورود</button>
+        <ion-button fill="clear" routerLink="/auth/login">ورود</ion-button>
     </div>
 </form>

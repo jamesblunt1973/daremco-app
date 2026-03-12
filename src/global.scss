@@ -87,10 +87,6 @@ ion-popover {
     transform: translateY(160%) scale(1);
 }
 
-.ion-display-flex {
-    display: flex;
-}
-
 .ion-margin-auto {
     margin: auto;
 }
@@ -128,4 +124,16 @@ ion-popover {
 
 ion-modal.auto-height {
     --height: auto;
+}
+
+.app-bg {
+    position: relative;
+    min-height: calc(100% - 32px);
+    background-image: url('assets/gallery-bg.jpg');
+}
+
+@media (prefers-color-scheme: dark) {
+    .app-bg {
+        background-image: url('assets/gallery-bg-dark.jpg');
+    }
 }

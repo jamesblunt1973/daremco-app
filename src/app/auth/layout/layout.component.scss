@@ -1,7 +1,8 @@
 .container {
-    height: 100vh;
-    background: transparent url('http://www.daremco.com/img/menu-bg.jpg') no-repeat center center;
+    height: 100%;
+    background: transparent url('../../../assets/menu-bg.jpg') no-repeat center center;
     background-size: cover;
+    direction: rtl;
 
     .form {
         width: 280px;

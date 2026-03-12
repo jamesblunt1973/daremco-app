@@ -11,6 +11,10 @@ import { authGuard } from './shared/services/auth.guard';
 
 const routes: Routes = [
     {
+        path: 'auth',
+        loadChildren: () => import('./auth/auth.module').then(mod => mod.AuthModule)
+    },
+    {
         path: '',
         component: LayoutComponent,
         children: [
@@ -18,10 +22,6 @@ const routes: Routes = [
                 path: '',
                 redirectTo: 'catalog',
                 pathMatch: 'full'
-            },
-            {
-                path: 'auth',
-                loadChildren: () => import('./auth/auth.module').then(mod => mod.AuthModule)
             },
             {
                 path: 'catalog',

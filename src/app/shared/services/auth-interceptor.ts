@@ -32,8 +32,8 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
             }
 
             auth.logout();
-            if (router.url !== '/login') {
-                void router.navigate(['/login']);
+            if (router.url !== '/auth/login') {
+                void router.navigate(['/auth/login']);
             }
 
             return throwError(() => err);

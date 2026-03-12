@@ -1,9 +1,3 @@
-.gallery-bg {
-    min-height: 100%;
-    background-image: url('../../../assets/gallery-bg.jpg');
-    background-repeat: repeat;
-}
-
 .attributes {
     max-height: 10.5rem;
     overflow: auto;
@@ -14,11 +8,5 @@ ion-fab {
 
     ion-fab-list {
         bottom: 60px;
-    }
-}
-
-@media (prefers-color-scheme: dark) {
-    .gallery-bg {
-        background-image: url('../../../assets/gallery-bg-dark.jpg');
     }
 }
