@@ -9,5 +9,14 @@ export class AppService {
     public productsCount = signal<number>(0);
     public isUpdating = signal<string>('');
     public isInitializing = signal<boolean>(true);
+    public messageHistory = signal<string[]>([]);
     public message = signal<string>('');
+
+    public setMessage(message: string): void {
+        this.message.set(message);
+        if (!message) {
+            return;
+        }
+        this.messageHistory.update(messages => [...messages, message]);
+    }
 }

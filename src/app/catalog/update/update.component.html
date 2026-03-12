@@ -9,7 +9,7 @@
         <p>Server Status: {{ app.serverStatus() }}</p>
         <p>Total Products: {{ app.productsCount() }}</p>
         <br />
-        @for (message of messages; track $index) {
+        @for (message of app.messageHistory(); track $index) {
         <p>{{ message }}</p>
         }
     </div>

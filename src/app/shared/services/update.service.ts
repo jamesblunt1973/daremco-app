@@ -18,10 +18,10 @@ export class UpdateService {
     public async updateProducts(): Promise<void> {
         const savedProducts = ((await this.storage.get(Endpoints.products)) as Product[]) || [];
         const lastProductId = savedProducts.length ? savedProducts[savedProducts.length - 1].id : 0;
-        this.app.message.set(`Start downloading products from ${lastProductId}`);
+        this.app.setMessage(`Start downloading products from ${lastProductId}`);
 
         const newProducts = await this.api.getProducts(Endpoints.products, lastProductId);
-        this.app.message.set(`New products count: ${newProducts?.length ?? 0}`);
+        this.app.setMessage(`New products count: ${newProducts?.length ?? 0}`);
         if (!newProducts?.length) {
             return;
         }
@@ -31,31 +31,31 @@ export class UpdateService {
     }
 
     public async updateCategories(): Promise<void> {
-        this.app.message.set('Start downloading categories...');
+        this.app.setMessage('Start downloading categories...');
         const categories = await this.api.getCategories(Endpoints.categories);
         if (!categories || !categories.length) {
-            this.app.message.set('Error loading categories!');
+            this.app.setMessage('Error loading categories!');
             throw new Error('Error downloading categories.');
         }
-        this.app.message.set('Downloading categories finished.');
+        this.app.setMessage('Downloading categories finished.');
         await this.setStorage(Endpoints.categories, categories);
     }
 
     public async updatePrimaryData(): Promise<void> {
-        this.app.message.set('Start downloading primary data...');
+        this.app.setMessage('Start downloading primary data...');
         const data = await this.api.getPrimaryData(Endpoints.primaryData);
         if (!data) {
-            this.app.message.set('Error downloading primary data!');
+            this.app.setMessage('Error downloading primary data!');
             throw new Error('Error downloading primary data.');
         }
-        this.app.message.set('Downloading primary data finished.');
+        this.app.setMessage('Downloading primary data finished.');
         await this.setStorage(Endpoints.primaryData, data);
     }
 
     public async updateMostUsedLinks(): Promise<void> {
-        this.app.message.set('Start downloading most used links...');
+        this.app.setMessage('Start downloading most used links...');
         const data = await this.api.getLinks(Endpoints.mostUsedlinks);
-        this.app.message.set('Downloading most used links finished.');
+        this.app.setMessage('Downloading most used links finished.');
         if (data && data.length) {
             await this.setStorage(Endpoints.mostUsedlinks, data);
         }
