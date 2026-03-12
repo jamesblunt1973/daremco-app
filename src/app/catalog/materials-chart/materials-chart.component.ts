@@ -4,11 +4,11 @@ import { ProductColor } from '../../shared/models';
 import { DataService } from '../../shared/services/data.service';
 
 type MaterialUsage = {
-    materialGroupId: number;
-    colorsCount: number;
-    tiesCount: number;
-    material: string;
-    percent: number;
+    MaterialGroupId: number;
+    ColorsCount: number;
+    TiesCount: number;
+    Material: string;
+    Percent: number;
 };
 
 type ChartData = {
@@ -43,36 +43,36 @@ export class MaterialsChartComponent {
             if (!colors.length) {
                 return;
             }
-            const filtered = colors.filter(a => a.materialGroupId != null);
+            const filtered = colors.filter(a => a.MaterialGroupId != null);
             const grouped = new Map<number, ProductColor[]>();
             for (const color of filtered) {
-                const key = color.materialGroupId!;
+                const key = color.MaterialGroupId!;
                 if (!grouped.has(key)) {
                     grouped.set(key, []);
                 }
                 grouped.get(key)!.push(color);
-                this.total += color.count;
+                this.total += color.Count;
             }
 
             this.materials = Array.from(grouped.entries())
                 .map(([materialGroupId, items]) => {
                     const materialRaj = dkbRaj.materialRajs[materialGroupId - 1];
                     const material = primaryData.materials[materialRaj.materialId];
-                    const tiesCount = items.reduce((sum, b) => sum + b.count, 0);
+                    const tiesCount = items.reduce((sum, b) => sum + b.Count, 0);
 
                     return {
-                        materialGroupId,
-                        colorsCount: items.length,
-                        tiesCount,
-                        material: material.name,
-                        percent: Math.round((tiesCount / this.total) * 1000) / 10
+                        MaterialGroupId: materialGroupId,
+                        ColorsCount: items.length,
+                        TiesCount: tiesCount,
+                        Material: material.name,
+                        Percent: Math.round((tiesCount / this.total) * 1000) / 10
                     };
                 })
-                .sort((a, b) => a.materialGroupId - b.materialGroupId);
+                .sort((a, b) => a.MaterialGroupId - b.MaterialGroupId);
 
             this.chartData = this.materials.map((a, index) => ({
-                label: a.material,
-                value: a.tiesCount,
+                label: a.Material,
+                value: a.TiesCount,
                 color: this.chartColors[index]
             }));
         });

@@ -38,11 +38,11 @@ export class PaletteComponent {
             colors.forEach(color => {
                 let material: Material;
 
-                if (color.materialGroupId) {
+                if (color.MaterialGroupId) {
                     if (spec.materialId) {
                         material = primaryData.materials[spec.materialId];
                     } else {
-                        const materialRaj = dkbRaj.materialRajs[color.materialGroupId - 1];
+                        const materialRaj = dkbRaj.materialRajs[color.MaterialGroupId - 1];
                         material = primaryData.materials[materialRaj.materialId];
                     }
                 } else {
@@ -55,7 +55,7 @@ export class PaletteComponent {
 
                 const mainTieLen = primaryData.tieLengths[spec.tieLengthId];
                 let weight =
-                    color.count *
+                    color.Count *
                     mainTieLen.length *
                     material.weight *
                     (1 + material.showWeightCoef);
@@ -65,8 +65,8 @@ export class PaletteComponent {
                     weight = Math.round(weight);
                 }
 
-                color.weight = weight;
-                color.material = material.name;
+                color.Weight = weight;
+                color.Material = material.name;
             });
         });
     }

@@ -40,7 +40,7 @@ export class ProductComponent implements OnInit {
 
     public ngOnInit(): void {
         this.p = this.product();
-        this.rajs = [...new Set(this.p.BulkTypes?.map(a => a.raj))];
+        this.rajs = [...new Set(this.p.BulkTypes?.map(a => a.Raj))];
     }
 
     public async showStockMessage(paletteId?: number, pgId?: number): Promise<void> {
@@ -68,30 +68,30 @@ export class ProductComponent implements OnInit {
         if (selectedRaj === 0) {
             return;
         }
-        const bulkTypes = this.p?.BulkTypes?.filter(a => a.raj === selectedRaj);
+        const bulkTypes = this.p?.BulkTypes?.filter(a => a.Raj === selectedRaj);
         if (!bulkTypes || !bulkTypes.length) {
             return;
         }
         const map = new Map<string, BulkTypeGroup>();
         for (const bt of bulkTypes) {
-            const key = `${bt.dimsHeight}-${bt.dimsWidth}-${bt.raj}-${bt.materialId}-${bt.materials}-${bt.tieTypeId}-${bt.mainTieLengthId}`;
+            const key = `${bt.DimsHeight}-${bt.DimsWidth}-${bt.Raj}-${bt.MaterialId}-${bt.Materials}-${bt.TieTypeId}-${bt.MainTieLengthId}`;
 
             if (!map.has(key)) {
                 map.set(key, {
-                    dimsHeight: bt.dimsHeight,
-                    dimsWidth: bt.dimsWidth,
-                    raj: bt.raj,
-                    materialId: bt.materialId,
-                    materials: bt.materials,
-                    tieTypeId: bt.tieTypeId,
-                    mainTieLengthId: bt.mainTieLengthId,
+                    DimsHeight: bt.DimsHeight,
+                    DimsWidth: bt.DimsWidth,
+                    Raj: bt.Raj,
+                    MaterialId: bt.MaterialId,
+                    Materials: bt.Materials,
+                    TieTypeId: bt.TieTypeId,
+                    MainTieLengthId: bt.MainTieLengthId,
                     list: []
                 });
             }
 
             map.get(key)!.list.push({
-                price: bt.price,
-                count: bt.count
+                Price: bt.Price,
+                Count: bt.Count
             });
         }
         this.bulkTypeGroups = Array.from(map.values());
@@ -124,10 +124,10 @@ export class ProductComponent implements OnInit {
                 componentProps: {
                     colors: this.p.Colors,
                     spec: {
-                        materialId: type.materialId,
-                        raj: type.raj,
-                        tieLengthId: type.mainTieLengthId,
-                        bulk: !('price' in type)
+                        materialId: type.MaterialId,
+                        raj: type.Raj,
+                        tieLengthId: type.MainTieLengthId,
+                        bulk: !('Price' in type)
                     }
                 },
                 initialBreakpoint: 1,
@@ -155,7 +155,7 @@ export class ProductComponent implements OnInit {
                 component: MaterialsChartComponent,
                 componentProps: {
                     colors: this.p.Colors,
-                    raj: type.raj
+                    raj: type.Raj
                 },
                 initialBreakpoint: 1,
                 breakpoints: [0, 1]

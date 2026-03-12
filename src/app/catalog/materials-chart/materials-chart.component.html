@@ -12,12 +12,12 @@
             @for (material of materials; track $index) {
             <tr [ngStyle]="{ backgroundColor: chartColors[$index] }">
                 <td>
-                    {{ material.material }}
+                    {{ material.Material }}
                 </td>
                 <td>
-                    {{ material.colorsCount }}
+                    {{ material.ColorsCount }}
                 </td>
-                <td>{{ material.percent }}%</td>
+                <td>{{ material.Percent }}%</td>
             </tr>
             }
         </tbody>

@@ -13,27 +13,27 @@
     <div class="full-width properties ion-margin-bottom">
         <p class="title">انواع نخ خامه</p>
         @for (type of p.ProductTypes; track $index) { @let tieLength =
-        primaryData.tieLengths[type.mainTieLengthId];
+        primaryData.tieLengths[type.MainTieLengthId];
         <div class="data-row ion-display-flex ion-flex-column">
             <div class="ion-display-flex">
                 <p class="label">رجشمار</p>
-                <p class="property">{{ type.raj }}</p>
+                <p class="property">{{ type.Raj }}</p>
             </div>
             <div class="ion-display-flex">
                 <p class="label">ابعاد</p>
-                <p class="property">{{ type.dimsWidth }} در {{ type.dimsHeight }} سانت</p>
+                <p class="property">{{ type.DimsWidth }} در {{ type.DimsHeight }} سانت</p>
             </div>
             <div class="ion-display-flex">
                 <p class="label">جنس</p>
                 <p class="property">
-                    @if(type.materialId) {
-                    {{ primaryData.materials[type.materialId].name }}
+                    @if(type.MaterialId) {
+                    {{ primaryData.materials[type.MaterialId].name }}
                     } @else { پشم و ابریشم }
                 </p>
             </div>
             <div class="ion-display-flex">
                 <p class="label">نوع بافت</p>
-                <p class="property">{{ primaryData.tieTypes[type.tieTypeId] }}</p>
+                <p class="property">{{ primaryData.tieTypes[type.TieTypeId] }}</p>
             </div>
             <div class="ion-display-flex">
                 <p class="label">طول گره</p>
@@ -42,13 +42,13 @@
             <div class="ion-display-flex">
                 <p class="label">موجودی</p>
                 <p class="property">
-                    @if (type.stock > 0) {
-                    {{ type.stock }}
+                    @if (type.Stock > 0) {
+                    {{ type.Stock }}
                     } @else {
                     <ion-button
                         fill="clear"
                         size="small"
-                        (click)="showStockMessage(undefined, type.productionGroupId)">
+                        (click)="showStockMessage(undefined, type.ProductionGroupId)">
                         مشاهده
                     </ion-button>
                     }
@@ -56,13 +56,13 @@
             </div>
             <div class="ion-display-flex">
                 <p class="label">قیمت</p>
-                <p class="property">{{ type.price / 10 | number }} تومان</p>
+                <p class="property">{{ type.Price / 10 | number }} تومان</p>
             </div>
             <div class="ion-display-flex">
                 <ion-button fill="clear" size="small" (click)="showColorsPalette(type)">
                     نمایش پالت
                 </ion-button>
-                @if(!type.materialId) {
+                @if(!type.MaterialId) {
                 <ion-button fill="clear" size="small" (click)="showMaterialsChart(type)">
                     نمودار توزیع جنس
                 </ion-button>
@@ -95,22 +95,22 @@
         @if(!bulkTypeGroups.length) {
         <p class="pointer">لطفا رجشمار مورد نظر خود را انتخاب کنید 👆</p>
         } @for (type of bulkTypeGroups; track $index) { @let tieLength =
-        primaryData.tieLengths[type.mainTieLengthId];
+        primaryData.tieLengths[type.MainTieLengthId];
         <div class="data-row">
             <div class="ion-display-flex">
                 <p class="label">رجشمار</p>
-                <p class="property">{{ type.raj }}</p>
+                <p class="property">{{ type.Raj }}</p>
             </div>
             <div class="ion-display-flex">
                 <p class="label">ابعاد</p>
-                <p class="property">{{ type.dimsWidth }} در {{ type.dimsHeight }}</p>
+                <p class="property">{{ type.DimsWidth }} در {{ type.DimsHeight }}</p>
             </div>
             <div class="ion-display-flex">
                 <p class="label">جنس</p>
                 <p class="property">
                     {{
-                        type.materialId
-                            ? primaryData.materials[type.materialId].name
+                        type.MaterialId
+                            ? primaryData.materials[type.MaterialId].name
                             : 'پشم و ابریشم'
                     }}
                 </p>
@@ -121,15 +121,15 @@
             </div>
             @for(item of type.list; track $index) {
             <div class="ion-display-flex">
-                <p class="label">{{ item.count }} تخته</p>
-                <p class="property">{{ item.price / 10 | number }} تومان</p>
+                <p class="label">{{ item.Count }} تخته</p>
+                <p class="property">{{ item.Price / 10 | number }} تومان</p>
             </div>
             }
             <div class="ion-display-flex">
                 <ion-button fill="clear" size="small" (click)="showColorsPalette(type)">
                     نمایش پالت
                 </ion-button>
-                @if(!type.materialId) {
+                @if(!type.MaterialId) {
                 <ion-button fill="clear" size="small" (click)="showMaterialsChart(type)">
                     نمودار توزیع جنس
                 </ion-button>
@@ -145,13 +145,13 @@
             @for (plan of p.Plans; track $index) {
             <div class="ion-display-flex">
                 <p class="label">
-                    {{ primaryData.planTypes[plan.planTypeId] }}
+                    {{ primaryData.planTypes[plan.PlanTypeId] }}
                 </p>
                 <p class="property">
-                    {{ plan.price ? (plan.price / 10 | number) : 'رایگان' }}
+                    {{ plan.Price ? (plan.Price / 10 | number) : 'رایگان' }}
                 </p>
                 <p class="ion-margin-start">
-                    {{ plan.name }}
+                    {{ plan.Name }}
                 </p>
             </div>
             }
