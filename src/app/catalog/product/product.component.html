@@ -1,18 +1,18 @@
 @if (p) {
 <div class="product">
-    <img [src]="p.images['300']" (click)="showPicture()" />
-    <p class="name">{{ p.name }} ({{ p.id }})</p>
+    <img [src]="p.Images['300']" (click)="showPicture()" />
+    <p class="name">{{ p.Name }} ({{ p.Id }})</p>
     <div class="ion-display-flex ion-align-items-center ion-flex-gap-full">
-        <p>{{ p.tiesWidth }} گره در {{ p.tiesHeight }} رج</p>
+        <p>{{ p.TiesWidth }} گره در {{ p.TiesHeight }} رج</p>
         <span>|</span>
-        <p>{{ p.moghat }} مقاط</p>
+        <p>{{ p.Moghat }} مقاط</p>
         <span>|</span>
-        <p>{{ p.colorsCount }} رنگ</p>
+        <p>{{ p.ColorsCount }} رنگ</p>
     </div>
-    @if(p.productTypes?.length) {
+    @if(p.ProductTypes?.length) {
     <div class="full-width properties ion-margin-bottom">
         <p class="title">انواع نخ خامه</p>
-        @for (type of p.productTypes; track $index) { @let tieLength =
+        @for (type of p.ProductTypes; track $index) { @let tieLength =
         primaryData.tieLengths[type.mainTieLengthId];
         <div class="data-row ion-display-flex ion-flex-column">
             <div class="ion-display-flex">
@@ -71,14 +71,14 @@
         </div>
         }
     </div>
-    } @if(p.bulkTypes?.length) {
+    } @if(p.BulkTypes?.length) {
     <div class="full-width properties ion-margin-bottom">
         <div class="ion-display-flex ion-justify-content-between ion-align-items-center">
             <p class="title">انواع نخ خامه</p>
             <ion-button
                 fill="clear"
                 size="small"
-                (click)="showStockMessage(p.paletteId ?? 0, undefined)">
+                (click)="showStockMessage(p.PaletteId ?? 0, undefined)">
                 زمان تحویل
             </ion-button>
             <ion-select
@@ -138,11 +138,11 @@
         </div>
         }
     </div>
-    } @if(p.plans?.length) {
+    } @if(p.Plans?.length) {
     <div class="full-width properties">
         <p class="title">انواع نقشه برای این محصول</p>
         <div class="data-row">
-            @for (plan of p.plans; track $index) {
+            @for (plan of p.Plans; track $index) {
             <div class="ion-display-flex">
                 <p class="label">
                     {{ primaryData.planTypes[plan.planTypeId] }}

@@ -19,13 +19,13 @@
                 class="ion-display-flex ion-justify-content-start ion-align-items-center ion-flex-1">
                 <div>
                     <p>کد: {{userPlan.productId}}</p>
-                    <b class="product-name">{{userPlan.product.name}}</b>
+                    <b class="product-name">{{userPlan.product.Name}}</b>
                     <p>شروع از: {{userPlan.addDateTime | momentJalaali:'jYYYY/jMM/jDD'}}</p>
                     <p>آخرین اجرا: {{userPlan.lastAccess | momentJalaali:'jYYYY/jMM/jDD'}}</p>
                 </div>
                 <app-arc-chart
                     [diameter]="64"
-                    [percent]="Math.round(userPlan.position / (userPlan.product.tiesWidth * userPlan.product.tiesHeight) * 1000)/10">
+                    [percent]="Math.round(userPlan.position / (userPlan.product.TiesWidth * userPlan.product.TiesHeight) * 1000)/10">
                 </app-arc-chart>
                 <div class="commands ion-display-flex ion-flex-column">
                     <ion-button fill="clear" color="accent" [routerLink]="['waeve/' + userPlan.id]">

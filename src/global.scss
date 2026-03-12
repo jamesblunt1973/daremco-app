@@ -128,7 +128,7 @@ ion-modal.auto-height {
 
 .app-bg {
     position: relative;
-    min-height: calc(100% - 32px);
+    min-height: 100%;
     background-image: url('assets/gallery-bg.jpg');
 }
 

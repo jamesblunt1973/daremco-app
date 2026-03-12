@@ -40,7 +40,7 @@ export class ProductComponent implements OnInit {
 
     public ngOnInit(): void {
         this.p = this.product();
-        this.rajs = [...new Set(this.p.bulkTypes?.map(a => a.raj))];
+        this.rajs = [...new Set(this.p.BulkTypes?.map(a => a.raj))];
     }
 
     public async showStockMessage(paletteId?: number, pgId?: number): Promise<void> {
@@ -68,7 +68,7 @@ export class ProductComponent implements OnInit {
         if (selectedRaj === 0) {
             return;
         }
-        const bulkTypes = this.p?.bulkTypes?.filter(a => a.raj === selectedRaj);
+        const bulkTypes = this.p?.BulkTypes?.filter(a => a.raj === selectedRaj);
         if (!bulkTypes || !bulkTypes.length) {
             return;
         }
@@ -99,8 +99,8 @@ export class ProductComponent implements OnInit {
 
     public async showPicture(): Promise<void> {
         const mainImageName = 'main';
-        if (this.p?.images[mainImageName]) {
-            this.mainImage = this.p?.images[mainImageName];
+        if (this.p?.Images[mainImageName]) {
+            this.mainImage = this.p?.Images[mainImageName];
             return;
         }
 
@@ -118,11 +118,11 @@ export class ProductComponent implements OnInit {
     }
 
     public async showColorsPalette(type: ProductType | BulkTypeGroup): Promise<void> {
-        if (this.p?.colors) {
+        if (this.p?.Colors) {
             const modal = await this.modalCtrl.create({
                 component: PaletteComponent,
                 componentProps: {
-                    colors: this.p.colors,
+                    colors: this.p.Colors,
                     spec: {
                         materialId: type.materialId,
                         raj: type.raj,
@@ -150,11 +150,11 @@ export class ProductComponent implements OnInit {
     }
 
     public async showMaterialsChart(type: ProductType | BulkTypeGroup): Promise<void> {
-        if (this.p?.colors) {
+        if (this.p?.Colors) {
             const modal = await this.modalCtrl.create({
                 component: MaterialsChartComponent,
                 componentProps: {
-                    colors: this.p.colors,
+                    colors: this.p.Colors,
                     raj: type.raj
                 },
                 initialBreakpoint: 1,
