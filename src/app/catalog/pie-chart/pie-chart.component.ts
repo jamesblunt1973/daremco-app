@@ -23,7 +23,7 @@ export class PieChartComponent implements OnInit, AfterViewInit {
     private size = 360;
     private halfSize = this.size / 2;
     private startTime = 0;
-    private duration = 1000;
+    private duration = 1500;
 
     public ngOnInit(): void {
         this.total = this.data.reduce((sum, slice) => sum + slice.value, 0);
@@ -43,7 +43,7 @@ export class PieChartComponent implements OnInit, AfterViewInit {
         }
         const elapsed = timestamp - this.startTime;
         const t = Math.min(elapsed / this.duration, 1);
-        this.animationProgress = this.easeInCubic(t);
+        this.animationProgress = this.easeOutBounce(t);
         this.drawChart();
 
         if (t < 1) {
@@ -87,7 +87,13 @@ export class PieChartComponent implements OnInit, AfterViewInit {
         }
     }
 
-    private easeInCubic(t: number): number {
-        return t * t * t;
+    private easeOutBounce(t: number): number {
+        return (t /= 1) < 1 / 2.75
+            ? 7.5625 * t * t
+            : 2 / 2.75 > t
+            ? 1 * (7.5625 * (t -= 1.5 / 2.75) * t + 0.75)
+            : 2.5 / 2.75 > t
+            ? 1 * (7.5625 * (t -= 2.25 / 2.75) * t + 0.9375)
+            : 1 * (7.5625 * (t -= 2.625 / 2.75) * t + 0.984375);
     }
 }
