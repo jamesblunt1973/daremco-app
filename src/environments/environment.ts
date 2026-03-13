@@ -7,7 +7,7 @@ const baseUrl = 'https://localhost:44334/';
 export const environment = {
     production: false,
     baseUrl,
-    apiUrl: `${baseUrl}api/app/`,
+    apiUrl: `${baseUrl}api/`,
     imageUrl: `${baseUrl}images/`
 };
 

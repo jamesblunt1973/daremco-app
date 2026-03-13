@@ -1,59 +1,66 @@
-<div class="app-bg ion-display-flex ion-flex-column ion-align-items-start ion-padding">
-    @if(isLoading()){
-    <div class="ion-display-flex ion-margin-x-auto">
-        <ion-spinner name="circular"></ion-spinner>
-    </div>
-    <h5 class="ion-margin-x-auto">در حال دریافت اطلاعات و تصاویر محصولات</h5>
-    } @else if(error()){
-    <h1>خطا در دریافت اطلاعات</h1>
-    <p style="color: red; margin-bottom: 60px">{{ error()?.message }}</p>
-    } @else if(userPlans().length === 0) {
-    <h1>هیچ نقشه‌ای در دست بافت نیست</h1>
-    <p>با استفاده از دکمه‌ی پایین صفحه، می‌توانید نقشه‌ی مورد نظر خود را برای بافت انتخاب کنید.</p>
-    }
-    <div class="ion-display-flex ion-flex-column ion-flex-gap-full">
-        @for (userPlan of userPlans(); track $index) {
-        <ion-card class="product-list-item ion-display-flex">
-            <img [src]="productsPath + userPlan.productId + '/160.jpg' " />
-            <ion-card-content
-                class="ion-display-flex ion-justify-content-start ion-align-items-center ion-flex-1">
-                <div>
-                    <p>کد: {{userPlan.productId}}</p>
-                    <b class="product-name">{{userPlan.product.Name}}</b>
-                    <p>شروع از: {{userPlan.addDateTime | momentJalaali:'jYYYY/jMM/jDD'}}</p>
-                    <p>آخرین اجرا: {{userPlan.lastAccess | momentJalaali:'jYYYY/jMM/jDD'}}</p>
-                </div>
-                <app-arc-chart
-                    [diameter]="64"
-                    [percent]="Math.round(userPlan.position / (userPlan.product.TiesWidth * userPlan.product.TiesHeight) * 1000)/10">
-                </app-arc-chart>
-                <div class="commands ion-display-flex ion-flex-column">
-                    <ion-button fill="clear" color="accent" [routerLink]="['waeve/' + userPlan.id]">
-                        <ion-icon slot="icon-only" class="mdi mdi-play mdi-flip-h"></ion-icon>
-                    </ion-button>
-                    <ion-button fill="clear" color="warn" (click)="removeUserPlan(userPlan)">
-                        <ion-icon slot="icon-only" class="mdi mdi-delete"></ion-icon>
-                    </ion-button>
-                </div>
-            </ion-card-content>
-        </ion-card>
+<div class="app-bg">
+    <div class="ion-display-flex ion-flex-column ion-align-items-start ion-padding">
+        @if(isLoading()){
+        <div class="ion-display-flex ion-margin-x-auto">
+            <ion-spinner name="circular"></ion-spinner>
+        </div>
+        <h5 class="ion-margin-x-auto">در حال دریافت اطلاعات و تصاویر محصولات</h5>
+        } @else if(error()){
+        <h1>خطا در دریافت اطلاعات</h1>
+        <p style="color: red; margin-bottom: 60px">{{ error()?.message }}</p>
+        } @else if(userPlans().length === 0) {
+        <h1>هیچ نقشه‌ای در دست بافت نیست</h1>
+        <p>
+            با استفاده از دکمه‌ی پایین صفحه، می‌توانید نقشه‌ی مورد نظر خود را برای بافت انتخاب کنید.
+        </p>
         }
-    </div>
-    <div class="actions" [ngClass]="{'open' : isMenuOpen}">
-        <div class="add-cart" title="افزودن از لیست خرید">
-            <a routerLink="add-basket">
-                <ion-icon size="large" name="cart-outline"></ion-icon>
-            </a>
+        <div class="ion-display-flex ion-flex-column ion-flex-gap-full">
+            @for (userPlan of userPlans(); track $index) {
+            <ion-card class="product-list-item ion-display-flex">
+                <img [src]="productsPath + userPlan.productId + '/160.jpg' " />
+                <ion-card-content
+                    class="ion-display-flex ion-justify-content-start ion-align-items-center ion-flex-1">
+                    <div>
+                        <p>کد: {{userPlan.productId}}</p>
+                        <b class="product-name">{{userPlan.product.Name}}</b>
+                        <p>شروع از: {{userPlan.addDateTime | momentJalaali:'jYYYY/jMM/jDD'}}</p>
+                        <p>آخرین اجرا: {{userPlan.lastAccess | momentJalaali:'jYYYY/jMM/jDD'}}</p>
+                    </div>
+                    <app-arc-chart
+                        [diameter]="64"
+                        [percent]="Math.round(userPlan.position / (userPlan.product.TiesWidth * userPlan.product.TiesHeight) * 1000)/10">
+                    </app-arc-chart>
+                    <div class="commands ion-display-flex ion-flex-column">
+                        <ion-button
+                            fill="clear"
+                            color="accent"
+                            [routerLink]="['waeve/' + userPlan.id]">
+                            <ion-icon slot="icon-only" class="mdi mdi-play mdi-flip-h"></ion-icon>
+                        </ion-button>
+                        <ion-button fill="clear" color="warn" (click)="removeUserPlan(userPlan)">
+                            <ion-icon slot="icon-only" class="mdi mdi-delete"></ion-icon>
+                        </ion-button>
+                    </div>
+                </ion-card-content>
+            </ion-card>
+            }
         </div>
-        <div class="add-product" title="افزودن از لیست محصولات">
-            <a routerLink="add-product">
-                <ion-icon size="large" name="document-outline"></ion-icon>
-            </a>
-        </div>
-        <div class="add-archive" title="افزودن از لیست آرشیو">
-            <a routerLink="add-archive">
-                <ion-icon size="large" name="archive-outline"></ion-icon>
-            </a>
+        <div class="actions" [ngClass]="{'open' : isMenuOpen}">
+            <div class="add-cart" title="افزودن از لیست خرید">
+                <a routerLink="add-basket">
+                    <ion-icon size="large" name="cart-outline"></ion-icon>
+                </a>
+            </div>
+            <div class="add-product" title="افزودن از لیست محصولات">
+                <a routerLink="add-product">
+                    <ion-icon size="large" name="document-outline"></ion-icon>
+                </a>
+            </div>
+            <div class="add-archive" title="افزودن از لیست آرشیو">
+                <a routerLink="add-archive">
+                    <ion-icon size="large" name="archive-outline"></ion-icon>
+                </a>
+            </div>
         </div>
     </div>
 </div>

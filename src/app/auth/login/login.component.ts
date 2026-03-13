@@ -1,4 +1,5 @@
 import { Component, inject } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { LoginParam } from 'src/app/shared/models';
 import { AuthService } from 'src/app/shared/services/auth.service';
 
@@ -16,10 +17,25 @@ export class LoginComponent {
     };
 
     private readonly authService = inject(AuthService);
+    private readonly route = inject(ActivatedRoute);
+    private readonly router = inject(Router);
 
     public async login(): Promise<void> {
+        if (this.loading) {
+            return;
+        }
+
         this.loading = true;
-        await this.authService.login(this.model);
-        this.loading = false;
+
+        try {
+            await this.authService.login(this.model);
+
+            const redirectUrl = this.route.snapshot.queryParamMap.get('redirectUrl');
+            const targetUrl = redirectUrl?.startsWith('/') ? redirectUrl : '/joola';
+
+            await this.router.navigateByUrl(targetUrl);
+        } finally {
+            this.loading = false;
+        }
     }
 }

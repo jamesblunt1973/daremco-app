@@ -8,7 +8,7 @@ import { Category, PrimaryData, Product, ProductColor } from '../models';
     providedIn: 'root'
 })
 export class ApiService {
-    private apiUrl = environment.apiUrl;
+    private apiUrl = `${environment.apiUrl}app/`;
     private httpClient = inject(HttpClient);
 
     public healthCheck(): Promise<string> {

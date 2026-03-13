@@ -15,11 +15,11 @@ export class AuthService {
     private userSignal = signal<User | null>(null);
     private readonly tokenKey = AUTH_TOKEN_KEY;
 
-    private apiUrl = environment.apiUrl + 'auth/';
+    private apiUrl = `${environment.apiUrl}auth/`;
     private http = inject(HttpClient);
 
     public register(data: RegisterParam): Promise<AuthResult> {
-        const res = this.http.post<AuthResult>(this.apiUrl + 'register', data).pipe(
+        const res = this.http.post<AuthResult>(`${this.apiUrl}register`, data).pipe(
             tap(res => {
                 localStorage.setItem(this.tokenKey, res.token);
                 this.userSignal.set(res.user);
@@ -30,7 +30,7 @@ export class AuthService {
     }
 
     public login(data: LoginParam): Promise<AuthResult> {
-        const res = this.http.post<AuthResult>(this.apiUrl + 'login', data).pipe(
+        const res = this.http.post<AuthResult>(`${this.apiUrl}login`, data).pipe(
             tap(res => {
                 localStorage.setItem(this.tokenKey, res.token);
                 this.userSignal.set(res.user);
@@ -55,7 +55,7 @@ export class AuthService {
             return Promise.resolve(false);
         }
 
-        const res = this.http.get<AuthResult>(this.apiUrl + 'check-user').pipe(
+        const res = this.http.get<AuthResult>(`${this.apiUrl}check-user`).pipe(
             tap(res => {
                 localStorage.setItem(this.tokenKey, res.token);
                 this.userSignal.set(res.user);
