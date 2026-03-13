@@ -85,4 +85,6 @@
     </ng-template>
 </ion-modal>
 
-<app-loading [loading]="loading"></app-loading>
+@if(loading()) {
+<app-loading></app-loading>
+}

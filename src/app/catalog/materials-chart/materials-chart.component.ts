@@ -43,22 +43,22 @@ export class MaterialsChartComponent {
             if (!colors.length) {
                 return;
             }
-            const filtered = colors.filter(a => a.MaterialGroupId != null);
+            const filtered = colors.filter(a => a.materialGroupId != null);
             const grouped = new Map<number, ProductColor[]>();
             for (const color of filtered) {
-                const key = color.MaterialGroupId!;
+                const key = color.materialGroupId!;
                 if (!grouped.has(key)) {
                     grouped.set(key, []);
                 }
                 grouped.get(key)!.push(color);
-                this.total += color.Count;
+                this.total += color.count;
             }
 
             this.materials = Array.from(grouped.entries())
                 .map(([materialGroupId, items]) => {
                     const materialRaj = dkbRaj.materialRajs[materialGroupId - 1];
                     const material = primaryData.materials[materialRaj.materialId];
-                    const tiesCount = items.reduce((sum, b) => sum + b.Count, 0);
+                    const tiesCount = items.reduce((sum, b) => sum + b.count, 0);
 
                     return {
                         MaterialGroupId: materialGroupId,

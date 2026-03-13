@@ -15,12 +15,12 @@
             <tr>
                 <td>{{ $index + 1 }}</td>
                 @if(bulk){
-                <td [ngStyle]="{ backgroundColor: color.Color }">
-                    {{ color.Position }}
+                <td [ngStyle]="{ backgroundColor: color.color }">
+                    {{ color.position }}
                 </td>
                 }
-                <td>{{ color.Material }}</td>
-                <td>{{ color.Weight | number }}</td>
+                <td>{{ color.material }}</td>
+                <td>{{ color.weight | number }}</td>
             </tr>
             }
         </tbody>

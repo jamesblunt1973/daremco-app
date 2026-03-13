@@ -1,4 +1,4 @@
-import { Component, inject, input, OnInit } from '@angular/core';
+import { Component, inject, input, OnInit, signal } from '@angular/core';
 import { ModalController, ToastController } from '@ionic/angular';
 import {
     BulkTypeGroup,
@@ -26,7 +26,7 @@ export class ProductComponent implements OnInit {
     public rajs: number[] = [];
     public bulkTypeGroups: BulkTypeGroup[] = [];
     public mainImage = '';
-    public loading = false;
+    public loading = signal(false);
 
     private data = inject(DataService);
     private update = inject(UpdateService);
@@ -104,9 +104,9 @@ export class ProductComponent implements OnInit {
             return;
         }
 
-        this.loading = true;
+        this.loading.set(true);
         const hasMainImage = await this.update.setProductImage(this.p!, 'main');
-        this.loading = false;
+        this.loading.set(false);
         if (hasMainImage !== false) {
             await this.showPicture();
             return;
@@ -136,9 +136,9 @@ export class ProductComponent implements OnInit {
             await modal.present();
             return;
         }
-        this.loading = true;
+        this.loading.set(true);
         const hasColors = await this.update.getProductColors(this.p!);
-        this.loading = false;
+        this.loading.set(false);
         if (hasColors) {
             await this.showColorsPalette(type);
             return;
@@ -163,9 +163,9 @@ export class ProductComponent implements OnInit {
             await modal.present();
             return;
         }
-        this.loading = true;
+        this.loading.set(true);
         const hasColors = await this.update.getProductColors(this.p!);
-        this.loading = false;
+        this.loading.set(false);
         if (hasColors) {
             await this.showMaterialsChart(type);
             return;

@@ -19,7 +19,7 @@ export class GalleryComponent {
     public searchPanelOpen = false;
     public code: number | null = null;
     public name = '';
-    public loading = false;
+    public loading = signal(false);
 
     public app = inject(AppService);
     private data = inject(DataService);
@@ -105,14 +105,14 @@ export class GalleryComponent {
             await toast.present();
             return;
         }
-        this.loading = true;
+        this.loading.set(true);
         const size = '300';
         const productsWithoutImage = products.filter(a => !a.Images || !a.Images[size]);
         if (productsWithoutImage.length) {
             await this.update.updateProductImages(products, size);
         }
         this.products.set(products);
-        this.loading = false;
+        this.loading.set(false);
     }
 
     private extractLinksFromHtml = (htmlString: string): HTMLAnchorElement[] => {
