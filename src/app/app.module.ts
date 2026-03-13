@@ -5,7 +5,7 @@ import { PreloadAllModules, RouteReuseStrategy, RouterModule, Routes } from '@an
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
 import { IonicStorageModule } from '@ionic/storage-angular';
 import { AppComponent } from './app.component';
-import { LayoutComponent } from './layout/layout';
+import { LayoutComponent } from './shared/components/layout/layout';
 import { authInterceptor } from './shared/services/auth-interceptor';
 import { authGuard } from './shared/services/auth.guard';
 
