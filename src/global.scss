@@ -126,6 +126,14 @@ ion-modal.auto-height {
     --height: auto;
 }
 
+ion-icon.flip-horizontal {
+    transform: scaleX(-1);
+}
+
+ion-fab {
+    position: fixed;
+}
+
 .app-bg {
     position: relative;
     min-height: 100%;

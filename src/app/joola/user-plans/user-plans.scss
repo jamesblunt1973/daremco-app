@@ -1,6 +1,7 @@
 .actions {
     position: fixed;
     bottom: 10px;
+    right: 16px;
 
     div {
         position: absolute;
@@ -72,5 +73,17 @@
 
     &.open {
         transform: rotate(-45deg);
+    }
+}
+
+.product-list-item {
+    display: flex;
+    align-items: center;
+
+    img {
+        display: block;
+        height: 90px;
+        width: 90px;
+        border-radius: 0 4px 4px 0;
     }
 }

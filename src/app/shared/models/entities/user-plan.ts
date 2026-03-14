@@ -1,4 +1,3 @@
-import { Product } from './product';
 import { User } from './user';
 
 export interface UserPlan {
@@ -15,6 +14,12 @@ export interface UserPlan {
     autoPlay: boolean;
     speed: number;
     user: User;
-    product: Product;
+    product: JoolaProduct;
     data: number[];
+}
+
+export interface JoolaProduct {
+    name: string;
+    tiesWidth: number;
+    tiesHeight: number;
 }
