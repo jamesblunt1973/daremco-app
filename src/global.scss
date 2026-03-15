@@ -106,16 +106,16 @@ ion-popover {
     display: block;
 }
 
-.ion-flex-gap-full {
+.ion-gap-full {
     gap: 1rem;
 }
 
-.ion-flex-gap-half {
+.ion-gap-half {
     gap: 0.5rem;
 }
 
 .ion-padding-half {
-    padding: 0.5rem;
+    padding: 0.5rem !important;
 }
 
 .full-width {

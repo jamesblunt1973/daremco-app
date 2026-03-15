@@ -1,0 +1,14 @@
+:host {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    align-items: anchor-center;
+}
+
+.no-overflow {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    max-width: 210px;
+    display: block;
+    overflow: hidden;
+}

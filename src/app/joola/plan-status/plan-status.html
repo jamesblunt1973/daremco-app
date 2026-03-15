@@ -1,0 +1,14 @@
+@let up = userPlan(); @if(up) {
+<div>
+    <p>کد: {{up.productId}}</p>
+    <b class="no-overflow">{{up.product.name}}</b>
+    <p>شروع از: {{up.addDateTime | momentJalaali:'jYYYY/jMM/jDD'}}</p>
+    <p>آخرین اجرا: {{up.lastAccess | momentJalaali:'jYYYY/jMM/jDD'}}</p>
+</div>
+<app-arc-chart
+    style="margin-right: auto"
+    [diameter]="64"
+    [percent]="Math.round(up.position / (up.product.tiesWidth * up.product.tiesHeight) * 1000)/10">
+</app-arc-chart>
+
+}

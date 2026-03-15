@@ -8,11 +8,16 @@ import { Product, UserPlan, UserPurchase } from '../models';
     providedIn: 'root'
 })
 export class JoolaService {
-    public productsPath = `${environment.imageUrl}products/`;
+    public static productsPath = `${environment.imageUrl}products/`;
     public audioPath = './assets/joola-farsi/';
 
     public userPlans = resource<UserPlan[], unknown>({
         loader: () => this.initialLoadUserPlans(),
+        defaultValue: []
+    });
+
+    public archivedPlans = resource<UserPlan[], unknown>({
+        loader: () => this.getArchivedUserPlans(),
         defaultValue: []
     });
 

@@ -1,0 +1,39 @@
+<div class="app-bg">
+    <div class="ion-display-flex ion-flex-column ion-align-items-start ion-padding">
+        @if(isLoading()){
+        <div class="ion-display-flex ion-margin-x-auto">
+            <ion-spinner name="circular"></ion-spinner>
+        </div>
+        <h5 class="ion-margin-x-auto">در حال دریافت اطلاعات و تصاویر محصولات</h5>
+        } @else if(error()){
+        <h1>خطا در دریافت اطلاعات</h1>
+        <p style="color: red; margin-bottom: 60px">{{ error()?.message }}</p>
+        } @else if(archivedPlans().length === 0) {
+        <h1>هیچ نقشه‌ای در دست بافت نیست</h1>
+        <p>
+            با استفاده از دکمه‌ی پایین صفحه، می‌توانید نقشه‌ی مورد نظر خود را برای بافت انتخاب کنید.
+        </p>
+        }
+        <div class="ion-display-flex ion-flex-column ion-gap-full full-width">
+            @for (userPlan of archivedPlans(); track $index) {
+            <ion-card class="product-list-item ion-gap-full">
+                <img [src]="productsPath + userPlan.productId + '/160.jpg' " />
+                <ion-card-content
+                    class="ion-display-flex ion-justify-content-between ion-no-padding ion-align-items-center ion-flex-1">
+                    <app-plan-status [userPlan]="userPlan" />
+                    <div class="commands ion-display-flex ion-flex-column"></div>
+                </ion-card-content>
+                <div class="commands ion-display-flex ion-flex-column">
+                    <ion-button fill="clear">
+                        <ion-icon slot="icon-only" name="repeat"></ion-icon>
+                    </ion-button>
+                </div>
+            </ion-card>
+            }
+            <ion-button [routerLink]="['/joola']">
+                <span>بازگشت به لیست نقشه‌ها</span>
+                <ion-icon name="arrow-left" />
+            </ion-button>
+        </div>
+    </div>
+</div>

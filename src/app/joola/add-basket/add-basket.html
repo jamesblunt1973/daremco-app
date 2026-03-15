@@ -1,0 +1,27 @@
+<div class="app-container">
+    <div *ngIf="userPurchases.length == 0">
+        <h1>هیچ محصولی یافت نشد</h1>
+        <p>چنانچه محصول جدیدی خریداری نموده‌اید، با ارسال کد پیگیری به شماره 30002391، آن را استعلام کرده و به نام خود ثبت نمایید تا در این صفحه نمایش داده شود.</p>
+    </div>
+    <div fxLayout="column" fxLayoutGap="10px">
+        <mat-card class="product-list-item" *ngFor="let purchase of userPurchases" fxLayout="row">
+            <img [src]="productsPath + purchase.productId + '/160.jpg' " />
+            <mat-card-content fxFlex="*" fxLayout="row" fxLayoutAlign="space-between center">
+                <div>
+                    <p>کد: {{purchase.productId}}</p>
+                    <b class="product-name">{{purchase.name}}</b>
+                    <p>
+                        تاریخ استعلام: {{purchase.requestTime | momentJalaali:'jYYYY/jMM/jDD'}}
+                    </p>
+                </div>
+                <div class="commands">
+                    <button mat-raised-button color="accent" (click)="addProduct(purchase.productId)">
+                        <i class="mdi mdi-plus-circle-outline"></i>
+                        اضافه به لیست
+                    </button>
+                </div>
+            </mat-card-content>
+        </mat-card>
+    </div>
+    <app-navigate-list></app-navigate-list>
+</div>

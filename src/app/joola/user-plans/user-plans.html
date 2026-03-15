@@ -14,22 +14,13 @@
             با استفاده از دکمه‌ی پایین صفحه، می‌توانید نقشه‌ی مورد نظر خود را برای بافت انتخاب کنید.
         </p>
         }
-        <div class="ion-display-flex ion-flex-column ion-flex-gap-full full-width">
+        <div class="ion-display-flex ion-flex-column ion-gap-full full-width">
             @for (userPlan of userPlans(); track $index) {
-            <ion-card class="product-list-item">
+            <ion-card class="product-list-item ion-gap-full">
                 <img [src]="productsPath + userPlan.productId + '/160.jpg' " />
                 <ion-card-content
-                    class="ion-display-flex ion-justify-content-between ion-align-items-center ion-flex-1">
-                    <div>
-                        <p>کد: {{userPlan.productId}}</p>
-                        <b class="product-name">{{userPlan.product.name}}</b>
-                        <p>شروع از: {{userPlan.addDateTime | momentJalaali:'jYYYY/jMM/jDD'}}</p>
-                        <p>آخرین اجرا: {{userPlan.lastAccess | momentJalaali:'jYYYY/jMM/jDD'}}</p>
-                    </div>
-                    <app-arc-chart
-                        [diameter]="64"
-                        [percent]="Math.round(userPlan.position / (userPlan.product.tiesWidth * userPlan.product.tiesHeight) * 1000)/10">
-                    </app-arc-chart>
+                    class="ion-display-flex ion-justify-content-between ion-no-padding ion-align-items-center ion-flex-1">
+                    <app-plan-status [userPlan]="userPlan" />
                     <div class="commands ion-display-flex ion-flex-column">
                         <ion-button
                             fill="clear"

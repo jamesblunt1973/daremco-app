@@ -1,0 +1,26 @@
+<div class="app-container">
+    <mat-form-field appearance="outline">
+        <mat-label>نام یا کد محصول</mat-label>
+        <input matInput type="text" #searchInput autocomplete="off" />
+    </mat-form-field>
+    <div fxLayout="column" fxLayoutGap="10px">
+        <mat-card class="product-list-item" *ngFor="let product of products" fxLayout="row">
+            <img [src]="productsPath + product.id + '/160.jpg' " />
+            <mat-card-content fxFlex="*" fxLayout="row" fxLayoutAlign="space-between center">
+                <div>
+                    <p>کد: {{product.id}}</p>
+                    <b class="product-name">{{product.name}}</b>
+                    <p>{{product.tiesWidth + ' گره در ' + product.tiesHeight + ' رج'}}</p>
+                    <p>{{product.colorsCount}} رنگ</p>
+                </div>
+                <div class="commands">
+                    <button mat-raised-button color="accent" (click)="addProduct(product.id)">
+                        <i class="mdi mdi-plus-circle-outline"></i>
+                        اضافه به لیست
+                    </button>
+                </div>
+            </mat-card-content>
+        </mat-card>
+    </div>
+    <app-navigate-list></app-navigate-list>
+</div>

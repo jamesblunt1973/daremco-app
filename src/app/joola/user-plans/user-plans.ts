@@ -3,7 +3,6 @@ import { Component, computed, inject } from '@angular/core';
 import { AlertController } from '@ionic/angular';
 import { UserPlan } from '../../../app/shared/models';
 import { JoolaService } from '../../../app/shared/services/joola.service';
-import { environment } from '../../../environments/environment';
 
 @Component({
     selector: 'app-user-plans',
@@ -12,8 +11,7 @@ import { environment } from '../../../environments/environment';
     standalone: false
 })
 export class UserPlansComponent {
-    public productsPath = `${environment.imageUrl}products/`;
-    public Math = Math;
+    public productsPath = JoolaService.productsPath;
     public isMenuOpen = false;
 
     public readonly userPlans = computed<UserPlan[]>(() => {
