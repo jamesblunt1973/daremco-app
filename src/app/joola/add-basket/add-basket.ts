@@ -1,39 +1,74 @@
-import { Component, OnInit } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
-import { IUserPucrhcase } from '../../models/user-purchases.model';
-import { JoolaService } from '../../services/joola.service';
-import { SelectProductOptionsComponent } from '../select-product-options/select-product-options.component';
+import { HttpErrorResponse } from '@angular/common/http';
+import { Component, computed, inject } from '@angular/core';
+import { ModalController, ToastController } from '@ionic/angular';
+import { UserPurchase } from 'src/app/shared/models';
+import { JoolaService } from 'src/app/shared/services/joola.service';
+import { SelectProductOptionsComponent } from '../select-product-options/select-product-options';
+
+type ProductOptionResult = {
+    raj: number;
+    turned: boolean;
+};
 
 @Component({
-  selector: 'app-add-basket',
-  templateUrl: './add-basket.component.html',
-  styleUrls: ['./add-basket.component.scss']
+    selector: 'app-add-basket',
+    templateUrl: './add-basket.html',
+    styleUrl: './add-basket.scss',
+    standalone: false
 })
-export class AddBasketComponent implements OnInit {
+export class AddBasketComponent {
+    public productsPath = JoolaService.productsPath;
 
-  userPurchases: IUserPucrhcase[] = [];
-  productsPath = this.joolaService.productsPath;
-
-  constructor(private joolaService: JoolaService, private dialog: MatDialog) { }
-
-  ngOnInit() {
-    this.joolaService.getUserPurchases().subscribe(res => {
-      this.userPurchases = res;
+    public readonly userPurchases = computed<UserPurchase[]>(() => {
+        const userPurchasesResource = this.joolaService.userPurchases;
+        return userPurchasesResource.hasValue() ? userPurchasesResource.value() : [];
     });
-  }
 
-  addProduct(productId: number) {
-    const dialogRef = this.dialog.open(SelectProductOptionsComponent);
+    public readonly isLoading = computed<boolean>(() =>
+        this.joolaService.userPurchases.isLoading()
+    );
 
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        this.joolaService.addUserPlan(productId, result.raj, result.turned).subscribe(() => {
-          const index = this.userPurchases.findIndex(a => {
-            return a.productId == productId;
-          });
-          this.userPurchases.splice(index, 1);
+    public readonly error = computed<Error | undefined>(() => {
+        const userPurchasesResource = this.joolaService.userPurchases;
+        if (userPurchasesResource.status() !== 'error') {
+            return undefined;
+        }
+
+        const resourceError = userPurchasesResource.error();
+        if (resourceError instanceof HttpErrorResponse) {
+            return resourceError;
+        }
+
+        return new Error(String(resourceError));
+    });
+
+    private readonly joolaService = inject(JoolaService);
+    private readonly toastCtrl = inject(ToastController);
+    private readonly modalCtrl = inject(ModalController);
+
+    public async addProduct(productId: number): Promise<void> {
+        const modal = await this.modalCtrl.create({
+            component: SelectProductOptionsComponent,
+            initialBreakpoint: 1,
+            breakpoints: [0, 1],
+            cssClass: 'auto-height'
         });
-      }
-    });
-  }
+        await modal.present();
+
+        const { data } = await modal.onWillDismiss<ProductOptionResult>();
+
+        if (data) {
+            await this.joolaService.addUserPlan(productId, data.raj, data.turned);
+            this.joolaService.userPurchases.update(purchases =>
+                purchases.filter(p => p.productId !== productId)
+            );
+            const toast = await this.toastCtrl.create({
+                color: 'success',
+                message: 'نقشه مورد نظر به لیست در حال بافت اضافه شد.',
+                duration: 1500,
+                position: 'bottom'
+            });
+            await toast.present();
+        }
+    }
 }

@@ -20,7 +20,7 @@ type ChartData = {
 @Component({
     selector: 'app-materials-chart',
     templateUrl: './materials-chart.component.html',
-    styleUrls: ['./materials-chart.component.scss'],
+    styleUrl: './materials-chart.component.scss',
     standalone: false
 })
 export class MaterialsChartComponent {

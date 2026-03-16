@@ -22,7 +22,7 @@ export class AppComponent {
     private lastTimeBackPressed = 0;
     private timePeriodToExit = 1500;
     private platform = inject(Platform);
-    private toastController = inject(ToastController);
+    private toastCtrl = inject(ToastController);
 
     public constructor() {
         this.platform.ready().then(
@@ -43,7 +43,7 @@ export class AppComponent {
                 await App.exitApp();
             } else {
                 this.lastTimeBackPressed = currentTime;
-                const toast = await this.toastController.create({
+                const toast = await this.toastCtrl.create({
                     message: 'Press back again to exit',
                     duration: this.timePeriodToExit,
                     position: 'bottom'

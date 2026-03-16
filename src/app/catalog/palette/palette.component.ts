@@ -13,7 +13,7 @@ type ProductSpec = {
 @Component({
     selector: 'app-palette',
     templateUrl: './palette.component.html',
-    styleUrls: ['./palette.component.scss'],
+    styleUrl: './palette.component.scss',
     standalone: false
 })
 export class PaletteComponent {

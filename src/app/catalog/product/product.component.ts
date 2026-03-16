@@ -16,7 +16,7 @@ import { PaletteComponent } from '../palette/palette.component';
 @Component({
     selector: 'app-product',
     templateUrl: './product.component.html',
-    styleUrls: ['./product.component.scss'],
+    styleUrl: './product.component.scss',
     standalone: false
 })
 export class ProductComponent implements OnInit {
@@ -31,7 +31,7 @@ export class ProductComponent implements OnInit {
     private data = inject(DataService);
     private update = inject(UpdateService);
     private modalCtrl = inject(ModalController);
-    private toastController = inject(ToastController);
+    private toastCtrl = inject(ToastController);
 
     public constructor() {
         const primaryData = this.data.primaryData;
@@ -177,7 +177,7 @@ export class ProductComponent implements OnInit {
     }
 
     private async presentToast(message: string): Promise<void> {
-        const toast = await this.toastController.create({
+        const toast = await this.toastCtrl.create({
             message,
             duration: 2000,
             position: 'bottom'

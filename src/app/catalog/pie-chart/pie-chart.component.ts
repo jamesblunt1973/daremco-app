@@ -9,7 +9,7 @@ type PieSlice = {
 @Component({
     selector: 'app-pie-chart',
     templateUrl: './pie-chart.component.html',
-    styleUrls: ['./pie-chart.component.scss'],
+    styleUrl: './pie-chart.component.scss',
     standalone: false
 })
 export class PieChartComponent implements OnInit, AfterViewInit {

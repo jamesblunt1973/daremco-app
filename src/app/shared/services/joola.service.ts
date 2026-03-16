@@ -16,6 +16,11 @@ export class JoolaService {
         defaultValue: []
     });
 
+    public userPurchases = resource<UserPurchase[], unknown>({
+        loader: () => this.getUserPurchases(),
+        defaultValue: []
+    });
+
     public archivedPlans = resource<UserPlan[], unknown>({
         loader: () => this.getArchivedUserPlans(),
         defaultValue: []

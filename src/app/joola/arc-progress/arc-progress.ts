@@ -4,7 +4,7 @@ import { ArcRingBase } from '../arc-ring/arc-ring-base';
 @Component({
     selector: 'app-arc-progress',
     templateUrl: '../arc-ring/arc-ring.html',
-    styleUrls: ['../arc-ring/arc-ring.scss'],
+    styleUrl: '../arc-ring/arc-ring.scss',
     standalone: false
 })
 export class ArcProgressComponent extends ArcRingBase {

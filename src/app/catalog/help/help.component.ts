@@ -6,7 +6,7 @@ import { UpdateService } from '../../shared/services/update.service';
 @Component({
     selector: 'app-help',
     templateUrl: './help.component.html',
-    styleUrls: ['./help.component.scss'],
+    styleUrl: './help.component.scss',
     standalone: false
 })
 export class HelpComponent {

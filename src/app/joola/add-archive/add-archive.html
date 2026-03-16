@@ -21,18 +21,17 @@
                 <ion-card-content
                     class="ion-display-flex ion-justify-content-between ion-no-padding ion-align-items-center ion-flex-1">
                     <app-plan-status [userPlan]="userPlan" />
-                    <div class="commands ion-display-flex ion-flex-column"></div>
+                    <div class="commands ion-display-flex ion-flex-column">
+                        <ion-button fill="clear" (click)="addPlan(userPlan.id)">
+                            <ion-icon slot="icon-only" name="repeat"></ion-icon>
+                        </ion-button>
+                    </div>
                 </ion-card-content>
-                <div class="commands ion-display-flex ion-flex-column">
-                    <ion-button fill="clear">
-                        <ion-icon slot="icon-only" name="repeat"></ion-icon>
-                    </ion-button>
-                </div>
             </ion-card>
             }
             <ion-button [routerLink]="['/joola']">
                 <span>بازگشت به لیست نقشه‌ها</span>
-                <ion-icon name="arrow-left" />
+                <ion-icon name="arrow-back" />
             </ion-button>
         </div>
     </div>

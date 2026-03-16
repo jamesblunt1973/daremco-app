@@ -8,7 +8,7 @@ import { UpdateService } from '../../shared/services/update.service';
 @Component({
     selector: 'app-gallery',
     templateUrl: './gallery.component.html',
-    styleUrls: ['./gallery.component.scss'],
+    styleUrl: './gallery.component.scss',
     standalone: false
 })
 export class GalleryComponent {
@@ -24,7 +24,7 @@ export class GalleryComponent {
     public app = inject(AppService);
     private data = inject(DataService);
     private update = inject(UpdateService);
-    private toastController = inject(ToastController);
+    private toastCtrl = inject(ToastController);
 
     public get categories(): Category[] {
         return this.data.categories.value();
@@ -97,7 +97,7 @@ export class GalleryComponent {
 
     private async setProducts(products: Product[]): Promise<void> {
         if (!products || !products.length) {
-            const toast = await this.toastController.create({
+            const toast = await this.toastCtrl.create({
                 message: 'محصولی یافت نشد',
                 duration: 1500,
                 position: 'bottom'

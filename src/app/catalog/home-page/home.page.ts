@@ -10,7 +10,7 @@ import { UpdateService } from '../../shared/services/update.service';
 @Component({
     selector: 'app-home',
     templateUrl: 'home.page.html',
-    styleUrls: ['home.page.scss'],
+    styleUrl: 'home.page.scss',
     standalone: false
 })
 export class HomePage implements OnInit {
