@@ -23,13 +23,13 @@
                     class="ion-display-flex ion-justify-content-between ion-no-padding ion-align-items-center ion-flex-1">
                     <div>
                         <p>کد: {{purchase.productId}}</p>
-                        <b class="product-name">{{purchase.name}}</b>
+                        <b class="no-overflow">{{purchase.name}}</b>
                         <p>
                             تاریخ استعلام: {{purchase.requestTime | momentJalaali:'jYYYY/jMM/jDD'}}
                         </p>
                     </div>
                     <div class="commands ion-display-flex ion-flex-column">
-                        <ion-button fill="clear">
+                        <ion-button fill="clear" (click)="addProduct(purchase.productId)">
                             <ion-icon slot="icon-only" size="large" name="add-circle"></ion-icon>
                         </ion-button>
                     </div>

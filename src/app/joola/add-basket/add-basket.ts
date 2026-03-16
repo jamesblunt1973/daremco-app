@@ -1,8 +1,8 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, computed, inject } from '@angular/core';
 import { ModalController, ToastController } from '@ionic/angular';
-import { UserPurchase } from 'src/app/shared/models';
-import { JoolaService } from 'src/app/shared/services/joola.service';
+import { UserPurchase } from '../../shared/models';
+import { JoolaService } from '../../shared/services/joola.service';
 import { SelectProductOptionsComponent } from '../select-product-options/select-product-options';
 
 type ProductOptionResult = {

@@ -1,5 +1,5 @@
 import { Component, input } from '@angular/core';
-import { UserPlan } from 'src/app/shared/models';
+import { UserPlan } from '../../shared/models';
 
 @Component({
     selector: 'app-plan-status',

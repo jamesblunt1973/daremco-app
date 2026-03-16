@@ -1,8 +1,8 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, computed, inject } from '@angular/core';
 import { ToastController } from '@ionic/angular';
-import { UserPlan } from 'src/app/shared/models';
-import { JoolaService } from 'src/app/shared/services/joola.service';
+import { UserPlan } from '../../shared/models';
+import { JoolaService } from '../../shared/services/joola.service';
 
 @Component({
     selector: 'app-add-archive',

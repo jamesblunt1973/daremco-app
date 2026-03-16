@@ -1,0 +1,19 @@
+.product-list-item {
+    display: flex;
+    align-items: center;
+
+    img {
+        display: block;
+        height: 90px;
+        width: 90px;
+        border-radius: 0 4px 4px 0;
+    }
+}
+
+.no-overflow {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    max-width: 260px;
+    display: block;
+    overflow: hidden;
+}

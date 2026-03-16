@@ -1,12 +1,14 @@
-<div dir="rtl">
+<div class="ion-display-flex ion-flex-column ion-gap-full ion-padding">
     <ion-select label="انتخاب رجشمار" interface="popover" [(ngModel)]="result.raj">
         @for (raj of rajs; track raj) {
         <ion-select-option [value]="raj"> {{ raj }} </ion-select-option>
         }
     </ion-select>
-    <ion-checkbox [(ngModel)]="result.turned">بافت به صورت چرخیده</ion-checkbox>
-    <div>
+    <ion-checkbox [(ngModel)]="result.turned" labelPlacement="end">
+        بافت به صورت چرخیده
+    </ion-checkbox>
+    <div class="ion-display-flex ion-justify-content-around">
         <ion-button (click)="dismiss(true)">تایید</ion-button>
-        <ion-button (click)="dismiss(false)">لغو</ion-button>
+        <ion-button color="light" (click)="dismiss(false)">لغو</ion-button>
     </div>
 </div>

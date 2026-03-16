@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
-import { RegisterParam } from 'src/app/shared/models';
-import { AuthService } from 'src/app/shared/services/auth.service';
+import { RegisterParam } from '../../shared/models';
+import { AuthService } from '../../shared/services/auth.service';
 
 @Component({
     selector: 'app-register',
