@@ -123,7 +123,13 @@ export class JoolaService {
     }
 
     public setProductSearchTerm(searchTerm: string): void {
-        this.productSearchTerm.set(searchTerm.trim());
+        const normalizedSearchTerm = searchTerm.trim();
+        if (this.productSearchTerm() === normalizedSearchTerm) {
+            return;
+        }
+
+        this.productSearchTerm.set(normalizedSearchTerm);
+        this.searchedProducts.reload();
     }
 
     public getUserPlanData(id: number): Promise<number[]> {

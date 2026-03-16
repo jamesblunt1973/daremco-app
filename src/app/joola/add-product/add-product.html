@@ -1,26 +1,50 @@
-<div class="app-container">
-    <mat-form-field appearance="outline">
-        <mat-label>نام یا کد محصول</mat-label>
-        <input matInput type="text" #searchInput autocomplete="off" />
-    </mat-form-field>
-    <div fxLayout="column" fxLayoutGap="10px">
-        <mat-card class="product-list-item" *ngFor="let product of products" fxLayout="row">
-            <img [src]="productsPath + product.id + '/160.jpg' " />
-            <mat-card-content fxFlex="*" fxLayout="row" fxLayoutAlign="space-between center">
-                <div>
-                    <p>کد: {{product.id}}</p>
-                    <b class="product-name">{{product.name}}</b>
-                    <p>{{product.tiesWidth + ' گره در ' + product.tiesHeight + ' رج'}}</p>
-                    <p>{{product.colorsCount}} رنگ</p>
-                </div>
-                <div class="commands">
-                    <button mat-raised-button color="accent" (click)="addProduct(product.id)">
-                        <i class="mdi mdi-plus-circle-outline"></i>
-                        اضافه به لیست
-                    </button>
-                </div>
-            </mat-card-content>
-        </mat-card>
+<div class="app-bg">
+    <div class="ion-display-flex ion-flex-column ion-align-items-start ion-padding">
+        <ion-input
+            type="text"
+            autocomplete="off"
+            label="نام یا کد محصول"
+            [value]="searchTerm"
+            (ionInput)="onSearchInput($event.detail.value)" />
+
+        @if(searching){
+        <div class="ion-display-flex ion-margin-x-auto ion-margin-top">
+            <ion-spinner name="circular"></ion-spinner>
+        </div>
+        } @else if(searchFailed){
+        <p style="color: red">خطا در جستجوی محصولات. لطفا دوباره تلاش کنید.</p>
+        } @else if(searchTerm.length <= 2) {
+        <p>دست کم سه حرف تایپ کنید.</p>
+        } @else if(products.length === 0) {
+        <h3>محصولی یافت نشد</h3>
+        <p>نام یا کد محصول را با عبارت دیگری جستجو کنید.</p>
+        }
+
+        <div class="ion-display-flex ion-flex-column ion-gap-full full-width ion-margin-top">
+            @for (product of products; track product.id) {
+            <ion-card class="product-list-item ion-gap-full">
+                <img [src]="productsPath + product.id + '/160.jpg' " />
+                <ion-card-content
+                    class="ion-display-flex ion-justify-content-between ion-no-padding ion-align-items-center ion-flex-1">
+                    <div>
+                        <p>کد: {{product.id}}</p>
+                        <b class="no-overflow">{{product.name}}</b>
+                        <p>{{product.tiesWidth + ' گره در ' + product.tiesHeight + ' رج'}}</p>
+                        <p>{{product.colorsCount}} رنگ</p>
+                    </div>
+                    <div class="commands ion-display-flex ion-flex-column">
+                        <ion-button fill="clear" (click)="addProduct(product.id)">
+                            <ion-icon slot="icon-only" size="large" name="add-circle"></ion-icon>
+                        </ion-button>
+                    </div>
+                </ion-card-content>
+            </ion-card>
+            }
+
+            <ion-button [routerLink]="['/joola']">
+                <span>بازگشت به لیست نقشه‌ها</span>
+                <ion-icon name="arrow-back" />
+            </ion-button>
+        </div>
     </div>
-    <app-navigate-list></app-navigate-list>
 </div>

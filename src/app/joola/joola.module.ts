@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { SharedModule } from '../shared/shared.module';
 import { AddArchiveComponent } from './add-archive/add-archive';
 import { AddBasketComponent } from './add-basket/add-basket';
+import { AddProductComponent } from './add-product/add-product';
 import { ArcChartComponent } from './arc-chart/arc-chart';
 import { ArcProgressComponent } from './arc-progress/arc-progress';
 import { PlanStatusComponent } from './plan-status/plan-status';
@@ -22,6 +23,10 @@ const routes: Routes = [
     {
         path: 'add-basket',
         component: AddBasketComponent
+    },
+    {
+        path: 'add-product',
+        component: AddProductComponent
     }
 ];
 
@@ -32,7 +37,8 @@ const declarations = [
     PlanStatusComponent,
     AddArchiveComponent,
     SelectProductOptionsComponent,
-    AddBasketComponent
+    AddBasketComponent,
+    AddProductComponent
 ];
 
 @NgModule({
