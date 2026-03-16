@@ -19,7 +19,9 @@ export interface UserPlan {
 }
 
 export interface JoolaProduct {
+    id: number;
     name: string;
     tiesWidth: number;
     tiesHeight: number;
+    colorsCount: number;
 }

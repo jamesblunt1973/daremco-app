@@ -13,5 +13,6 @@ export * from './view-models/auth-result';
 export * from './view-models/bulk-type-group';
 export * from './view-models/login-param';
 export * from './view-models/primary-data';
+export * from './view-models/product-pption-result';
 export * from './view-models/register-param';
 export * from './view-models/user-purchase';

@@ -1,8 +1,8 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { inject, Injectable, resource } from '@angular/core';
+import { inject, Injectable, resource, signal } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { Product, UserPlan, UserPurchase } from '../models';
+import { JoolaProduct, UserPlan, UserPurchase } from '../models';
 
 @Injectable({
     providedIn: 'root'
@@ -26,9 +26,15 @@ export class JoolaService {
         defaultValue: []
     });
 
+    public searchedProducts = resource<JoolaProduct[], unknown>({
+        loader: () => this.searchProducts(this.productSearchTerm()),
+        defaultValue: []
+    });
+
     private apiUrl = `${environment.apiUrl}joola/`;
-    private httpClient = inject(HttpClient);
-    private audioFiles: string[] = [
+    private readonly httpClient = inject(HttpClient);
+    private readonly productSearchTerm = signal('');
+    private readonly audioFiles: string[] = [
         '1',
         '2',
         '3',
@@ -90,12 +96,6 @@ export class JoolaService {
         'rang'
     ];
 
-    public initialLoadUserPlans(): Promise<UserPlan[]> {
-        return firstValueFrom(
-            this.httpClient.get<UserPlan[]>(`${this.apiUrl}user-plans?finished=false`)
-        );
-    }
-
     public async deleteUserPlan(id: number): Promise<void> {
         await firstValueFrom(this.httpClient.delete<void>(`${this.apiUrl}user-plans/${id}`));
         this.userPlans.update(plans => plans.filter(userPlan => userPlan.id !== id));
@@ -114,16 +114,6 @@ export class JoolaService {
         return createdUserPlan;
     }
 
-    public getUserPurchases(): Promise<UserPurchase[]> {
-        return firstValueFrom(this.httpClient.get<UserPurchase[]>(`${this.apiUrl}user-purchases`));
-    }
-
-    public getArchivedUserPlans(): Promise<UserPlan[]> {
-        return firstValueFrom(
-            this.httpClient.get<UserPlan[]>(`${this.apiUrl}user-plans?finished=true`)
-        );
-    }
-
     public async addFromArchive(id: number): Promise<UserPlan> {
         const restoredUserPlan = await firstValueFrom(
             this.httpClient.patch<UserPlan>(`${this.apiUrl}user-plans`, id)
@@ -132,11 +122,8 @@ export class JoolaService {
         return restoredUserPlan;
     }
 
-    public searchProducts(searchTerm: string): Promise<Product[]> {
-        const params = new HttpParams().set('str', searchTerm);
-        return firstValueFrom(
-            this.httpClient.get<Product[]>(`${this.apiUrl}search-products`, { params })
-        );
+    public setProductSearchTerm(searchTerm: string): void {
+        this.productSearchTerm.set(searchTerm.trim());
     }
 
     public getUserPlanData(id: number): Promise<number[]> {
@@ -157,6 +144,33 @@ export class JoolaService {
 
     public async savePlaySound(id: number, playSound: boolean): Promise<void> {
         await this.savePreference('save-play-sound', { id, playSound });
+    }
+
+    private async searchProducts(searchTerm: string): Promise<JoolaProduct[]> {
+        if (searchTerm.length <= 2) {
+            return [];
+        }
+
+        const params = new HttpParams().set('str', searchTerm);
+        return await firstValueFrom(
+            this.httpClient.get<JoolaProduct[]>(`${this.apiUrl}search-products`, { params })
+        );
+    }
+
+    private getUserPurchases(): Promise<UserPurchase[]> {
+        return firstValueFrom(this.httpClient.get<UserPurchase[]>(`${this.apiUrl}user-purchases`));
+    }
+
+    private getArchivedUserPlans(): Promise<UserPlan[]> {
+        return firstValueFrom(
+            this.httpClient.get<UserPlan[]>(`${this.apiUrl}user-plans?finished=true`)
+        );
+    }
+
+    private initialLoadUserPlans(): Promise<UserPlan[]> {
+        return firstValueFrom(
+            this.httpClient.get<UserPlan[]>(`${this.apiUrl}user-plans?finished=false`)
+        );
     }
 
     private preloadAudio(fileName: string): Promise<string> {

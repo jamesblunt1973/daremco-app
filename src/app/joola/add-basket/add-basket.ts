@@ -1,14 +1,9 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, computed, inject } from '@angular/core';
 import { ModalController, ToastController } from '@ionic/angular';
-import { UserPurchase } from '../../shared/models';
+import { ProductOptionResult, UserPurchase } from '../../shared/models';
 import { JoolaService } from '../../shared/services/joola.service';
 import { SelectProductOptionsComponent } from '../select-product-options/select-product-options';
-
-type ProductOptionResult = {
-    raj: number;
-    turned: boolean;
-};
 
 @Component({
     selector: 'app-add-basket',
