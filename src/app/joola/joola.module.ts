@@ -9,6 +9,7 @@ import { ArcProgressComponent } from './arc-progress/arc-progress';
 import { PlanStatusComponent } from './plan-status/plan-status';
 import { SelectProductOptionsComponent } from './select-product-options/select-product-options';
 import { UserPlansComponent } from './user-plans/user-plans';
+import { WaeveComponent } from './waeve/waeve';
 
 const routes: Routes = [
     {
@@ -27,6 +28,10 @@ const routes: Routes = [
     {
         path: 'add-product',
         component: AddProductComponent
+    },
+    {
+        path: 'waeve/:id',
+        component: WaeveComponent
     }
 ];
 
@@ -38,7 +43,8 @@ const declarations = [
     AddArchiveComponent,
     SelectProductOptionsComponent,
     AddBasketComponent,
-    AddProductComponent
+    AddProductComponent,
+    WaeveComponent
 ];
 
 @NgModule({

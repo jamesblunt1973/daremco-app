@@ -1,0 +1,153 @@
+<div class="app-bg">
+    <div class="waeve-container ion-padding">
+        @if (loadingMsg) {
+        <div class="loading-container">
+            <ion-spinner name="circular"></ion-spinner>
+            <p>{{ loadingMsg }}</p>
+        </div>
+        } @else if (userPlan) {
+        <ion-card class="product-summary">
+            <img [src]="productsPath + userPlan.productId + '/160.jpg'" />
+            <ion-card-content>
+                <div class="product-info">
+                    <p>کد محصول: {{ userPlan.product.id }}</p>
+                    <p>{{ userPlan.product.name }}</p>
+                    <p>رجشمار {{ userPlan.raj }} ({{ userPlan.product.moghat }} مقاط)</p>
+                    <p>
+                        {{ userPlan.product.tiesWidth }} گره در {{ userPlan.product.tiesHeight }} رج
+                    </p>
+                    <p>
+                        {{ userPlan.product.colorsCount }} رنگ - {{ userPlan.turned ? 'بافت چرخیده'
+                        : 'بافت راسته' }}
+                    </p>
+                </div>
+            </ion-card-content>
+        </ion-card>
+
+        <div class="control-container">
+            <h3>رج:</h3>
+            <ion-button fill="clear" (click)="prevRaj()" [disabled]="playDisabled">
+                <ion-icon slot="icon-only" name="chevron-forward-outline"></ion-icon>
+            </ion-button>
+            <ion-item lines="none" class="control-input">
+                <ion-input
+                    type="number"
+                    min="1"
+                    [max]="userPlan.product.tiesHeight"
+                    [(ngModel)]="raj"
+                    [disabled]="playDisabled"
+                    (ionFocus)="rajSearchFocus = true"
+                    (ionBlur)="rajSearchFocus = false; changeRaj()"></ion-input>
+            </ion-item>
+            <ion-button
+                fill="clear"
+                color="primary"
+                class="search-apply"
+                [class.visible]="rajSearchFocus">
+                <ion-icon slot="icon-only" name="search-outline"></ion-icon>
+            </ion-button>
+            <ion-button fill="clear" (click)="nextRaj()" [disabled]="playDisabled">
+                <ion-icon slot="icon-only" name="chevron-back-outline"></ion-icon>
+            </ion-button>
+        </div>
+
+        <div class="control-container">
+            <h3>رنگ:</h3>
+            <ion-button fill="clear" (click)="prevColor()" [disabled]="playDisabled">
+                <ion-icon slot="icon-only" name="chevron-forward-outline"></ion-icon>
+            </ion-button>
+            <ion-item lines="none" class="control-input">
+                <ion-input
+                    type="number"
+                    min="1"
+                    [max]="userPlan.product.colorsCount"
+                    [(ngModel)]="color"
+                    [disabled]="playDisabled"
+                    (ionFocus)="colorSearchFocus = true"
+                    (ionBlur)="colorSearchFocus = false; changeColor()"></ion-input>
+            </ion-item>
+            <ion-button
+                fill="clear"
+                color="primary"
+                class="search-apply"
+                [class.visible]="colorSearchFocus">
+                <ion-icon slot="icon-only" name="search-outline"></ion-icon>
+            </ion-button>
+            <ion-button fill="clear" (click)="nextColor()" [disabled]="playDisabled">
+                <ion-icon slot="icon-only" name="chevron-back-outline"></ion-icon>
+            </ion-button>
+        </div>
+
+        <div class="control-container">
+            <h3>گره:</h3>
+            <ion-button fill="clear" (click)="previousTie()" [disabled]="playDisabled">
+                <ion-icon slot="icon-only" name="chevron-forward-outline"></ion-icon>
+            </ion-button>
+            <ion-item lines="none" class="control-input">
+                <ion-input
+                    type="text"
+                    [(ngModel)]="tie"
+                    [disabled]="playDisabled"
+                    (ionFocus)="tieSearchFocus = true"
+                    (ionBlur)="tieSearchFocus = false; changeTie()"></ion-input>
+            </ion-item>
+            <ion-button
+                fill="clear"
+                color="primary"
+                class="search-apply"
+                [class.visible]="tieSearchFocus">
+                <ion-icon slot="icon-only" name="search-outline"></ion-icon>
+            </ion-button>
+            <ion-button fill="clear" (click)="nextTie()" [disabled]="playDisabled">
+                <ion-icon slot="icon-only" name="chevron-back-outline"></ion-icon>
+            </ion-button>
+        </div>
+
+        <div class="main-action">
+            <ion-button (click)="next()" [disabled]="playDisabled">
+                <span>{{ userPlan.autoPlay ? 'اجرای بافت' : 'گره بعد' }}</span>
+                <ion-icon
+                    slot="end"
+                    [name]="userPlan.autoPlay ? 'play-forward-outline' : 'play-outline'"></ion-icon>
+            </ion-button>
+        </div>
+
+        <div class="quick-actions">
+            <ion-button fill="clear" color="primary" (click)="changeAutoplay()">
+                <ion-icon
+                    slot="icon-only"
+                    [name]="userPlan.autoPlay ? 'play-forward-outline' : 'play-outline'"></ion-icon>
+            </ion-button>
+            <ion-button fill="clear" color="secondary" (click)="changeSound()">
+                <ion-icon
+                    slot="icon-only"
+                    [name]="userPlan.playSound ? 'volume-high-outline' : 'volume-mute-outline'"></ion-icon>
+            </ion-button>
+            <ion-button fill="clear" color="danger" (click)="reset()" [disabled]="playDisabled">
+                <ion-icon slot="icon-only" name="refresh-outline"></ion-icon>
+            </ion-button>
+        </div>
+
+        @if (userPlan.autoPlay) {
+        <div class="speed-row">
+            <ion-item lines="none" class="speed-input">
+                <ion-label>سرعت بافت:</ion-label>
+                <ion-input
+                    type="number"
+                    [(ngModel)]="userPlan.speed"
+                    (ionBlur)="changeSpeed()"></ion-input>
+                <ion-note slot="end">گره در دقیقه</ion-note>
+            </ion-item>
+            @if (timeout) {
+            <app-arc-progress [diameter]="64" [time]="timeout"></app-arc-progress>
+            }
+        </div>
+        }
+
+        <ion-button [routerLink]="['/joola']">
+            <span>بازگشت به لیست نقشه‌ها</span>
+            <ion-icon name="arrow-back" />
+        </ion-button>
+        }
+    </div>
+</div>

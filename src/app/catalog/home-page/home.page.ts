@@ -64,12 +64,16 @@ export class HomePage implements OnInit {
     }
 
     private async synchronizeData(): Promise<void> {
-        await Promise.all([
-            this.update.updateProducts(),
-            this.update.updateCategories(),
-            this.update.updatePrimaryData(),
-            this.update.updateMostUsedLinks()
-        ]);
+        try {
+            await Promise.all([
+                this.update.updateProducts(),
+                this.update.updateCategories(),
+                this.update.updatePrimaryData(),
+                this.update.updateMostUsedLinks()
+            ]);
+        } catch (error: unknown) {
+            this.setUpdatingStatus((error as Error).message);
+        }
     }
 
     private setUpdatingStatus(message: string): void {

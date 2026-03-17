@@ -1,0 +1,105 @@
+.waeve-container {
+    max-width: 560px;
+    margin: 0 auto;
+}
+
+.loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.product-summary {
+    margin-bottom: 16px;
+
+    img {
+        width: 100%;
+        max-height: 220px;
+        object-fit: cover;
+    }
+}
+
+.product-info {
+    p {
+        margin: 0;
+        padding: 6px 10px;
+    }
+
+    p:nth-child(even) {
+        background-color: #fff4d5;
+    }
+
+    p:nth-child(odd) {
+        background-color: #f0f0f0;
+    }
+}
+
+.control-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 10px;
+
+    h3 {
+        margin: 0;
+        min-width: 38px;
+    }
+}
+
+.control-input {
+    flex: 1;
+    --background: #f7f7f7;
+    border-radius: 10px;
+
+    ion-input {
+        text-align: center;
+        direction: ltr;
+        font-size: 1.5rem;
+    }
+}
+
+.search-apply {
+    position: absolute;
+    left: 44px;
+    opacity: 0;
+    transform: translateX(-8px);
+    transition: all 0.3s ease;
+    pointer-events: none;
+
+    &.visible {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.main-action {
+    display: flex;
+    justify-content: center;
+    margin-top: 18px;
+}
+
+.quick-actions {
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-around;
+}
+
+.speed-row {
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.speed-input {
+    flex: 1;
+    --background: #f7f7f7;
+    border-radius: 10px;
+
+    ion-input {
+        direction: ltr;
+    }
+}
