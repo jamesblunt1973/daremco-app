@@ -15,4 +15,5 @@ export * from './view-models/login-param';
 export * from './view-models/primary-data';
 export * from './view-models/product-pption-result';
 export * from './view-models/register-param';
+export * from './view-models/token-data';
 export * from './view-models/user-purchase';
