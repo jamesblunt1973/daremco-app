@@ -1,9 +1,9 @@
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
-import { NgModule } from '@angular/core';
+import { inject, NgModule, provideAppInitializer } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { PreloadAllModules, RouteReuseStrategy, RouterModule, Routes } from '@angular/router';
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
-import { IonicStorageModule } from '@ionic/storage-angular';
+import { IonicStorageModule, Storage } from '@ionic/storage-angular';
 import { AppComponent } from './app.component';
 import { LayoutComponent } from './shared/components/layout/layout';
 import { authInterceptor } from './shared/services/auth-interceptor';
@@ -51,7 +51,11 @@ const routes: Routes = [
     ],
     providers: [
         { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
-        provideHttpClient(withInterceptors([authInterceptor]))
+        provideHttpClient(withInterceptors([authInterceptor])),
+        provideAppInitializer(() => {
+            const storage = inject(Storage);
+            return storage.create();
+        })
     ],
     bootstrap: [AppComponent]
 })

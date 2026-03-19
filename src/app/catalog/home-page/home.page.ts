@@ -1,6 +1,5 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { Network } from '@capacitor/network';
-import { Storage } from '@ionic/storage-angular';
 import { ServerStatus } from '../../shared/models/types/server-status';
 import { ApiService } from '../../shared/services/api.service';
 import { AppService } from '../../shared/services/app.service';
@@ -17,7 +16,6 @@ export class HomePage implements OnInit {
     public data = inject(DataService);
     public update = inject(UpdateService);
     public app = inject(AppService);
-    public storage = inject(Storage);
     public api = inject(ApiService);
 
     public ngOnInit(): void {
@@ -30,7 +28,6 @@ export class HomePage implements OnInit {
 
     private async initialize(): Promise<void> {
         try {
-            await this.storage.create();
             const isConnected = await this.isNetworkConnected();
 
             if (!isConnected) {
@@ -88,6 +85,6 @@ export class HomePage implements OnInit {
             return;
         }
 
-        this.app.isUpdating.set('');
+        this.app.isInitializing.set(false);
     }
 }
