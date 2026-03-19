@@ -59,23 +59,6 @@ export class WaeveComponent implements OnInit {
         this.userPlan.autoPlay = !this.userPlan.autoPlay;
     }
 
-    public async changeSound(): Promise<void> {
-        if (!this.userPlan) {
-            return;
-        }
-
-        this.userPlan.playSound = !this.userPlan.playSound;
-        await this.joolaService.savePlaySound(this.userPlan.id, this.userPlan.playSound);
-    }
-
-    public async changeSpeed(): Promise<void> {
-        if (!this.userPlan) {
-            return;
-        }
-
-        await this.joolaService.saveSpeed(this.userPlan.id, this.userPlan.speed);
-    }
-
     public async reset(): Promise<void> {
         const userPlan = this.userPlan;
         if (!userPlan) {
@@ -105,7 +88,6 @@ export class WaeveComponent implements OnInit {
             this.playDisabled = false;
             userPlan.autoPlay = false;
             userPlan.position = 0;
-            await this.joolaService.savePosition(userPlan.id, 0);
             this.extractPosition(0);
         }
     }
@@ -155,7 +137,6 @@ export class WaeveComponent implements OnInit {
                 tiesCount = nextElement - element + 1;
             }
 
-            await this.joolaService.savePosition(userPlan.id, this.position);
             this.playDisabled = false;
 
             if (userPlan.autoPlay && !playGereh) {

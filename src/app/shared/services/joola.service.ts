@@ -158,18 +158,6 @@ export class JoolaService {
         return Promise.all(this.audioFiles.map(fileName => this.preloadAudio(fileName)));
     }
 
-    public async savePosition(id: number, position: number): Promise<void> {
-        await this.savePreference('save-position', { id, position });
-    }
-
-    public async saveSpeed(id: number, speed: number): Promise<void> {
-        await this.savePreference('save-speed', { id, speed });
-    }
-
-    public async savePlaySound(id: number, playSound: boolean): Promise<void> {
-        await this.savePreference('save-play-sound', { id, playSound });
-    }
-
     private async searchProducts(searchTerm: string): Promise<JoolaProduct[]> {
         if (searchTerm.length <= 2) {
             return [];
@@ -204,10 +192,7 @@ export class JoolaService {
         });
     }
 
-    private async savePreference(
-        endpoint: string,
-        payload: Record<string, unknown>
-    ): Promise<void> {
-        await firstValueFrom(this.httpClient.post<void>(`${this.apiUrl}${endpoint}`, payload));
+    private async savePreferences(endpoint: string, payload: UserPlan): Promise<void> {
+        await firstValueFrom(this.httpClient.patch<void>(`${this.apiUrl}${endpoint}`, payload));
     }
 }

@@ -118,7 +118,10 @@
                     slot="icon-only"
                     [name]="userPlan.autoPlay ? 'play-forward-outline' : 'play-outline'"></ion-icon>
             </ion-button>
-            <ion-button fill="clear" color="secondary" (click)="changeSound()">
+            <ion-button
+                fill="clear"
+                color="secondary"
+                (click)="userPlan.playSound = !userPlan.playSound">
                 <ion-icon
                     slot="icon-only"
                     [name]="userPlan.playSound ? 'volume-high-outline' : 'volume-mute-outline'"></ion-icon>
@@ -132,10 +135,7 @@
         <div class="speed-row">
             <ion-item lines="none" class="speed-input">
                 <ion-label>سرعت بافت:</ion-label>
-                <ion-input
-                    type="number"
-                    [(ngModel)]="userPlan.speed"
-                    (ionBlur)="changeSpeed()"></ion-input>
+                <ion-input type="number" [(ngModel)]="userPlan.speed" />
                 <ion-note slot="end">گره در دقیقه</ion-note>
             </ion-item>
             @if (timeout) {
