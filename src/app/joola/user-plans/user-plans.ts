@@ -38,6 +38,11 @@ export class UserPlansComponent {
     private readonly joolaService = inject(JoolaService);
     private readonly alertController = inject(AlertController);
 
+    public constructor() {
+        this.joolaService.loadUserPlans.set(true);
+        this.joolaService.userPlans.reload();
+    }
+
     public async removeUserPlan(userPlan: UserPlan): Promise<void> {
         const alert = await this.alertController.create({
             header: '',

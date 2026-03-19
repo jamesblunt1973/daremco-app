@@ -41,6 +41,11 @@ export class AddBasketComponent {
     private readonly toastCtrl = inject(ToastController);
     private readonly modalCtrl = inject(ModalController);
 
+    public constructor() {
+        this.joolaService.loadUserPurchases.set(true);
+        this.joolaService.userPurchases.reload();
+    }
+
     public async addProduct(productId: number): Promise<void> {
         const modal = await this.modalCtrl.create({
             component: SelectProductOptionsComponent,

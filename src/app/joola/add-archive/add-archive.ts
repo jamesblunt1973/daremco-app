@@ -39,6 +39,11 @@ export class AddArchiveComponent {
     private readonly joolaService = inject(JoolaService);
     private readonly toastCtrl = inject(ToastController);
 
+    public constructor() {
+        this.joolaService.loadArchivedPlans.set(true);
+        this.joolaService.archivedPlans.reload();
+    }
+
     public async addPlan(id: number): Promise<void> {
         await this.joolaService.addFromArchive(id);
         this.joolaService.archivedPlans.update(plans => plans.filter(p => p.id !== id));

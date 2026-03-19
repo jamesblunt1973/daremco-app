@@ -10,19 +10,37 @@ import { JoolaProduct, UserPlan, UserPurchase } from '../models';
 export class JoolaService {
     public static productsPath = `${environment.imageUrl}products/`;
     public audioPath = './assets/joola-farsi/';
+    public loadUserPlans = signal(false);
+    public loadUserPurchases = signal(false);
+    public loadArchivedPlans = signal(false);
 
     public userPlans = resource<UserPlan[], unknown>({
-        loader: () => this.initialLoadUserPlans(),
+        loader: () => {
+            if (!this.loadUserPlans()) {
+                return Promise.resolve([]);
+            }
+            return this.initialLoadUserPlans();
+        },
         defaultValue: []
     });
 
     public userPurchases = resource<UserPurchase[], unknown>({
-        loader: () => this.getUserPurchases(),
+        loader: () => {
+            if (!this.loadUserPurchases()) {
+                return Promise.resolve([]);
+            }
+            return this.getUserPurchases();
+        },
         defaultValue: []
     });
 
     public archivedPlans = resource<UserPlan[], unknown>({
-        loader: () => this.getArchivedUserPlans(),
+        loader: () => {
+            if (!this.loadArchivedPlans()) {
+                return Promise.resolve([]);
+            }
+            return this.getArchivedUserPlans();
+        },
         defaultValue: []
     });
 
