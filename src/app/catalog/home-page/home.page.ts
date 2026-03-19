@@ -50,17 +50,21 @@ export class HomePage implements OnInit {
     }
 
     private async handleOnlineInitialization(): Promise<void> {
-        const serverStatus = (await this.api.healthCheck()) as ServerStatus;
-        this.app.serverStatus.set(serverStatus);
+        try {
+            const serverStatus = (await this.api.healthCheck()) as ServerStatus;
+            this.app.serverStatus.set(serverStatus);
 
-        if (serverStatus !== 'Healthy') {
-            this.setUpdatingStatus(`Server status: ${serverStatus}`);
-            return;
+            if (serverStatus !== 'Healthy') {
+                this.setUpdatingStatus(`Server status: ${serverStatus}`);
+                return;
+            }
+
+            await this.synchronizeData();
+            this.data.reload();
+            this.app.isInitializing.set(false);
+        } catch (error: unknown) {
+            this.setUpdatingStatus((error as Error).message);
         }
-
-        await this.synchronizeData();
-        this.data.reload();
-        this.app.isInitializing.set(false);
     }
 
     private async synchronizeData(): Promise<void> {
@@ -71,6 +75,7 @@ export class HomePage implements OnInit {
                 this.update.updatePrimaryData(),
                 this.update.updateMostUsedLinks()
             ]);
+            this.app.serverAvailable.set(true);
         } catch (error: unknown) {
             this.setUpdatingStatus((error as Error).message);
         }

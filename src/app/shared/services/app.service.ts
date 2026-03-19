@@ -11,6 +11,7 @@ export class AppService {
     public isInitializing = signal<boolean>(true);
     public messageHistory = signal<string[]>([]);
     public message = signal<string>('');
+    public serverAvailable = signal(false);
 
     public setMessage(message: string): void {
         this.message.set(message);

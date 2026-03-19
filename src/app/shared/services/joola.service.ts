@@ -1,8 +1,10 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable, resource, signal } from '@angular/core';
+import { Storage } from '@ionic/storage-angular';
 import { firstValueFrom } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { JoolaProduct, UserPlan, UserPurchase } from '../models';
+import { AppService } from './app.service';
 
 @Injectable({
     providedIn: 'root'
@@ -51,6 +53,8 @@ export class JoolaService {
 
     private apiUrl = `${environment.apiUrl}joola/`;
     private readonly httpClient = inject(HttpClient);
+    private app = inject(AppService);
+    private storage = inject(Storage);
     private readonly productSearchTerm = signal('');
     private readonly audioFiles: string[] = [
         '1',
@@ -179,10 +183,16 @@ export class JoolaService {
         );
     }
 
-    private initialLoadUserPlans(): Promise<UserPlan[]> {
-        return firstValueFrom(
+    private async initialLoadUserPlans(): Promise<UserPlan[]> {
+        if (!this.app.serverAvailable()) {
+            return (await this.storage.get('user-plans')) as UserPlan[];
+        }
+
+        const userPlans = firstValueFrom(
             this.httpClient.get<UserPlan[]>(`${this.apiUrl}user-plans?finished=false`)
         );
+        await this.storage.set('user-plans', userPlans);
+        return userPlans;
     }
 
     private preloadAudio(fileName: string): Promise<string> {
