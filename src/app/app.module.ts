@@ -6,6 +6,7 @@ import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
 import { IonicStorageModule, Storage } from '@ionic/storage-angular';
 import { AppComponent } from './app.component';
 import { LayoutComponent } from './shared/components/layout/layout';
+import { AppBootstrapService } from './shared/services/app-bootstrap.service';
 import { authInterceptor } from './shared/services/auth-interceptor';
 import { authGuard } from './shared/services/auth.guard';
 
@@ -54,7 +55,11 @@ const routes: Routes = [
         provideHttpClient(withInterceptors([authInterceptor])),
         provideAppInitializer(() => {
             const storage = inject(Storage);
-            return storage.create();
+            const appBootstrap = inject(AppBootstrapService);
+            return (async (): Promise<void> => {
+                await appBootstrap.bootstrap();
+                await storage.create();
+            })();
         })
     ],
     bootstrap: [AppComponent]

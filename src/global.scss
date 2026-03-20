@@ -140,6 +140,30 @@ ion-fab {
     background-image: url('assets/gallery-bg.jpg');
 }
 
+.loading-bg {
+    position: absolute;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(270deg, #b700cf, #3ab4ff);
+    background-size: 400% 400%;
+    animation: AnimationName 4s ease infinite;
+}
+
+@keyframes AnimationName {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
 @media (prefers-color-scheme: dark) {
     .app-bg {
         background-image: url('assets/gallery-bg-dark.jpg');

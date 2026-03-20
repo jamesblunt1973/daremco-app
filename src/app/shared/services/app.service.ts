@@ -1,4 +1,4 @@
-import { Injectable, signal } from '@angular/core';
+import { computed, Injectable, signal } from '@angular/core';
 import { ServerStatus } from '../models/types/server-status';
 
 @Injectable({
@@ -7,11 +7,11 @@ import { ServerStatus } from '../models/types/server-status';
 export class AppService {
     public serverStatus = signal<ServerStatus>('Unknown');
     public productsCount = signal<number>(0);
-    public isUpdating = signal<string>('');
+    public updatingError = signal<string>('');
     public isInitializing = signal<boolean>(true);
     public messageHistory = signal<string[]>([]);
     public message = signal<string>('');
-    public serverAvailable = signal(false);
+    public serverAvailable = computed(() => this.serverStatus() === 'Healthy');
 
     public setMessage(message: string): void {
         this.message.set(message);
