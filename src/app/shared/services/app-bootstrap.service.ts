@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { Network } from '@capacitor/network';
-import { ServerStatus } from '../models/types/server-status';
+import { ServerStatus } from '../models';
 import { ApiService } from './api.service';
 import { AppService } from './app.service';
 

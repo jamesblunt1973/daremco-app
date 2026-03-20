@@ -147,9 +147,9 @@ ion-fab {
     display: flex;
     justify-content: center;
     align-items: center;
-    background: linear-gradient(270deg, #b700cf, #3ab4ff);
+    background: linear-gradient(-45deg, #b700cf, #e73c7e, #3ab4ff, #23d5ab);
     background-size: 400% 400%;
-    animation: AnimationName 4s ease infinite;
+    animation: AnimationName 3s ease infinite;
 }
 
 @keyframes AnimationName {
