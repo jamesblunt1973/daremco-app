@@ -36,15 +36,15 @@ export class HomePage implements OnInit {
                 this.data.reload();
                 this.app.isInitializing.set(false);
             } catch (error: unknown) {
-                this.setUpdatingStatus((error as Error).message);
+                await this.setUpdatingStatus((error as Error).message);
             }
         } else {
-            this.setUpdatingStatus('Server is not available.');
+            await this.setUpdatingStatus('Server is not available.');
         }
     }
 
-    private setUpdatingStatus(message: string): void {
-        const hasCoreData = this.data.hasCoreData();
+    private async setUpdatingStatus(message: string): Promise<void> {
+        const hasCoreData = await this.data.hasCoreData();
         if (!hasCoreData) {
             this.app.updatingError.set(`${message} Offline data is not available.`);
             return;

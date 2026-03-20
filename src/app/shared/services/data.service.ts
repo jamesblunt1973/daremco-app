@@ -1,4 +1,12 @@
-import { inject, Injectable, resource } from '@angular/core';
+import {
+    effect,
+    inject,
+    Injectable,
+    Injector,
+    resource,
+    ResourceRef,
+    runInInjectionContext
+} from '@angular/core';
 import { Storage } from '@ionic/storage-angular';
 import { Category, Endpoints, PrimaryData, Product } from '../models';
 
@@ -26,6 +34,7 @@ export class DataService {
     });
 
     private storage = inject(Storage);
+    private injector = inject(Injector);
 
     public reload = (): void => {
         this.categories.reload();
@@ -34,14 +43,27 @@ export class DataService {
         this.mostUsedlinks.reload();
     };
 
-    public hasCoreData = (): boolean => {
+    public hasCoreData = async (): Promise<boolean> => {
         try {
+            const categoriesStatus = this.categories.status();
+            const productsStatus = this.products.status();
+            const primaryDataStatus = this.primaryData.status();
+
+            if (categoriesStatus === 'loading') {
+                await this.waitFor(this.categories);
+            }
+            if (productsStatus === 'loading') {
+                await this.waitFor(this.products);
+            }
+            if (primaryDataStatus === 'loading') {
+                await this.waitFor(this.primaryData);
+            }
+
             const hasCategories =
-                this.categories.status() !== 'error' && this.categories.value().length > 0;
-            const hasProducts =
-                this.products.status() !== 'error' && this.products.value().length > 0;
+                categoriesStatus !== 'error' && this.categories.value().length > 0;
+            const hasProducts = productsStatus !== 'error' && this.products.value().length > 0;
             const hasPrimaryData =
-                this.primaryData.status() !== 'error' &&
+                primaryDataStatus !== 'error' &&
                 this.primaryData.hasValue() &&
                 Object.keys(this.primaryData.value()).length > 0;
 
@@ -50,4 +72,17 @@ export class DataService {
             return false;
         }
     };
+
+    private waitFor(resource: ResourceRef<unknown>): Promise<void> {
+        return new Promise(resolve => {
+            runInInjectionContext(this.injector, () => {
+                const ref = effect(() => {
+                    if (!resource.isLoading()) {
+                        ref.destroy();
+                        resolve();
+                    }
+                });
+            });
+        });
+    }
 }
