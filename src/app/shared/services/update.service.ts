@@ -1,4 +1,5 @@
 import { inject, Injectable } from '@angular/core';
+import { FileTransfer } from '@capacitor/file-transfer';
 import { Directory, Filesystem, ReadFileResult } from '@capacitor/filesystem';
 import { Storage } from '@ionic/storage-angular';
 import pLimit from 'p-limit';
@@ -138,7 +139,7 @@ export class UpdateService {
         } catch {
             try {
                 const url = `${environment.imageUrl}${filePath}`;
-                await Filesystem.downloadFile({
+                await FileTransfer.downloadFile({
                     ...fileOptions,
                     url
                 });

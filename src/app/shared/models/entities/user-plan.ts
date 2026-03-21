@@ -25,4 +25,5 @@ export interface JoolaProduct {
     tiesHeight: number;
     colorsCount: number;
     moghat: number;
+    Images: Record<string, string>;
 }

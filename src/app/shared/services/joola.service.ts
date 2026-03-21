@@ -185,7 +185,8 @@ export class JoolaService {
 
     private async initialLoadUserPlans(): Promise<UserPlan[]> {
         if (!this.app.serverAvailable()) {
-            return (await this.storage.get('user-plans')) as UserPlan[];
+            const storedUserPlans = (await this.storage.get('user-plans')) as UserPlan[];
+            return storedUserPlans ?? [];
         }
 
         const userPlans = firstValueFrom(

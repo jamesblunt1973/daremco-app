@@ -59,9 +59,8 @@ export class DataService {
                 await this.waitFor(this.primaryData);
             }
 
-            const hasCategories =
-                categoriesStatus !== 'error' && this.categories.value().length > 0;
-            const hasProducts = productsStatus !== 'error' && this.products.value().length > 0;
+            const hasCategories = categoriesStatus !== 'error' && this.categories.hasValue();
+            const hasProducts = productsStatus !== 'error' && this.products.hasValue();
             const hasPrimaryData =
                 primaryDataStatus !== 'error' &&
                 this.primaryData.hasValue() &&
