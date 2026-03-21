@@ -1,5 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, computed, inject } from '@angular/core';
+import { Component, computed, effect, inject, signal, untracked } from '@angular/core';
 import { AlertController } from '@ionic/angular';
 import { UserPlan } from '../../../app/shared/models';
 import { JoolaService } from '../../../app/shared/services/joola.service';
@@ -14,12 +14,11 @@ export class UserPlansComponent {
     public productsPath = JoolaService.productsPath;
     public isMenuOpen = false;
 
-    public readonly userPlans = computed<UserPlan[]>(() => {
-        const userPlansResource = this.joolaService.userPlans;
-        return userPlansResource.hasValue() ? userPlansResource.value() : [];
-    });
+    public readonly userPlans = signal<UserPlan[]>([]);
 
-    public readonly isLoading = computed<boolean>(() => this.joolaService.userPlans.isLoading());
+    public readonly isLoading = computed<boolean>(
+        () => this.joolaService.userPlans.isLoading() || this.imagesHydrating()
+    );
 
     public readonly error = computed<Error | undefined>(() => {
         const userPlansResource = this.joolaService.userPlans;
@@ -35,12 +34,38 @@ export class UserPlansComponent {
         return new Error(String(resourceError));
     });
 
+    private readonly imagesHydrating = signal(false);
+
     private readonly joolaService = inject(JoolaService);
     private readonly alertController = inject(AlertController);
 
     public constructor() {
         this.joolaService.loadUserPlans.set(true);
         this.joolaService.userPlans.reload();
+
+        effect(() => {
+            const userPlansResource = this.joolaService.userPlans;
+            if (userPlansResource.isLoading() || !userPlansResource.hasValue()) {
+                return;
+            }
+
+            const plans = userPlansResource.value();
+
+            untracked(() => {
+                if (!plans.length) {
+                    this.userPlans.set([]);
+                    return;
+                }
+
+                void (async (): Promise<void> => {
+                    this.imagesHydrating.set(true);
+                    await this.joolaService.updateProductImages(plans);
+                    this.imagesHydrating.set(false);
+
+                    this.userPlans.set(plans);
+                })();
+            });
+        });
     }
 
     public async removeUserPlan(userPlan: UserPlan): Promise<void> {

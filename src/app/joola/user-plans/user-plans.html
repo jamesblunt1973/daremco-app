@@ -13,11 +13,11 @@
         <p>
             با استفاده از دکمه‌ی پایین صفحه، می‌توانید نقشه‌ی مورد نظر خود را برای بافت انتخاب کنید.
         </p>
-        }
+        } @else {
         <div class="ion-display-flex ion-flex-column ion-gap-full full-width">
-            @for (userPlan of userPlans(); track $index) {
+            @for (userPlan of userPlans(); track userPlan.id) {
             <ion-card class="product-list-item ion-gap-full">
-                <img [src]="productsPath + userPlan.productId + '/160.jpg' " />
+                <img [src]="userPlan.product.Images['160']" />
                 <ion-card-content
                     class="ion-display-flex ion-justify-content-between ion-no-padding ion-align-items-center ion-flex-1">
                     <app-plan-status [userPlan]="userPlan" />
@@ -39,6 +39,7 @@
             </ion-card>
             }
         </div>
+        }
         <div class="actions" [ngClass]="{'open' : isMenuOpen}">
             <div class="add-cart" title="افزودن از لیست خرید">
                 <a routerLink="add-basket">

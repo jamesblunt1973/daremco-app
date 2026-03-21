@@ -4,7 +4,7 @@ import { Directory, Filesystem, ReadFileResult } from '@capacitor/filesystem';
 import { Storage } from '@ionic/storage-angular';
 import pLimit from 'p-limit';
 import { environment } from '../../../environments/environment';
-import { Endpoints, Product } from '../models';
+import { Endpoints, ImageSize, Product } from '../models';
 import { ApiService } from './api.service';
 import { AppService } from './app.service';
 
@@ -62,7 +62,7 @@ export class UpdateService {
         }
     }
 
-    public async updateProductImages(products: Product[], size: string): Promise<void> {
+    public async updateProductImages(products: Product[], size: ImageSize): Promise<void> {
         const limit = pLimit(100);
         const updateTasks = products.map(product =>
             limit(async () => ({
@@ -116,7 +116,7 @@ export class UpdateService {
         }
     }
 
-    public async setProductImage(product: Product, size: string): Promise<boolean | null> {
+    public async setProductImage(product: Product, size: ImageSize): Promise<boolean | null> {
         const fileName = `${product.Id}_${size}.jpg`;
         const filePath = `products/${product.Id}/${size}.jpg`;
         const fileOptions = {

@@ -9,6 +9,7 @@ export * from './entities/user';
 export * from './entities/user-plan';
 export * from './types/custom-event';
 export * from './types/endpoints';
+export * from './types/image-size';
 export * from './types/server-status';
 export * from './view-models/auth-result';
 export * from './view-models/bulk-type-group';

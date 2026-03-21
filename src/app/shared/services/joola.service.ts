@@ -3,8 +3,9 @@ import { inject, Injectable, resource, signal } from '@angular/core';
 import { Storage } from '@ionic/storage-angular';
 import { firstValueFrom } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { JoolaProduct, UserPlan, UserPurchase } from '../models';
+import { JoolaProduct, Product, UserPlan, UserPurchase } from '../models';
 import { AppService } from './app.service';
+import { UpdateService } from './update.service';
 
 @Injectable({
     providedIn: 'root'
@@ -53,8 +54,9 @@ export class JoolaService {
 
     private apiUrl = `${environment.apiUrl}joola/`;
     private readonly httpClient = inject(HttpClient);
-    private app = inject(AppService);
-    private storage = inject(Storage);
+    private readonly app = inject(AppService);
+    private readonly storage = inject(Storage);
+    private readonly updateService = inject(UpdateService);
     private readonly productSearchTerm = signal('');
     private readonly audioFiles: string[] = [
         '1',
@@ -160,6 +162,23 @@ export class JoolaService {
 
     public async loadAudioFiles(): Promise<string[]> {
         return Promise.all(this.audioFiles.map(fileName => this.preloadAudio(fileName)));
+    }
+
+    public async updateProductImages(userPlans: UserPlan[]): Promise<void> {
+        const result = await Promise.all(
+            userPlans.map(async up => {
+                const p = { Id: up.product.id, Images: up.product.Images } as Product;
+
+                return {
+                    p,
+                    hasImage: await this.updateService.setProductImage(p, '160')
+                };
+            })
+        );
+
+        result.forEach((element, index) => {
+            userPlans[index].product.Images = element.hasImage ? element.p.Images : {};
+        });
     }
 
     private async searchProducts(searchTerm: string): Promise<JoolaProduct[]> {
