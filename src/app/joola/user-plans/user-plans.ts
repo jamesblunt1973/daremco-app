@@ -1,6 +1,6 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, computed, effect, inject, signal, untracked } from '@angular/core';
-import { AlertController } from '@ionic/angular';
+import { AlertController, ToastController } from '@ionic/angular';
 import { UserPlan } from '../../../app/shared/models';
 import { JoolaService } from '../../../app/shared/services/joola.service';
 
@@ -35,9 +35,9 @@ export class UserPlansComponent {
     });
 
     private readonly imagesHydrating = signal(false);
-
     private readonly joolaService = inject(JoolaService);
     private readonly alertController = inject(AlertController);
+    private readonly toastController = inject(ToastController);
 
     public constructor() {
         this.joolaService.loadUserPlans.set(true);
@@ -66,6 +66,24 @@ export class UserPlansComponent {
                 })();
             });
         });
+    }
+
+    public async startWaeve(userPlan: UserPlan): Promise<void> {
+        const planData = await this.joolaService.getUserPlanData(userPlan.id);
+        if (!planData?.length) {
+            const toast = await this.toastController.create({
+                message: 'اطلاعات نقشه در دسترس نیست. لطفا از اتصال اینترنت مطمئن شوید.',
+                duration: 1500,
+                color: 'danger',
+                position: 'bottom'
+            });
+            await toast.present();
+            return;
+        }
+
+        userPlan.data = planData;
+        // check if audio files exist
+        // navigate to waeve component
     }
 
     public async removeUserPlan(userPlan: UserPlan): Promise<void> {

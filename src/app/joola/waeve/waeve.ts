@@ -40,8 +40,6 @@ export class WaeveComponent implements OnInit {
                 this.userPlan = null;
                 return;
             }
-
-            void this.initializeUserPlan(userPlanId);
         });
     }
 
@@ -447,36 +445,6 @@ export class WaeveComponent implements OnInit {
                 break;
             }
         } while (element !== -1);
-    }
-
-    private async initializeUserPlan(userPlanId: number): Promise<void> {
-        this.loadingMsg = 'دریافت اطلاعات بافت';
-        await this.waitForUserPlans();
-
-        const userPlansResource = this.joolaService.userPlans;
-        this.userPlan = userPlansResource.hasValue()
-            ? userPlansResource.value().find(userPlan => userPlan.id === userPlanId) ?? null
-            : null;
-
-        this.loadingMsg = '';
-        if (!this.userPlan) {
-            return;
-        }
-
-        if (!this.userPlan.data?.length) {
-            this.loadingMsg = 'دریافت اطلاعات نقشه';
-            this.userPlan.data = await this.joolaService.getUserPlanData(userPlanId);
-            this.loadingMsg = '';
-        }
-
-        this.extractPosition(this.userPlan.position);
-        await this.joolaService.loadAudioFiles();
-    }
-
-    private async waitForUserPlans(): Promise<void> {
-        while (this.joolaService.userPlans.isLoading()) {
-            await new Promise(resolve => window.setTimeout(resolve, 100));
-        }
     }
 
     private extractPosition(position: number): void {

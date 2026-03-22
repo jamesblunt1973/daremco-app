@@ -22,17 +22,11 @@
                     class="ion-display-flex ion-justify-content-between ion-no-padding ion-align-items-center ion-flex-1">
                     <app-plan-status [userPlan]="userPlan" />
                     <div class="commands ion-display-flex ion-flex-column">
-                        <ion-button
-                            fill="clear"
-                            color="success"
-                            [routerLink]="['waeve/' + userPlan.id]">
-                            <ion-icon
-                                slot="icon-only"
-                                name="play"
-                                class="flip-horizontal"></ion-icon>
+                        <ion-button fill="clear" color="success" (click)="startWaeve(userPlan)">
+                            <ion-icon slot="icon-only" name="play" class="flip-horizontal" />
                         </ion-button>
                         <ion-button fill="clear" color="danger" (click)="removeUserPlan(userPlan)">
-                            <ion-icon slot="icon-only" name="trash"></ion-icon>
+                            <ion-icon slot="icon-only" name="trash" />
                         </ion-button>
                     </div>
                 </ion-card-content>

@@ -156,8 +156,25 @@ export class JoolaService {
         this.searchedProducts.reload();
     }
 
-    public getUserPlanData(id: number): Promise<number[]> {
-        return firstValueFrom(this.httpClient.get<number[]>(`${this.apiUrl}user-plans/${id}/data`));
+    public async getUserPlanData(id: number): Promise<number[] | null> {
+        const planData = (await this.storage.get(`user-plan-${id}`)) as number[];
+        if (planData && planData.length) {
+            return planData;
+        }
+
+        if (!this.app.serverAvailable()) {
+            return null;
+        }
+
+        try {
+            const res = firstValueFrom(
+                this.httpClient.get<number[]>(`${this.apiUrl}user-plans/${id}/data`)
+            );
+            await this.storage.set(`user-plan-${id}`, res);
+            return res;
+        } catch {
+            return null;
+        }
     }
 
     public async loadAudioFiles(): Promise<string[]> {

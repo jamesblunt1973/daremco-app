@@ -137,6 +137,10 @@ export class UpdateService {
                   };
             return true;
         } catch {
+            if (!this.app.serverAvailable()) {
+                return false;
+            }
+
             try {
                 const url = `${environment.imageUrl}${filePath}`;
                 await FileTransfer.downloadFile({
