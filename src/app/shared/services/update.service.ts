@@ -1,10 +1,10 @@
 import { inject, Injectable } from '@angular/core';
-import { FileTransfer } from '@capacitor/file-transfer';
 import { Directory, Filesystem, ReadFileResult } from '@capacitor/filesystem';
 import { Storage } from '@ionic/storage-angular';
 import pLimit from 'p-limit';
 import { environment } from '../../../environments/environment';
 import { Endpoints, ImageSize, Product } from '../models';
+import { downloadToFilesystem } from '../utils/download-to-filesystem';
 import { ApiService } from './api.service';
 import { AppService } from './app.service';
 
@@ -143,10 +143,7 @@ export class UpdateService {
 
             try {
                 const url = `${environment.imageUrl}${filePath}`;
-                await FileTransfer.downloadFile({
-                    ...fileOptions,
-                    url
-                });
+                await downloadToFilesystem({ ...fileOptions, url });
                 return null;
             } catch {
                 return false;

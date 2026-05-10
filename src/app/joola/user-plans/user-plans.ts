@@ -1,5 +1,6 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, computed, effect, inject, signal, untracked } from '@angular/core';
+import { Router } from '@angular/router';
 import { AlertController, ToastController } from '@ionic/angular';
 import { UserPlan } from '../../../app/shared/models';
 import { JoolaService } from '../../../app/shared/services/joola.service';
@@ -38,6 +39,7 @@ export class UserPlansComponent {
     private readonly joolaService = inject(JoolaService);
     private readonly alertController = inject(AlertController);
     private readonly toastController = inject(ToastController);
+    private readonly router = inject(Router);
 
     public constructor() {
         this.joolaService.loadUserPlans.set(true);
@@ -82,8 +84,12 @@ export class UserPlansComponent {
         }
 
         userPlan.data = planData;
+
         // check if audio files exist
+        await this.joolaService.loadAudioFiles();
+
         // navigate to waeve component
+        void this.router.navigate(['joola/waeve', userPlan.id]);
     }
 
     public async removeUserPlan(userPlan: UserPlan): Promise<void> {

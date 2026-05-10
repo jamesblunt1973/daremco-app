@@ -537,7 +537,7 @@ export class WaeveComponent implements OnInit {
 
             const audio = new Audio();
             audio.onended = (): void | PromiseLike<void> => resolve();
-            audio.src = `${this.joolaService.audioPath}${fileName}.mp3`;
+            audio.src = this.joolaService.getAudioUrl(fileName);
             void audio.play();
         });
     }

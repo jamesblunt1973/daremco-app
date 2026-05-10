@@ -1,9 +1,11 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable, resource, signal } from '@angular/core';
+import { Directory, Filesystem, ReadFileResult } from '@capacitor/filesystem';
 import { Storage } from '@ionic/storage-angular';
 import { firstValueFrom } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { JoolaProduct, Product, UserPlan, UserPurchase } from '../models';
+import { downloadToFilesystem } from '../utils/download-to-filesystem';
 import { AppService } from './app.service';
 import { UpdateService } from './update.service';
 
@@ -12,7 +14,6 @@ import { UpdateService } from './update.service';
 })
 export class JoolaService {
     public static productsPath = `${environment.imageUrl}products/`;
-    public audioPath = './assets/joola-farsi/';
     public loadUserPlans = signal(false);
     public loadUserPurchases = signal(false);
     public loadArchivedPlans = signal(false);
@@ -22,6 +23,7 @@ export class JoolaService {
             if (!this.loadUserPlans()) {
                 return Promise.resolve([]);
             }
+
             return this.initialLoadUserPlans();
         },
         defaultValue: []
@@ -32,6 +34,7 @@ export class JoolaService {
             if (!this.loadUserPurchases()) {
                 return Promise.resolve([]);
             }
+
             return this.getUserPurchases();
         },
         defaultValue: []
@@ -42,6 +45,7 @@ export class JoolaService {
             if (!this.loadArchivedPlans()) {
                 return Promise.resolve([]);
             }
+
             return this.getArchivedUserPlans();
         },
         defaultValue: []
@@ -58,6 +62,8 @@ export class JoolaService {
     private readonly storage = inject(Storage);
     private readonly updateService = inject(UpdateService);
     private readonly productSearchTerm = signal('');
+    private readonly audioObjectUrls = new Map<string, string>();
+    private readonly audioPath = `${environment.baseUrl}files/joola-farsi/`;
     private readonly audioFiles: string[] = [
         '1',
         '2',
@@ -178,7 +184,11 @@ export class JoolaService {
     }
 
     public async loadAudioFiles(): Promise<string[]> {
-        return Promise.all(this.audioFiles.map(fileName => this.preloadAudio(fileName)));
+        return Promise.all(this.audioFiles.map(fileName => this.setAudioFile(fileName)));
+    }
+
+    public getAudioUrl(fileName: string): string {
+        return this.audioObjectUrls.get(fileName) ?? `${this.audioPath}${fileName}.mp3`;
     }
 
     public async updateProductImages(userPlans: UserPlan[]): Promise<void> {
@@ -228,15 +238,71 @@ export class JoolaService {
         const userPlans = firstValueFrom(
             this.httpClient.get<UserPlan[]>(`${this.apiUrl}user-plans?finished=false`)
         );
+
         await this.storage.set('user-plans', userPlans);
         return userPlans;
     }
 
     private preloadAudio(fileName: string): Promise<string> {
-        const audio = new Audio(`${this.audioPath}${fileName}.mp3`);
+        const audio = new Audio(this.getAudioUrl(fileName));
         return new Promise(resolve => {
             audio.addEventListener('canplaythrough', () => resolve(fileName), { once: true });
         });
+    }
+
+    private async setAudioFile(fileName: string): Promise<string> {
+        const fileOptions = {
+            path: `${fileName}.mp3`,
+            directory: Directory.Data
+        };
+
+        try {
+            const audioData = await Filesystem.readFile(fileOptions);
+            this.updateAudioObjectUrl(fileName, audioData);
+            return this.preloadAudio(fileName);
+        } catch {
+            const serverAvailable = this.app.serverAvailable();
+            if (!serverAvailable) {
+                return this.preloadAudio(fileName);
+            }
+
+            try {
+                const url = `${this.audioPath}${fileName}.mp3`;
+                await downloadToFilesystem({ ...fileOptions, url });
+
+                const downloadedAudioData = await Filesystem.readFile(fileOptions);
+                this.updateAudioObjectUrl(fileName, downloadedAudioData);
+                return this.preloadAudio(fileName);
+            } catch {
+                return this.preloadAudio(fileName);
+            }
+        }
+    }
+
+    private updateAudioObjectUrl(fileName: string, audioData: ReadFileResult): void {
+        const previousAudioUrl = this.audioObjectUrls.get(fileName);
+        if (previousAudioUrl) {
+            URL.revokeObjectURL(previousAudioUrl);
+        }
+
+        this.audioObjectUrls.set(fileName, this.getAudioObjectUrl(audioData));
+    }
+
+    private getAudioObjectUrl(audioData: ReadFileResult): string {
+        if (typeof audioData.data === 'string') {
+            const byteCharacters = atob(audioData.data);
+            const byteNumbers = new Array(byteCharacters.length);
+            for (let i = 0; i < byteCharacters.length; i++) {
+                byteNumbers[i] = byteCharacters.charCodeAt(i);
+            }
+
+            const byteArray = new Uint8Array(byteNumbers);
+            const blob = new Blob([byteArray], { type: 'audio/mpeg' });
+
+            return URL.createObjectURL(blob);
+        } else {
+            return URL.createObjectURL(audioData.data);
+        }
     }
 
     private async savePreferences(endpoint: string, payload: UserPlan): Promise<void> {
