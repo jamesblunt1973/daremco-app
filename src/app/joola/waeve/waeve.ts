@@ -1,6 +1,6 @@
 import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AlertController, ToastController } from '@ionic/angular';
 import { UserPlan } from '../../shared/models';
 import { JoolaService } from '../../shared/services/joola.service';
@@ -32,6 +32,7 @@ export class WaeveComponent implements OnInit {
     private readonly alertController = inject(AlertController);
     private readonly toastController = inject(ToastController);
     private readonly destroyRef = inject(DestroyRef);
+    private readonly router = inject(Router);
 
     public ngOnInit(): void {
         this.route.paramMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(params => {
@@ -39,6 +40,13 @@ export class WaeveComponent implements OnInit {
             if (!Number.isFinite(userPlanId) || userPlanId <= 0) {
                 this.userPlan = null;
                 return;
+            }
+
+            this.userPlan =
+                this.joolaService.userPlans.value().find(plan => plan.id === userPlanId) ?? null;
+
+            if (!this.userPlan || !this.userPlan.data) {
+                void this.router.navigate(['joola']);
             }
         });
     }

@@ -1,4 +1,4 @@
-<div class="app-bg">
+<div class="app-bg ion-display-flex ion-flex-column">
     <div class="waeve-container ion-padding">
         @if (loadingMsg) {
         <div class="loading-container">
@@ -113,20 +113,20 @@
         </div>
 
         <div class="quick-actions">
-            <ion-button fill="clear" color="primary" (click)="changeAutoplay()">
+            <ion-button fill="outline" color="primary" (click)="changeAutoplay()">
                 <ion-icon
                     slot="icon-only"
                     [name]="userPlan.autoPlay ? 'play-forward-outline' : 'play-outline'"></ion-icon>
             </ion-button>
             <ion-button
-                fill="clear"
+                fill="outline"
                 color="secondary"
                 (click)="userPlan.playSound = !userPlan.playSound">
                 <ion-icon
                     slot="icon-only"
                     [name]="userPlan.playSound ? 'volume-high-outline' : 'volume-mute-outline'"></ion-icon>
             </ion-button>
-            <ion-button fill="clear" color="danger" (click)="reset()" [disabled]="playDisabled">
+            <ion-button fill="outline" color="danger" (click)="reset()" [disabled]="playDisabled">
                 <ion-icon slot="icon-only" name="refresh-outline"></ion-icon>
             </ion-button>
         </div>
@@ -134,20 +134,18 @@
         @if (userPlan.autoPlay) {
         <div class="speed-row">
             <ion-item lines="none" class="speed-input">
-                <ion-label>سرعت بافت:</ion-label>
+                <span>سرعت بافت:</span>
                 <ion-input type="number" [(ngModel)]="userPlan.speed" />
-                <ion-note slot="end">گره در دقیقه</ion-note>
+                <span>گره در دقیقه</span>
             </ion-item>
             @if (timeout) {
             <app-arc-progress [diameter]="64" [time]="timeout"></app-arc-progress>
             }
         </div>
-        }
-
-        <ion-button [routerLink]="['/joola']">
-            <span>بازگشت به لیست نقشه‌ها</span>
-            <ion-icon name="arrow-back" />
-        </ion-button>
-        }
+        } }
     </div>
+    <ion-button style="margin-top: auto" [routerLink]="['/joola']">
+        <span>بازگشت به لیست نقشه‌ها</span>
+        <ion-icon name="arrow-back" />
+    </ion-button>
 </div>

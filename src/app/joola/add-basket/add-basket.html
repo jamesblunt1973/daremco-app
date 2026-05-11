@@ -1,4 +1,4 @@
-<div class="app-bg">
+<div class="app-bg ion-display-flex ion-flex-column">
     <div class="ion-display-flex ion-flex-column ion-align-items-start ion-padding">
         @if(isLoading()){
         <div class="ion-display-flex ion-margin-x-auto">
@@ -36,10 +36,10 @@
                 </ion-card-content>
             </ion-card>
             }
-            <ion-button [routerLink]="['/joola']">
-                <span>بازگشت به لیست نقشه‌ها</span>
-                <ion-icon name="arrow-back" />
-            </ion-button>
         </div>
     </div>
+    <ion-button style="margin-top: auto" [routerLink]="['/joola']">
+        <span>بازگشت به لیست نقشه‌ها</span>
+        <ion-icon name="arrow-back" />
+    </ion-button>
 </div>

@@ -305,7 +305,14 @@ export class JoolaService {
         }
     }
 
-    private async savePreferences(endpoint: string, payload: UserPlan): Promise<void> {
-        await firstValueFrom(this.httpClient.patch<void>(`${this.apiUrl}${endpoint}`, payload));
+    private async savePreferences(userPlan: UserPlan): Promise<void> {
+        const { id, position, autoPlay, speed, playSound } = userPlan;
+        const data = { id, position, autoPlay, speed, playSound };
+
+        await this.storage.set(`user-plan-setting-${id}`, data);
+
+        if (this.app.serverAvailable()) {
+            await firstValueFrom(this.httpClient.patch<void>(`${this.apiUrl}save`, data));
+        }
     }
 }
