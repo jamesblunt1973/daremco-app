@@ -208,6 +208,32 @@ export class JoolaService {
         });
     }
 
+    public async savePreferences(userPlan: UserPlan): Promise<void> {
+        const { id, position, autoPlay, speed, playSound } = userPlan;
+
+        const storedUserPlans = ((await this.storage.get('user-plans')) as UserPlan[]) ?? [];
+        const storedUserPlan = storedUserPlans.find(plan => plan.id === id);
+        if (storedUserPlan) {
+            storedUserPlan.position = position;
+            storedUserPlan.autoPlay = autoPlay;
+            storedUserPlan.speed = speed;
+            storedUserPlan.playSound = playSound;
+            await this.storage.set('user-plans', storedUserPlans);
+        }
+
+        if (this.app.serverAvailable()) {
+            await firstValueFrom(
+                this.httpClient.patch<void>(`${this.apiUrl}save`, {
+                    id,
+                    position,
+                    autoPlay,
+                    speed,
+                    playSound
+                })
+            );
+        }
+    }
+
     private async searchProducts(searchTerm: string): Promise<JoolaProduct[]> {
         if (searchTerm.length <= 2) {
             return [];
@@ -302,17 +328,6 @@ export class JoolaService {
             return URL.createObjectURL(blob);
         } else {
             return URL.createObjectURL(audioData.data);
-        }
-    }
-
-    private async savePreferences(userPlan: UserPlan): Promise<void> {
-        const { id, position, autoPlay, speed, playSound } = userPlan;
-        const data = { id, position, autoPlay, speed, playSound };
-
-        await this.storage.set(`user-plan-setting-${id}`, data);
-
-        if (this.app.serverAvailable()) {
-            await firstValueFrom(this.httpClient.patch<void>(`${this.apiUrl}save`, data));
         }
     }
 }

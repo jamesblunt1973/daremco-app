@@ -1,4 +1,4 @@
-import { Component, DestroyRef, inject, OnInit } from '@angular/core';
+import { Component, DestroyRef, effect, inject, OnInit, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AlertController, ToastController } from '@ionic/angular';
@@ -22,9 +22,12 @@ export class WaeveComponent implements OnInit {
     public raj = 0;
     public color = 0;
     public tie = '';
-    public position = 0;
     public playDisabled = false;
     public timeout = 0;
+    public readonly position = signal(0);
+    public readonly autoPlay = signal(false);
+    public readonly speed = signal(0);
+    public readonly playSound = signal(false);
 
     private timeoutId: number | null = null;
     private readonly route = inject(ActivatedRoute);
@@ -33,6 +36,37 @@ export class WaeveComponent implements OnInit {
     private readonly toastController = inject(ToastController);
     private readonly destroyRef = inject(DestroyRef);
     private readonly router = inject(Router);
+
+    public constructor() {
+        effect(() => {
+            const position = this.position();
+            const autoPlay = this.autoPlay();
+            const speed = this.speed();
+            const playSound = this.playSound();
+
+            const userPlan = this.userPlan;
+            if (!userPlan) {
+                return;
+            }
+
+            // Skip when signals already match userPlan (e.g. just initialized from it)
+            if (
+                userPlan.position === position &&
+                userPlan.autoPlay === autoPlay &&
+                userPlan.speed === speed &&
+                userPlan.playSound === playSound
+            ) {
+                return;
+            }
+
+            userPlan.position = position;
+            userPlan.autoPlay = autoPlay;
+            userPlan.speed = speed;
+            userPlan.playSound = playSound;
+
+            void this.joolaService.savePreferences(userPlan);
+        });
+    }
 
     public ngOnInit(): void {
         this.route.paramMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(params => {
@@ -47,7 +81,13 @@ export class WaeveComponent implements OnInit {
 
             if (!this.userPlan || !this.userPlan.data) {
                 void this.router.navigate(['joola']);
+                return;
             }
+
+            this.position.set(this.userPlan.position);
+            this.autoPlay.set(this.userPlan.autoPlay);
+            this.speed.set(this.userPlan.speed);
+            this.playSound.set(this.userPlan.playSound);
         });
     }
 
@@ -56,13 +96,13 @@ export class WaeveComponent implements OnInit {
             return;
         }
 
-        if (this.userPlan.autoPlay) {
+        if (this.autoPlay()) {
             this.playDisabled = false;
             this.clearAutoplayTimeout();
             this.timeout = 0;
         }
 
-        this.userPlan.autoPlay = !this.userPlan.autoPlay;
+        this.autoPlay.update(value => !value);
     }
 
     public async reset(): Promise<void> {
@@ -92,8 +132,8 @@ export class WaeveComponent implements OnInit {
             this.clearAutoplayTimeout();
             this.timeout = 0;
             this.playDisabled = false;
-            userPlan.autoPlay = false;
-            userPlan.position = 0;
+            this.autoPlay.set(false);
+            this.position.set(0);
             this.extractPosition(0);
         }
     }
@@ -108,18 +148,20 @@ export class WaeveComponent implements OnInit {
         this.playDisabled = true;
 
         const data = userPlan.data;
-        this.position++;
-        const element = data[this.position];
+        let position = this.position() + 1;
+        const element = data[position];
 
         if (element === -1) {
-            this.position++;
-            this.raj = data[this.position];
+            position++;
+            this.raj = data[position];
+            this.position.set(position);
             await this.playAudio('raj');
             await this.playNumber(this.raj);
             await this.next();
         } else if (element === -2) {
-            this.position++;
-            this.color = data[this.position];
+            position++;
+            this.color = data[position];
+            this.position.set(position);
             await this.playAudio('rang');
             await this.playNumber(this.color);
             await this.next(true);
@@ -134,28 +176,27 @@ export class WaeveComponent implements OnInit {
             await this.playNumber(element);
             let tiesCount = 1;
 
-            if (data[this.position + 1] === -3) {
-                this.position += 2;
-                nextElement = data[this.position];
+            if (data[position + 1] === -3) {
+                position += 2;
+                nextElement = data[position];
                 this.tie += ` - ${nextElement}`;
                 await this.playAudio('ela');
                 await this.playNumber(nextElement);
                 tiesCount = nextElement - element + 1;
             }
 
+            this.position.set(position);
             this.playDisabled = false;
 
-            if (userPlan.autoPlay && !playGereh) {
+            if (this.autoPlay() && !playGereh) {
                 this.playDisabled = true;
-                const time = 60 / userPlan.speed;
+                const time = 60 / this.speed();
                 this.timeout = tiesCount * time * 1000;
                 this.timeoutId = window.setTimeout(() => {
                     void this.next();
                 }, this.timeout);
             }
         }
-
-        userPlan.position = this.position;
     }
 
     public nextTie(): void {
@@ -165,7 +206,8 @@ export class WaeveComponent implements OnInit {
         }
 
         const data = userPlan.data;
-        let next = data[this.position + 1];
+        let position = this.position();
+        let next = data[position + 1];
         if (next === -1) {
             void this.showWarningSnack('پایان رج');
             return;
@@ -176,16 +218,16 @@ export class WaeveComponent implements OnInit {
             return;
         }
 
-        this.position++;
+        position++;
         this.tie = next.toString();
-        next = data[this.position + 1];
+        next = data[position + 1];
         if (next === -3) {
-            this.position += 2;
-            next = data[this.position];
+            position += 2;
+            next = data[position];
             this.tie += ` - ${next}`;
         }
 
-        userPlan.position = this.position;
+        this.position.set(position);
     }
 
     public previousTie(): void {
@@ -195,14 +237,15 @@ export class WaeveComponent implements OnInit {
         }
 
         const data = userPlan.data;
+        const currentPosition = this.position();
         let previousIndex = 1;
-        let previous1 = data[this.position - previousIndex];
+        let previous1 = data[currentPosition - previousIndex];
         if (previous1 === -3) {
             previousIndex = 3;
-            previous1 = data[this.position - previousIndex];
+            previous1 = data[currentPosition - previousIndex];
         }
 
-        const previous2 = data[this.position - previousIndex - 1];
+        const previous2 = data[currentPosition - previousIndex - 1];
         if (previous2 === -1) {
             void this.showWarningSnack('ابتدای رج');
             return;
@@ -213,13 +256,13 @@ export class WaeveComponent implements OnInit {
             return;
         }
 
-        this.position -= previousIndex;
+        const newPosition = currentPosition - previousIndex;
         this.tie = previous1.toString();
         if (previous2 === -3) {
-            this.tie = `${data[this.position - 2]} - ${previous1}`;
+            this.tie = `${data[newPosition - 2]} - ${previous1}`;
         }
 
-        userPlan.position = this.position;
+        this.position.set(newPosition);
     }
 
     public nextColor(): void {
@@ -229,7 +272,7 @@ export class WaeveComponent implements OnInit {
         }
 
         const data = userPlan.data;
-        let position = this.position;
+        let position = this.position();
         while (position < data.length) {
             position++;
             const next = data[position];
@@ -239,8 +282,9 @@ export class WaeveComponent implements OnInit {
             }
 
             if (next === -2) {
-                this.position = position + 1;
-                this.color = data[this.position];
+                const newPosition = position + 1;
+                this.position.set(newPosition);
+                this.color = data[newPosition];
                 this.nextTie();
                 break;
             }
@@ -254,7 +298,7 @@ export class WaeveComponent implements OnInit {
         }
 
         const data = userPlan.data;
-        let position = this.position;
+        let position = this.position();
         while (position > 0) {
             position--;
             const previous = data[position];
@@ -269,7 +313,7 @@ export class WaeveComponent implements OnInit {
                     continue;
                 }
 
-                this.position = position + 1;
+                this.position.set(position + 1);
                 this.color = color;
                 this.nextTie();
                 break;
@@ -284,7 +328,7 @@ export class WaeveComponent implements OnInit {
         }
 
         const data = userPlan.data;
-        let position = this.position;
+        let position = this.position();
         while (position < data.length) {
             position++;
             if (position === data.length) {
@@ -294,8 +338,9 @@ export class WaeveComponent implements OnInit {
 
             const next = data[position];
             if (next === -1) {
-                this.position = position + 1;
-                this.raj = data[this.position];
+                const newPosition = position + 1;
+                this.position.set(newPosition);
+                this.raj = data[newPosition];
                 this.nextColor();
                 break;
             }
@@ -309,7 +354,7 @@ export class WaeveComponent implements OnInit {
         }
 
         const data = userPlan.data;
-        let position = this.position;
+        let position = this.position();
         while (position > 0) {
             position--;
             const previous = data[position];
@@ -319,7 +364,7 @@ export class WaeveComponent implements OnInit {
                     continue;
                 }
 
-                this.position = position + 1;
+                this.position.set(position + 1);
                 this.raj = raj;
                 this.nextColor();
                 break;
@@ -335,7 +380,7 @@ export class WaeveComponent implements OnInit {
 
         if (this.raj <= 0) {
             void this.showErrorSnack('عدد وارد شده نباید کوچکتر یا مساوی صفر باشد.');
-            this.extractPosition(this.position);
+            this.extractPosition(this.position());
             return;
         }
 
@@ -343,7 +388,7 @@ export class WaeveComponent implements OnInit {
             void this.showErrorSnack(
                 `عدد وارد شده باید کوچکتر یا مساوی ${userPlan.product.tiesHeight} باشد.`
             );
-            this.extractPosition(this.position);
+            this.extractPosition(this.position());
             return;
         }
 
@@ -366,7 +411,7 @@ export class WaeveComponent implements OnInit {
 
         if (this.color <= 0) {
             void this.showErrorSnack('عدد وارد شده نباید کوچکتر یا مساوی صفر باشد.');
-            this.extractPosition(this.position);
+            this.extractPosition(this.position());
             return;
         }
 
@@ -374,12 +419,12 @@ export class WaeveComponent implements OnInit {
             void this.showErrorSnack(
                 `عدد وارد شده باید کوچکتر یا مساوی ${userPlan.product.colorsCount} باشد.`
             );
-            this.extractPosition(this.position);
+            this.extractPosition(this.position());
             return;
         }
 
         const data = userPlan.data;
-        let i = this.position;
+        let i = this.position();
         let element = data[i];
         while (element !== -1) {
             i--;
@@ -390,7 +435,7 @@ export class WaeveComponent implements OnInit {
             }
         }
 
-        i = this.position;
+        i = this.position();
         element = data[i];
         while (i < data.length && element !== -1) {
             i++;
@@ -402,7 +447,7 @@ export class WaeveComponent implements OnInit {
         }
 
         void this.showErrorSnack('شماره رنگ وارد شده در این رج بکار نرفته است');
-        this.extractPosition(this.position);
+        this.extractPosition(this.position());
     }
 
     public changeTie(): void {
@@ -416,12 +461,12 @@ export class WaeveComponent implements OnInit {
             void this.showErrorSnack(
                 `لطفا یک عدد بین یک و ${userPlan.product.tiesWidth} وارد نمایید.`
             );
-            this.extractPosition(this.position);
+            this.extractPosition(this.position());
             return;
         }
 
         const data = userPlan.data;
-        let i = this.position;
+        let i = this.position();
         while (data[i] !== -1) {
             i--;
         }
@@ -465,18 +510,18 @@ export class WaeveComponent implements OnInit {
         this.raj = 0;
         this.color = 0;
         this.tie = '';
-        this.position = -1;
-        this.position = position;
+        this.position.set(-1);
+        this.position.set(position);
 
-        if (this.position === 0) {
-            this.position = -1;
+        if (this.position() === 0) {
+            this.position.set(-1);
             void this.next();
             return;
         }
 
         const data = this.userPlan.data;
 
-        for (let i = this.position; i >= 0; i--) {
+        for (let i = this.position(); i >= 0; i--) {
             const element = data[i];
             const nextElement = data[i + 1];
             if (element === -1 && !this.raj) {
@@ -490,9 +535,10 @@ export class WaeveComponent implements OnInit {
             }
         }
 
-        this.tie = data[this.position].toString();
-        if (data[this.position - 1] === -3) {
-            this.tie = `${data[this.position - 2]} - ${this.tie}`;
+        const currentPosition = this.position();
+        this.tie = data[currentPosition].toString();
+        if (data[currentPosition - 1] === -3) {
+            this.tie = `${data[currentPosition - 2]} - ${this.tie}`;
         }
     }
 
@@ -506,19 +552,19 @@ export class WaeveComponent implements OnInit {
         this.raj = raj;
         this.color = color;
         this.tie = '';
-        this.position = position;
 
         const data = this.userPlan.data;
-        while (this.position < data.length) {
-            const element = data[this.position];
-            const nextElement = data[this.position + 1];
+        let nextPosition = position;
+        while (nextPosition < data.length) {
+            const element = data[nextPosition];
+            const nextElement = data[nextPosition + 1];
             if (element === -1 && !this.raj) {
                 this.raj = nextElement;
-                this.position += 2;
+                nextPosition += 2;
                 continue;
             } else if (element === -2 && !this.color) {
                 this.color = nextElement;
-                this.position += 2;
+                nextPosition += 2;
                 continue;
             }
 
@@ -526,19 +572,21 @@ export class WaeveComponent implements OnInit {
                 break;
             }
 
-            this.position++;
+            nextPosition++;
         }
 
-        this.tie = data[this.position].toString();
-        if (data[this.position + 1] === -3) {
-            this.position += 2;
-            this.tie += ` - ${data[this.position]}`;
+        this.tie = data[nextPosition].toString();
+        if (data[nextPosition + 1] === -3) {
+            nextPosition += 2;
+            this.tie += ` - ${data[nextPosition]}`;
         }
+
+        this.position.set(nextPosition);
     }
 
     private playAudio(fileName: string): Promise<void> {
         return new Promise(resolve => {
-            if (!this.userPlan?.playSound) {
+            if (!this.playSound()) {
                 resolve();
                 return;
             }

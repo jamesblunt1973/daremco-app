@@ -105,10 +105,10 @@
 
         <div class="main-action">
             <ion-button (click)="next()" [disabled]="playDisabled">
-                <span>{{ userPlan.autoPlay ? 'اجرای بافت' : 'گره بعد' }}</span>
+                <span>{{ autoPlay() ? 'اجرای بافت' : 'گره بعد' }}</span>
                 <ion-icon
                     slot="end"
-                    [name]="userPlan.autoPlay ? 'play-forward-outline' : 'play-outline'"></ion-icon>
+                    [name]="autoPlay() ? 'play-forward-outline' : 'play-outline'"></ion-icon>
             </ion-button>
         </div>
 
@@ -116,26 +116,29 @@
             <ion-button fill="outline" color="primary" (click)="changeAutoplay()">
                 <ion-icon
                     slot="icon-only"
-                    [name]="userPlan.autoPlay ? 'play-forward-outline' : 'play-outline'"></ion-icon>
+                    [name]="autoPlay() ? 'play-forward-outline' : 'play-outline'"></ion-icon>
             </ion-button>
             <ion-button
                 fill="outline"
                 color="secondary"
-                (click)="userPlan.playSound = !userPlan.playSound">
+                (click)="playSound.set(!playSound())">
                 <ion-icon
                     slot="icon-only"
-                    [name]="userPlan.playSound ? 'volume-high-outline' : 'volume-mute-outline'"></ion-icon>
+                    [name]="playSound() ? 'volume-high-outline' : 'volume-mute-outline'"></ion-icon>
             </ion-button>
             <ion-button fill="outline" color="danger" (click)="reset()" [disabled]="playDisabled">
                 <ion-icon slot="icon-only" name="refresh-outline"></ion-icon>
             </ion-button>
         </div>
 
-        @if (userPlan.autoPlay) {
+        @if (autoPlay()) {
         <div class="speed-row">
             <ion-item lines="none" class="speed-input">
                 <span>سرعت بافت:</span>
-                <ion-input type="number" [(ngModel)]="userPlan.speed" />
+                <ion-input
+                    type="number"
+                    [ngModel]="speed()"
+                    (ngModelChange)="speed.set($event)" />
                 <span>گره در دقیقه</span>
             </ion-item>
             @if (timeout) {
