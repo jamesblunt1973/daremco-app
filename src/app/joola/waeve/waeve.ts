@@ -19,11 +19,11 @@ export class WaeveComponent implements OnInit {
     public colorSearchFocus = false;
     public rajSearchFocus = false;
 
-    public raj = 0;
-    public color = 0;
     public tie = '';
-    public playDisabled = false;
     public timeout = 0;
+    public readonly raj = signal(0);
+    public readonly color = signal(0);
+    public readonly playDisabled = signal(false);
     public readonly position = signal(0);
     public readonly autoPlay = signal(false);
     public readonly speed = signal(0);
@@ -71,11 +71,6 @@ export class WaeveComponent implements OnInit {
     public ngOnInit(): void {
         this.route.paramMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(params => {
             const userPlanId = Number(params.get('id'));
-            if (!Number.isFinite(userPlanId) || userPlanId <= 0) {
-                this.userPlan = null;
-                return;
-            }
-
             this.userPlan =
                 this.joolaService.userPlans.value().find(plan => plan.id === userPlanId) ?? null;
 
@@ -88,6 +83,8 @@ export class WaeveComponent implements OnInit {
             this.autoPlay.set(this.userPlan.autoPlay);
             this.speed.set(this.userPlan.speed);
             this.playSound.set(this.userPlan.playSound);
+
+            this.extractPosition();
         });
     }
 
@@ -97,7 +94,7 @@ export class WaeveComponent implements OnInit {
         }
 
         if (this.autoPlay()) {
-            this.playDisabled = false;
+            this.playDisabled.set(false);
             this.clearAutoplayTimeout();
             this.timeout = 0;
         }
@@ -106,11 +103,6 @@ export class WaeveComponent implements OnInit {
     }
 
     public async reset(): Promise<void> {
-        const userPlan = this.userPlan;
-        if (!userPlan) {
-            return;
-        }
-
         const alert = await this.alertController.create({
             header: '',
             message: 'آیا می‌خواهید از ابتدا شروع کنید؟',
@@ -131,39 +123,34 @@ export class WaeveComponent implements OnInit {
         if (role === 'confirm') {
             this.clearAutoplayTimeout();
             this.timeout = 0;
-            this.playDisabled = false;
+            this.playDisabled.set(false);
             this.autoPlay.set(false);
             this.position.set(0);
-            this.extractPosition(0);
+            this.extractPosition();
         }
     }
 
     public async next(playGereh = false): Promise<void> {
-        const userPlan = this.userPlan;
-        if (!userPlan) {
-            return;
-        }
-
         this.timeout = 0;
-        this.playDisabled = true;
+        this.playDisabled.set(true);
 
-        const data = userPlan.data;
+        const data = this.userPlan!.data;
         let position = this.position() + 1;
         const element = data[position];
 
         if (element === -1) {
             position++;
-            this.raj = data[position];
+            this.raj.set(data[position]);
             this.position.set(position);
             await this.playAudio('raj');
-            await this.playNumber(this.raj);
+            await this.playNumber(this.raj());
             await this.next();
         } else if (element === -2) {
             position++;
-            this.color = data[position];
+            this.color.set(data[position]);
             this.position.set(position);
             await this.playAudio('rang');
-            await this.playNumber(this.color);
+            await this.playNumber(this.color());
             await this.next(true);
         } else {
             let nextElement: number | null = null;
@@ -186,10 +173,10 @@ export class WaeveComponent implements OnInit {
             }
 
             this.position.set(position);
-            this.playDisabled = false;
+            this.playDisabled.set(false);
 
             if (this.autoPlay() && !playGereh) {
-                this.playDisabled = true;
+                this.playDisabled.set(true);
                 const time = 60 / this.speed();
                 this.timeout = tiesCount * time * 1000;
                 this.timeoutId = window.setTimeout(() => {
@@ -200,12 +187,7 @@ export class WaeveComponent implements OnInit {
     }
 
     public nextTie(): void {
-        const userPlan = this.userPlan;
-        if (!userPlan) {
-            return;
-        }
-
-        const data = userPlan.data;
+        const data = this.userPlan!.data;
         let position = this.position();
         let next = data[position + 1];
         if (next === -1) {
@@ -231,21 +213,21 @@ export class WaeveComponent implements OnInit {
     }
 
     public previousTie(): void {
-        const userPlan = this.userPlan;
-        if (!userPlan) {
-            return;
-        }
-
-        const data = userPlan.data;
+        const data = this.userPlan!.data;
         const currentPosition = this.position();
         let previousIndex = 1;
-        let previous1 = data[currentPosition - previousIndex];
-        if (previous1 === -3) {
-            previousIndex = 3;
-            previous1 = data[currentPosition - previousIndex];
+        const newPosition = currentPosition - previousIndex;
+
+        if (newPosition === 0) {
         }
 
-        const previous2 = data[currentPosition - previousIndex - 1];
+        let previous1 = data[newPosition];
+        if (previous1 === -3) {
+            previousIndex = 3;
+            previous1 = data[newPosition];
+        }
+
+        const previous2 = data[newPosition - 1];
         if (previous2 === -1) {
             void this.showWarningSnack('ابتدای رج');
             return;
@@ -256,7 +238,6 @@ export class WaeveComponent implements OnInit {
             return;
         }
 
-        const newPosition = currentPosition - previousIndex;
         this.tie = previous1.toString();
         if (previous2 === -3) {
             this.tie = `${data[newPosition - 2]} - ${previous1}`;
@@ -266,12 +247,7 @@ export class WaeveComponent implements OnInit {
     }
 
     public nextColor(): void {
-        const userPlan = this.userPlan;
-        if (!userPlan) {
-            return;
-        }
-
-        const data = userPlan.data;
+        const data = this.userPlan!.data;
         let position = this.position();
         while (position < data.length) {
             position++;
@@ -284,7 +260,7 @@ export class WaeveComponent implements OnInit {
             if (next === -2) {
                 const newPosition = position + 1;
                 this.position.set(newPosition);
-                this.color = data[newPosition];
+                this.color.set(data[newPosition]);
                 this.nextTie();
                 break;
             }
@@ -292,12 +268,7 @@ export class WaeveComponent implements OnInit {
     }
 
     public prevColor(): void {
-        const userPlan = this.userPlan;
-        if (!userPlan) {
-            return;
-        }
-
-        const data = userPlan.data;
+        const data = this.userPlan!.data;
         let position = this.position();
         while (position > 0) {
             position--;
@@ -309,12 +280,12 @@ export class WaeveComponent implements OnInit {
 
             if (previous === -2) {
                 const color = data[position + 1];
-                if (this.color === color) {
+                if (this.color() === color) {
                     continue;
                 }
 
                 this.position.set(position + 1);
-                this.color = color;
+                this.color.set(color);
                 this.nextTie();
                 break;
             }
@@ -322,12 +293,7 @@ export class WaeveComponent implements OnInit {
     }
 
     public nextRaj(): void {
-        const userPlan = this.userPlan;
-        if (!userPlan) {
-            return;
-        }
-
-        const data = userPlan.data;
+        const data = this.userPlan!.data;
         let position = this.position();
         while (position < data.length) {
             position++;
@@ -340,7 +306,7 @@ export class WaeveComponent implements OnInit {
             if (next === -1) {
                 const newPosition = position + 1;
                 this.position.set(newPosition);
-                this.raj = data[newPosition];
+                this.raj.set(data[newPosition]);
                 this.nextColor();
                 break;
             }
@@ -348,24 +314,19 @@ export class WaeveComponent implements OnInit {
     }
 
     public prevRaj(): void {
-        const userPlan = this.userPlan;
-        if (!userPlan) {
-            return;
-        }
-
-        const data = userPlan.data;
+        const data = this.userPlan!.data;
         let position = this.position();
         while (position > 0) {
             position--;
             const previous = data[position];
             if (previous === -1) {
                 const raj = data[position + 1];
-                if (this.raj === raj) {
+                if (this.raj() === raj) {
                     continue;
                 }
 
                 this.position.set(position + 1);
-                this.raj = raj;
+                this.raj.set(raj);
                 this.nextColor();
                 break;
             }
@@ -373,30 +334,25 @@ export class WaeveComponent implements OnInit {
     }
 
     public changeRaj(): void {
-        const userPlan = this.userPlan;
-        if (!userPlan) {
-            return;
-        }
-
-        if (this.raj <= 0) {
+        if (this.raj() <= 0) {
             void this.showErrorSnack('عدد وارد شده نباید کوچکتر یا مساوی صفر باشد.');
-            this.extractPosition(this.position());
+            this.extractPosition();
             return;
         }
 
-        if (this.raj > userPlan.product.tiesHeight) {
+        if (this.raj() > this.userPlan!.product.tiesHeight) {
             void this.showErrorSnack(
-                `عدد وارد شده باید کوچکتر یا مساوی ${userPlan.product.tiesHeight} باشد.`
+                `عدد وارد شده باید کوچکتر یا مساوی ${this.userPlan!.product.tiesHeight} باشد.`
             );
-            this.extractPosition(this.position());
+            this.extractPosition();
             return;
         }
 
-        const data = userPlan.data;
+        const data = this.userPlan!.data;
         for (let i = 0; i < data.length; i++) {
             const element = data[i];
             const nextElement = data[i + 1];
-            if (element === -1 && nextElement === this.raj) {
+            if (element === -1 && nextElement === this.raj()) {
                 this.applyPosition(i, 0, 0);
                 break;
             }
@@ -404,33 +360,28 @@ export class WaeveComponent implements OnInit {
     }
 
     public changeColor(): void {
-        const userPlan = this.userPlan;
-        if (!userPlan) {
-            return;
-        }
-
-        if (this.color <= 0) {
+        if (this.color() <= 0) {
             void this.showErrorSnack('عدد وارد شده نباید کوچکتر یا مساوی صفر باشد.');
-            this.extractPosition(this.position());
+            this.extractPosition();
             return;
         }
 
-        if (this.color > userPlan.product.colorsCount) {
+        if (this.color() > this.userPlan!.product.colorsCount) {
             void this.showErrorSnack(
-                `عدد وارد شده باید کوچکتر یا مساوی ${userPlan.product.colorsCount} باشد.`
+                `عدد وارد شده باید کوچکتر یا مساوی ${this.userPlan!.product.colorsCount} باشد.`
             );
-            this.extractPosition(this.position());
+            this.extractPosition();
             return;
         }
 
-        const data = userPlan.data;
+        const data = this.userPlan!.data;
         let i = this.position();
         let element = data[i];
         while (element !== -1) {
             i--;
             element = data[i];
-            if (element === -2 && data[i + 1] === this.color) {
-                this.applyPosition(i, this.raj, 0);
+            if (element === -2 && data[i + 1] === this.color()) {
+                this.applyPosition(i, this.raj(), 0);
                 return;
             }
         }
@@ -440,32 +391,27 @@ export class WaeveComponent implements OnInit {
         while (i < data.length && element !== -1) {
             i++;
             element = data[i];
-            if (element === -2 && data[i + 1] === this.color) {
-                this.applyPosition(i, this.raj, 0);
+            if (element === -2 && data[i + 1] === this.color()) {
+                this.applyPosition(i, this.raj(), 0);
                 return;
             }
         }
 
         void this.showErrorSnack('شماره رنگ وارد شده در این رج بکار نرفته است');
-        this.extractPosition(this.position());
+        this.extractPosition();
     }
 
     public changeTie(): void {
-        const userPlan = this.userPlan;
-        if (!userPlan) {
-            return;
-        }
-
         const tie = Number(this.tie);
-        if (Number.isNaN(tie) || tie <= 0 || tie > userPlan.product.tiesWidth) {
+        if (Number.isNaN(tie) || tie <= 0 || tie > this.userPlan!.product.tiesWidth) {
             void this.showErrorSnack(
-                `لطفا یک عدد بین یک و ${userPlan.product.tiesWidth} وارد نمایید.`
+                `لطفا یک عدد بین یک و ${this.userPlan!.product.tiesWidth} وارد نمایید.`
             );
-            this.extractPosition(this.position());
+            this.extractPosition();
             return;
         }
 
-        const data = userPlan.data;
+        const data = this.userPlan!.data;
         let i = this.position();
         while (data[i] !== -1) {
             i--;
@@ -490,28 +436,24 @@ export class WaeveComponent implements OnInit {
                     lastElement === tie ||
                     (tie > element && tie < lastElement)
                 ) {
-                    this.extractPosition(i);
+                    this.position.set(i);
+                    this.extractPosition();
                     break;
                 }
             } else if (element === tie) {
-                this.extractPosition(i);
+                this.position.set(i);
+                this.extractPosition();
                 break;
             }
         } while (element !== -1);
     }
 
-    private extractPosition(position: number): void {
-        if (!this.userPlan) {
-            return;
-        }
-
+    private extractPosition(): void {
         // position نباید تغییر کند،
         // همیشه روی گره دوم ذخیره می‌شود
-        this.raj = 0;
-        this.color = 0;
+        this.raj.set(0);
+        this.color.set(0);
         this.tie = '';
-        this.position.set(-1);
-        this.position.set(position);
 
         if (this.position() === 0) {
             this.position.set(-1);
@@ -519,18 +461,18 @@ export class WaeveComponent implements OnInit {
             return;
         }
 
-        const data = this.userPlan.data;
+        const data = this.userPlan!.data;
 
         for (let i = this.position(); i >= 0; i--) {
             const element = data[i];
             const nextElement = data[i + 1];
-            if (element === -1 && !this.raj) {
-                this.raj = nextElement;
-            } else if (element === -2 && !this.color) {
-                this.color = nextElement;
+            if (element === -1 && !this.raj()) {
+                this.raj.set(nextElement);
+            } else if (element === -2 && !this.color()) {
+                this.color.set(nextElement);
             }
 
-            if (this.raj && this.color) {
+            if (this.raj() && this.color()) {
                 break;
             }
         }
@@ -543,32 +485,28 @@ export class WaeveComponent implements OnInit {
     }
 
     private applyPosition(position: number, raj: number, color: number): void {
-        if (!this.userPlan) {
-            return;
-        }
-
         // در اینجا پوزیشن به ابتدای رج یا ابتدای رنگ اشاره دارد و باید به موقعیت صحیح منتقل شود
         // یعنی روی گره دوم
-        this.raj = raj;
-        this.color = color;
+        this.raj.set(raj);
+        this.color.set(color);
         this.tie = '';
 
-        const data = this.userPlan.data;
+        const data = this.userPlan!.data;
         let nextPosition = position;
         while (nextPosition < data.length) {
             const element = data[nextPosition];
             const nextElement = data[nextPosition + 1];
-            if (element === -1 && !this.raj) {
-                this.raj = nextElement;
+            if (element === -1 && !this.raj()) {
+                this.raj.set(nextElement);
                 nextPosition += 2;
                 continue;
-            } else if (element === -2 && !this.color) {
-                this.color = nextElement;
+            } else if (element === -2 && !this.color()) {
+                this.color.set(nextElement);
                 nextPosition += 2;
                 continue;
             }
 
-            if (this.raj && this.color) {
+            if (this.raj() && this.color()) {
                 break;
             }
 

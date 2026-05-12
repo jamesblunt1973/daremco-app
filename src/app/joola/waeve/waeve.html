@@ -26,7 +26,7 @@
 
         <div class="control-container">
             <h3>رج:</h3>
-            <ion-button fill="clear" (click)="prevRaj()" [disabled]="playDisabled">
+            <ion-button fill="clear" (click)="prevRaj()" [disabled]="playDisabled()">
                 <ion-icon slot="icon-only" name="chevron-forward-outline"></ion-icon>
             </ion-button>
             <ion-item lines="none" class="control-input">
@@ -34,8 +34,9 @@
                     type="number"
                     min="1"
                     [max]="userPlan.product.tiesHeight"
-                    [(ngModel)]="raj"
-                    [disabled]="playDisabled"
+                    [ngModel]="raj()"
+                    (ngModelChange)="raj.set($event)"
+                    [disabled]="playDisabled()"
                     (ionFocus)="rajSearchFocus = true"
                     (ionBlur)="rajSearchFocus = false; changeRaj()"></ion-input>
             </ion-item>
@@ -46,14 +47,14 @@
                 [class.visible]="rajSearchFocus">
                 <ion-icon slot="icon-only" name="search-outline"></ion-icon>
             </ion-button>
-            <ion-button fill="clear" (click)="nextRaj()" [disabled]="playDisabled">
+            <ion-button fill="clear" (click)="nextRaj()" [disabled]="playDisabled()">
                 <ion-icon slot="icon-only" name="chevron-back-outline"></ion-icon>
             </ion-button>
         </div>
 
         <div class="control-container">
             <h3>رنگ:</h3>
-            <ion-button fill="clear" (click)="prevColor()" [disabled]="playDisabled">
+            <ion-button fill="clear" (click)="prevColor()" [disabled]="playDisabled()">
                 <ion-icon slot="icon-only" name="chevron-forward-outline"></ion-icon>
             </ion-button>
             <ion-item lines="none" class="control-input">
@@ -61,8 +62,9 @@
                     type="number"
                     min="1"
                     [max]="userPlan.product.colorsCount"
-                    [(ngModel)]="color"
-                    [disabled]="playDisabled"
+                    [ngModel]="color()"
+                    (ngModelChange)="color.set($event)"
+                    [disabled]="playDisabled()"
                     (ionFocus)="colorSearchFocus = true"
                     (ionBlur)="colorSearchFocus = false; changeColor()"></ion-input>
             </ion-item>
@@ -73,21 +75,21 @@
                 [class.visible]="colorSearchFocus">
                 <ion-icon slot="icon-only" name="search-outline"></ion-icon>
             </ion-button>
-            <ion-button fill="clear" (click)="nextColor()" [disabled]="playDisabled">
+            <ion-button fill="clear" (click)="nextColor()" [disabled]="playDisabled()">
                 <ion-icon slot="icon-only" name="chevron-back-outline"></ion-icon>
             </ion-button>
         </div>
 
         <div class="control-container">
             <h3>گره:</h3>
-            <ion-button fill="clear" (click)="previousTie()" [disabled]="playDisabled">
+            <ion-button fill="clear" (click)="previousTie()" [disabled]="playDisabled()">
                 <ion-icon slot="icon-only" name="chevron-forward-outline"></ion-icon>
             </ion-button>
             <ion-item lines="none" class="control-input">
                 <ion-input
                     type="text"
                     [(ngModel)]="tie"
-                    [disabled]="playDisabled"
+                    [disabled]="playDisabled()"
                     (ionFocus)="tieSearchFocus = true"
                     (ionBlur)="tieSearchFocus = false; changeTie()"></ion-input>
             </ion-item>
@@ -98,13 +100,13 @@
                 [class.visible]="tieSearchFocus">
                 <ion-icon slot="icon-only" name="search-outline"></ion-icon>
             </ion-button>
-            <ion-button fill="clear" (click)="nextTie()" [disabled]="playDisabled">
+            <ion-button fill="clear" (click)="nextTie()" [disabled]="playDisabled()">
                 <ion-icon slot="icon-only" name="chevron-back-outline"></ion-icon>
             </ion-button>
         </div>
 
         <div class="main-action">
-            <ion-button (click)="next()" [disabled]="playDisabled">
+            <ion-button (click)="next()" [disabled]="playDisabled()">
                 <span>{{ autoPlay() ? 'اجرای بافت' : 'گره بعد' }}</span>
                 <ion-icon
                     slot="end"
@@ -118,15 +120,12 @@
                     slot="icon-only"
                     [name]="autoPlay() ? 'play-forward-outline' : 'play-outline'"></ion-icon>
             </ion-button>
-            <ion-button
-                fill="outline"
-                color="secondary"
-                (click)="playSound.set(!playSound())">
+            <ion-button fill="outline" color="secondary" (click)="playSound.set(!playSound())">
                 <ion-icon
                     slot="icon-only"
                     [name]="playSound() ? 'volume-high-outline' : 'volume-mute-outline'"></ion-icon>
             </ion-button>
-            <ion-button fill="outline" color="danger" (click)="reset()" [disabled]="playDisabled">
+            <ion-button fill="outline" color="danger" (click)="reset()" [disabled]="playDisabled()">
                 <ion-icon slot="icon-only" name="refresh-outline"></ion-icon>
             </ion-button>
         </div>
@@ -135,10 +134,7 @@
         <div class="speed-row">
             <ion-item lines="none" class="speed-input">
                 <span>سرعت بافت:</span>
-                <ion-input
-                    type="number"
-                    [ngModel]="speed()"
-                    (ngModelChange)="speed.set($event)" />
+                <ion-input type="number" [ngModel]="speed()" (ngModelChange)="speed.set($event)" />
                 <span>گره در دقیقه</span>
             </ion-item>
             @if (timeout) {
