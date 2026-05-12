@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AlertController, ToastController } from '@ionic/angular';
 import { UserPlan } from '../../shared/models';
 import { JoolaService } from '../../shared/services/joola.service';
+import { WeaveScript, WeaveUnit } from './weave-script';
 
 @Component({
     selector: 'app-waeve',
@@ -29,6 +30,9 @@ export class WaeveComponent implements OnInit {
     public readonly speed = signal(0);
     public readonly playSound = signal(false);
 
+    private script: WeaveScript | null = null;
+    // -1 means "no unit selected yet" (fresh plan, before the first next()).
+    private unitIndex = -1;
     private timeoutId: number | null = null;
     private readonly route = inject(ActivatedRoute);
     private readonly joolaService = inject(JoolaService);
@@ -49,7 +53,6 @@ export class WaeveComponent implements OnInit {
                 return;
             }
 
-            // Skip when signals already match userPlan (e.g. just initialized from it)
             if (
                 userPlan.position === position &&
                 userPlan.autoPlay === autoPlay &&
@@ -79,12 +82,26 @@ export class WaeveComponent implements OnInit {
                 return;
             }
 
-            this.position.set(this.userPlan.position);
+            this.script = new WeaveScript(this.userPlan.data);
             this.autoPlay.set(this.userPlan.autoPlay);
             this.speed.set(this.userPlan.speed);
             this.playSound.set(this.userPlan.playSound);
 
-            this.extractPosition();
+            // Restore unitIndex from the persisted raw position. position 0
+            // (or anything we can't map back to a unit) means "fresh start" —
+            // kick off next() so the first unit is selected and announced.
+            const restored =
+                this.userPlan.position === 0
+                    ? -1
+                    : this.script.indexOfPosition(this.userPlan.position);
+            this.unitIndex = restored;
+
+            if (this.unitIndex < 0) {
+                this.position.set(0);
+                void this.next();
+            } else {
+                this.syncToUnit(this.script.unitAt(this.unitIndex));
+            }
         });
     }
 
@@ -107,419 +124,260 @@ export class WaeveComponent implements OnInit {
             header: '',
             message: 'آیا می‌خواهید از ابتدا شروع کنید؟',
             buttons: [
-                {
-                    text: 'خیر',
-                    role: 'cancel'
-                },
-                {
-                    text: 'بله',
-                    role: 'confirm'
-                }
+                { text: 'خیر', role: 'cancel' },
+                { text: 'بله', role: 'confirm' }
             ]
         });
 
         await alert.present();
         const { role } = await alert.onDidDismiss();
-        if (role === 'confirm') {
-            this.clearAutoplayTimeout();
-            this.timeout = 0;
-            this.playDisabled.set(false);
-            this.autoPlay.set(false);
-            this.position.set(0);
-            this.extractPosition();
+        if (role !== 'confirm') {
+            return;
         }
+
+        this.clearAutoplayTimeout();
+        this.timeout = 0;
+        this.playDisabled.set(false);
+        this.autoPlay.set(false);
+        this.unitIndex = -1;
+        this.syncToUnit(null);
+        void this.next();
     }
 
     public async next(playGereh = false): Promise<void> {
+        if (!this.script) {
+            return;
+        }
+
         this.timeout = 0;
         this.playDisabled.set(true);
 
-        const data = this.userPlan!.data;
-        let position = this.position() + 1;
-        const element = data[position];
-
-        if (element === -1) {
-            position++;
-            this.raj.set(data[position]);
-            this.position.set(position);
-            await this.playAudio('raj');
-            await this.playNumber(this.raj());
-            await this.next();
-        } else if (element === -2) {
-            position++;
-            this.color.set(data[position]);
-            this.position.set(position);
-            await this.playAudio('rang');
-            await this.playNumber(this.color());
-            await this.next(true);
-        } else {
-            let nextElement: number | null = null;
-            this.tie = element.toString();
-
-            if (playGereh) {
-                await this.playAudio('gereh');
-            }
-
-            await this.playNumber(element);
-            let tiesCount = 1;
-
-            if (data[position + 1] === -3) {
-                position += 2;
-                nextElement = data[position];
-                this.tie += ` - ${nextElement}`;
-                await this.playAudio('ela');
-                await this.playNumber(nextElement);
-                tiesCount = nextElement - element + 1;
-            }
-
-            this.position.set(position);
+        const prev = this.script.unitAt(this.unitIndex);
+        const target = this.script.unitAt(this.unitIndex + 1);
+        if (!target) {
             this.playDisabled.set(false);
+            void this.showWarningSnack('پایان نقشه');
+            return;
+        }
 
-            if (this.autoPlay() && !playGereh) {
-                this.playDisabled.set(true);
-                const time = 60 / this.speed();
-                this.timeout = tiesCount * time * 1000;
-                this.timeoutId = window.setTimeout(() => {
-                    void this.next();
-                }, this.timeout);
-            }
+        this.unitIndex++;
+
+        const rajChanged = !prev || prev.raj !== target.raj;
+        const colorChanged = !prev || prev.color !== target.color;
+
+        if (rajChanged) {
+            this.raj.set(target.raj);
+            await this.playAudio('raj');
+            await this.playNumber(target.raj);
+        }
+        if (colorChanged) {
+            this.color.set(target.color);
+            await this.playAudio('rang');
+            await this.playNumber(target.color);
+        }
+
+        const announceGereh = playGereh || colorChanged;
+        if (announceGereh) {
+            await this.playAudio('gereh');
+        }
+
+        await this.playNumber(target.tieStart);
+        if (target.isInterval) {
+            await this.playAudio('ela');
+            await this.playNumber(target.tieEnd);
+        }
+
+        this.syncToUnit(target);
+        this.playDisabled.set(false);
+
+        if (this.autoPlay() && !announceGereh) {
+            const tiesCount = target.tieEnd - target.tieStart + 1;
+            this.playDisabled.set(true);
+            const time = 60 / this.speed();
+            this.timeout = tiesCount * time * 1000;
+            this.timeoutId = window.setTimeout(() => void this.next(), this.timeout);
         }
     }
 
     public nextTie(): void {
-        const data = this.userPlan!.data;
-        let position = this.position();
-        let next = data[position + 1];
-        if (next === -1) {
-            void this.showWarningSnack('پایان رج');
+        if (!this.script) {
             return;
         }
 
-        if (next === -2) {
+        const cur = this.script.unitAt(this.unitIndex);
+        const target = this.script.unitAt(this.unitIndex + 1);
+        if (!target) {
+            void this.showWarningSnack(cur ? 'پایان رج' : 'پایان نقشه');
+            return;
+        }
+        if (cur && target.raj !== cur.raj) {
+            void this.showWarningSnack('پایان رج');
+            return;
+        }
+        if (cur && target.color !== cur.color) {
             void this.showWarningSnack('پایان رنگ');
             return;
         }
 
-        position++;
-        this.tie = next.toString();
-        next = data[position + 1];
-        if (next === -3) {
-            position += 2;
-            next = data[position];
-            this.tie += ` - ${next}`;
-        }
-
-        this.position.set(position);
+        this.unitIndex++;
+        this.syncToUnit(target);
     }
 
     public previousTie(): void {
-        const data = this.userPlan!.data;
-        const currentPosition = this.position();
-        let previousIndex = 1;
-        const newPosition = currentPosition - previousIndex;
-
-        if (newPosition === 0) {
-        }
-
-        let previous1 = data[newPosition];
-        if (previous1 === -3) {
-            previousIndex = 3;
-            previous1 = data[newPosition];
-        }
-
-        const previous2 = data[newPosition - 1];
-        if (previous2 === -1) {
-            void this.showWarningSnack('ابتدای رج');
+        if (!this.script) {
             return;
         }
 
-        if (previous2 === -2) {
+        const cur = this.script.unitAt(this.unitIndex);
+        const target = this.script.unitAt(this.unitIndex - 1);
+        if (!cur || !target) {
+            // First unit (or nothing selected) is by definition the start of
+            // the first color of the first raj.
+            void this.showWarningSnack('ابتدای رنگ');
+            return;
+        }
+        if (target.raj !== cur.raj) {
+            void this.showWarningSnack('ابتدای رج');
+            return;
+        }
+        if (target.color !== cur.color) {
             void this.showWarningSnack('ابتدای رنگ');
             return;
         }
 
-        this.tie = previous1.toString();
-        if (previous2 === -3) {
-            this.tie = `${data[newPosition - 2]} - ${previous1}`;
-        }
-
-        this.position.set(newPosition);
+        this.unitIndex--;
+        this.syncToUnit(target);
     }
 
     public nextColor(): void {
-        const data = this.userPlan!.data;
-        let position = this.position();
-        while (position < data.length) {
-            position++;
-            const next = data[position];
-            if (next === -1) {
-                void this.showWarningSnack('انتهای رج');
-                break;
-            }
-
-            if (next === -2) {
-                const newPosition = position + 1;
-                this.position.set(newPosition);
-                this.color.set(data[newPosition]);
-                this.nextTie();
-                break;
-            }
-        }
+        this.jumpTo(this.script?.nextColor(this.unitIndex), 'انتهای رج');
     }
 
     public prevColor(): void {
-        const data = this.userPlan!.data;
-        let position = this.position();
-        while (position > 0) {
-            position--;
-            const previous = data[position];
-            if (previous === -1) {
-                void this.showWarningSnack('ابتدای رج');
-                break;
-            }
-
-            if (previous === -2) {
-                const color = data[position + 1];
-                if (this.color() === color) {
-                    continue;
-                }
-
-                this.position.set(position + 1);
-                this.color.set(color);
-                this.nextTie();
-                break;
-            }
-        }
+        this.jumpTo(this.script?.prevColor(this.unitIndex), 'ابتدای رج');
     }
 
     public nextRaj(): void {
-        const data = this.userPlan!.data;
-        let position = this.position();
-        while (position < data.length) {
-            position++;
-            if (position === data.length) {
-                void this.showWarningSnack('پایان نقشه');
-                break;
-            }
-
-            const next = data[position];
-            if (next === -1) {
-                const newPosition = position + 1;
-                this.position.set(newPosition);
-                this.raj.set(data[newPosition]);
-                this.nextColor();
-                break;
-            }
-        }
+        this.jumpTo(this.script?.nextRaj(this.unitIndex), 'پایان نقشه');
     }
 
     public prevRaj(): void {
-        const data = this.userPlan!.data;
-        let position = this.position();
-        while (position > 0) {
-            position--;
-            const previous = data[position];
-            if (previous === -1) {
-                const raj = data[position + 1];
-                if (this.raj() === raj) {
-                    continue;
-                }
-
-                this.position.set(position + 1);
-                this.raj.set(raj);
-                this.nextColor();
-                break;
-            }
-        }
+        this.jumpTo(this.script?.prevRaj(this.unitIndex), 'ابتدای نقشه');
     }
 
     public changeRaj(): void {
+        if (!this.script || !this.userPlan) {
+            return;
+        }
+
         if (this.raj() <= 0) {
             void this.showErrorSnack('عدد وارد شده نباید کوچکتر یا مساوی صفر باشد.');
-            this.extractPosition();
+            this.syncToUnit(this.currentUnit());
             return;
         }
-
-        if (this.raj() > this.userPlan!.product.tiesHeight) {
+        if (this.raj() > this.userPlan.product.tiesHeight) {
             void this.showErrorSnack(
-                `عدد وارد شده باید کوچکتر یا مساوی ${this.userPlan!.product.tiesHeight} باشد.`
+                `عدد وارد شده باید کوچکتر یا مساوی ${this.userPlan.product.tiesHeight} باشد.`
             );
-            this.extractPosition();
+            this.syncToUnit(this.currentUnit());
             return;
         }
 
-        const data = this.userPlan!.data;
-        for (let i = 0; i < data.length; i++) {
-            const element = data[i];
-            const nextElement = data[i + 1];
-            if (element === -1 && nextElement === this.raj()) {
-                this.applyPosition(i, 0, 0);
-                break;
-            }
+        const target = this.script.findRaj(this.raj());
+        if (!target) {
+            void this.showErrorSnack('این رج در نقشه یافت نشد.');
+            this.syncToUnit(this.currentUnit());
+            return;
         }
+        this.jumpTo(target);
     }
 
     public changeColor(): void {
+        if (!this.script || !this.userPlan) {
+            return;
+        }
+
         if (this.color() <= 0) {
             void this.showErrorSnack('عدد وارد شده نباید کوچکتر یا مساوی صفر باشد.');
-            this.extractPosition();
+            this.syncToUnit(this.currentUnit());
             return;
         }
-
-        if (this.color() > this.userPlan!.product.colorsCount) {
+        if (this.color() > this.userPlan.product.colorsCount) {
             void this.showErrorSnack(
-                `عدد وارد شده باید کوچکتر یا مساوی ${this.userPlan!.product.colorsCount} باشد.`
+                `عدد وارد شده باید کوچکتر یا مساوی ${this.userPlan.product.colorsCount} باشد.`
             );
-            this.extractPosition();
+            this.syncToUnit(this.currentUnit());
             return;
         }
 
-        const data = this.userPlan!.data;
-        let i = this.position();
-        let element = data[i];
-        while (element !== -1) {
-            i--;
-            element = data[i];
-            if (element === -2 && data[i + 1] === this.color()) {
-                this.applyPosition(i, this.raj(), 0);
-                return;
-            }
+        const target = this.script.findColorInRaj(this.raj(), this.color());
+        if (!target) {
+            void this.showErrorSnack('شماره رنگ وارد شده در این رج بکار نرفته است');
+            this.syncToUnit(this.currentUnit());
+            return;
         }
-
-        i = this.position();
-        element = data[i];
-        while (i < data.length && element !== -1) {
-            i++;
-            element = data[i];
-            if (element === -2 && data[i + 1] === this.color()) {
-                this.applyPosition(i, this.raj(), 0);
-                return;
-            }
-        }
-
-        void this.showErrorSnack('شماره رنگ وارد شده در این رج بکار نرفته است');
-        this.extractPosition();
+        this.jumpTo(target);
     }
 
     public changeTie(): void {
+        if (!this.script || !this.userPlan) {
+            return;
+        }
+
         const tie = Number(this.tie);
-        if (Number.isNaN(tie) || tie <= 0 || tie > this.userPlan!.product.tiesWidth) {
+        if (Number.isNaN(tie) || tie <= 0 || tie > this.userPlan.product.tiesWidth) {
             void this.showErrorSnack(
-                `لطفا یک عدد بین یک و ${this.userPlan!.product.tiesWidth} وارد نمایید.`
+                `لطفا یک عدد بین یک و ${this.userPlan.product.tiesWidth} وارد نمایید.`
             );
-            this.extractPosition();
+            this.syncToUnit(this.currentUnit());
             return;
         }
 
-        const data = this.userPlan!.data;
-        let i = this.position();
-        while (data[i] !== -1) {
-            i--;
-        }
-
-        i++;
-        let element: number;
-        do {
-            i++;
-            element = data[i];
-            if (element === -2) {
-                i++;
-                continue;
-            }
-
-            const nextElement = data[i + 1];
-            if (nextElement === -3) {
-                i += 2;
-                const lastElement = data[i];
-                if (
-                    element === tie ||
-                    lastElement === tie ||
-                    (tie > element && tie < lastElement)
-                ) {
-                    this.position.set(i);
-                    this.extractPosition();
-                    break;
-                }
-            } else if (element === tie) {
-                this.position.set(i);
-                this.extractPosition();
-                break;
-            }
-        } while (element !== -1);
-    }
-
-    private extractPosition(): void {
-        // position نباید تغییر کند،
-        // همیشه روی گره دوم ذخیره می‌شود
-        this.raj.set(0);
-        this.color.set(0);
-        this.tie = '';
-
-        if (this.position() === 0) {
-            this.position.set(-1);
-            void this.next();
+        const target = this.script.findTieInRaj(this.raj(), tie);
+        if (!target) {
+            void this.showErrorSnack('این گره در رج فعلی یافت نشد.');
+            this.syncToUnit(this.currentUnit());
             return;
         }
-
-        const data = this.userPlan!.data;
-
-        for (let i = this.position(); i >= 0; i--) {
-            const element = data[i];
-            const nextElement = data[i + 1];
-            if (element === -1 && !this.raj()) {
-                this.raj.set(nextElement);
-            } else if (element === -2 && !this.color()) {
-                this.color.set(nextElement);
-            }
-
-            if (this.raj() && this.color()) {
-                break;
-            }
-        }
-
-        const currentPosition = this.position();
-        this.tie = data[currentPosition].toString();
-        if (data[currentPosition - 1] === -3) {
-            this.tie = `${data[currentPosition - 2]} - ${this.tie}`;
-        }
+        this.jumpTo(target);
     }
 
-    private applyPosition(position: number, raj: number, color: number): void {
-        // در اینجا پوزیشن به ابتدای رج یا ابتدای رنگ اشاره دارد و باید به موقعیت صحیح منتقل شود
-        // یعنی روی گره دوم
-        this.raj.set(raj);
-        this.color.set(color);
-        this.tie = '';
-
-        const data = this.userPlan!.data;
-        let nextPosition = position;
-        while (nextPosition < data.length) {
-            const element = data[nextPosition];
-            const nextElement = data[nextPosition + 1];
-            if (element === -1 && !this.raj()) {
-                this.raj.set(nextElement);
-                nextPosition += 2;
-                continue;
-            } else if (element === -2 && !this.color()) {
-                this.color.set(nextElement);
-                nextPosition += 2;
-                continue;
-            }
-
-            if (this.raj() && this.color()) {
-                break;
-            }
-
-            nextPosition++;
+    private jumpTo(target: WeaveUnit | null | undefined, missingMessage?: string): void {
+        if (!this.script) {
+            return;
         }
-
-        this.tie = data[nextPosition].toString();
-        if (data[nextPosition + 1] === -3) {
-            nextPosition += 2;
-            this.tie += ` - ${data[nextPosition]}`;
+        if (!target) {
+            if (missingMessage) {
+                void this.showWarningSnack(missingMessage);
+            }
+            return;
         }
+        this.unitIndex = this.script.indexOfPosition(target.position);
+        this.syncToUnit(target);
+    }
 
-        this.position.set(nextPosition);
+    private currentUnit(): WeaveUnit | null {
+        return this.script?.unitAt(this.unitIndex) ?? null;
+    }
+
+    /**
+     * Single point that mirrors a unit into the visible signals + persisted
+     * `position`. Passing `null` resets to the "nothing selected" state.
+     */
+    private syncToUnit(unit: WeaveUnit | null): void {
+        if (!unit) {
+            this.raj.set(0);
+            this.color.set(0);
+            this.tie = '';
+            this.position.set(0);
+            return;
+        }
+        this.raj.set(unit.raj);
+        this.color.set(unit.color);
+        this.tie = unit.isInterval
+            ? `${unit.tieStart} - ${unit.tieEnd}`
+            : `${unit.tieStart}`;
+        this.position.set(unit.position);
     }
 
     private playAudio(fileName: string): Promise<void> {
@@ -537,8 +395,7 @@ export class WaeveComponent implements OnInit {
     }
 
     private async playNumber(num: number): Promise<void> {
-        const digits = this.getNumberDigits(num);
-        for (const fileName of digits) {
+        for (const fileName of this.getNumberDigits(num)) {
             await this.playAudio(fileName);
         }
     }
