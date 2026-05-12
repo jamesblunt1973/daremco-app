@@ -88,7 +88,8 @@
             <ion-item lines="none" class="control-input">
                 <ion-input
                     type="text"
-                    [(ngModel)]="tie"
+                    [ngModel]="tie()"
+                    (ngModelChange)="tie.set($event)"
                     [disabled]="playDisabled()"
                     (ionFocus)="tieSearchFocus = true"
                     (ionBlur)="tieSearchFocus = false; changeTie()"></ion-input>
@@ -137,8 +138,8 @@
                 <ion-input type="number" [ngModel]="speed()" (ngModelChange)="speed.set($event)" />
                 <span>گره در دقیقه</span>
             </ion-item>
-            @if (timeout) {
-            <app-arc-progress [diameter]="64" [time]="timeout"></app-arc-progress>
+            @if (timeout()) {
+            <app-arc-progress [diameter]="64" [time]="timeout()"></app-arc-progress>
             }
         </div>
         } }

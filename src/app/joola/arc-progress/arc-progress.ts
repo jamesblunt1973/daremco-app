@@ -1,6 +1,8 @@
 import { Component, effect, input } from '@angular/core';
 import { ArcRingBase } from '../arc-ring/arc-ring-base';
 
+const TICK_MS = 100;
+
 @Component({
     selector: 'app-arc-progress',
     templateUrl: '../arc-ring/arc-ring.html',
@@ -10,8 +12,8 @@ import { ArcRingBase } from '../arc-ring/arc-ring-base';
 export class ArcProgressComponent extends ArcRingBase {
     public diameter = input(50);
     public time = input(0);
-    public seconds = 0;
-    public intervalId = 0;
+
+    private intervalId: number | null = null;
 
     public constructor() {
         super();
@@ -21,33 +23,39 @@ export class ArcProgressComponent extends ArcRingBase {
             const time = this.time();
 
             this.updateGeometry(diameter);
-            this.arc = 0;
-            this.seconds = Math.round(Math.max(time, 0) / 100) / 10;
-            this.label = `${this.seconds}`;
+            this.clearTick();
 
             if (time <= 0) {
-                this.intervalId = 0;
+                this.arc.set(0);
+                this.label.set('');
                 return;
             }
 
-            let tick = time;
+            this.render(time, time);
 
+            let remaining = time;
             this.intervalId = window.setInterval(() => {
-                tick -= 10;
-                if (tick <= 0) {
-                    tick = 0;
-                    window.clearInterval(this.intervalId);
-                    this.intervalId = 0;
+                remaining = Math.max(remaining - TICK_MS, 0);
+                this.render(remaining, time);
+                if (remaining <= 0) {
+                    this.clearTick();
                 }
+            }, TICK_MS);
 
-                this.arc = this.circumference - (tick / time) * this.circumference;
-                this.seconds = Math.round(tick / 100) / 10;
-                this.label = `${this.seconds}`;
-            }, 10);
-
-            onCleanup(() => {
-                window.clearInterval(this.intervalId);
-            });
+            onCleanup(() => this.clearTick());
         });
+    }
+
+    private render(remaining: number, total: number): void {
+        const circ = this.circumference();
+        this.arc.set(circ - (remaining / total) * circ);
+        this.label.set(`${Math.ceil(remaining / 1000)}`);
+    }
+
+    private clearTick(): void {
+        if (this.intervalId !== null) {
+            window.clearInterval(this.intervalId);
+            this.intervalId = null;
+        }
     }
 }

@@ -3,21 +3,21 @@
     <svg class="progress-ring__circle" [attr.width]="d" [attr.height]="d">
         <circle
             stroke="#ccc"
-            [attr.stroke-width]="strokeWidth"
+            [attr.stroke-width]="strokeWidth()"
             fill="transparent"
             [attr.r]="(d - 8) / 2"
             [attr.cx]="d / 2"
             [attr.cy]="d / 2" />
         <circle
             stroke="#2196f3"
-            [attr.stroke-width]="strokeWidth"
+            [attr.stroke-width]="strokeWidth()"
             fill="transparent"
             [attr.r]="(d - 8) / 2"
             [attr.cx]="d / 2"
             [attr.cy]="d / 2"
-            [ngStyle]="{'stroke-dasharray': circumference + ',' + circumference, 'stroke-dashoffset': arc}" />
+            [ngStyle]="{'stroke-dasharray': circumference() + ',' + circumference(), 'stroke-dashoffset': arc()}" />
     </svg>
     <div class="arc-percent" [ngStyle]="{'width': d + 'px', 'height': d + 'px'}">
-        <span [ngStyle]="{'font-size': fontSize + 'px'}">{{label}}</span>
+        <span [ngStyle]="{'font-size': fontSize() + 'px'}">{{label()}}</span>
     </div>
 </div>

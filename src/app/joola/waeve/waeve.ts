@@ -20,8 +20,8 @@ export class WaeveComponent implements OnInit {
     public colorSearchFocus = false;
     public rajSearchFocus = false;
 
-    public tie = '';
-    public timeout = 0;
+    public readonly timeout = signal(0);
+    public readonly tie = signal('');
     public readonly raj = signal(0);
     public readonly color = signal(0);
     public readonly playDisabled = signal(false);
@@ -113,7 +113,7 @@ export class WaeveComponent implements OnInit {
         if (this.autoPlay()) {
             this.playDisabled.set(false);
             this.clearAutoplayTimeout();
-            this.timeout = 0;
+            this.timeout.set(0);
         }
 
         this.autoPlay.update(value => !value);
@@ -136,7 +136,7 @@ export class WaeveComponent implements OnInit {
         }
 
         this.clearAutoplayTimeout();
-        this.timeout = 0;
+        this.timeout.set(0);
         this.playDisabled.set(false);
         this.autoPlay.set(false);
         this.unitIndex = -1;
@@ -149,7 +149,7 @@ export class WaeveComponent implements OnInit {
             return;
         }
 
-        this.timeout = 0;
+        this.timeout.set(0);
         this.playDisabled.set(true);
 
         const prev = this.script.unitAt(this.unitIndex);
@@ -165,13 +165,15 @@ export class WaeveComponent implements OnInit {
         const rajChanged = !prev || prev.raj !== target.raj;
         const colorChanged = !prev || prev.color !== target.color;
 
+        // Update the visible state first so the user sees the new raj/color/tie
+        // by the time their audio starts playing, not after.
+        this.syncToUnit(target);
+
         if (rajChanged) {
-            this.raj.set(target.raj);
             await this.playAudio('raj');
             await this.playNumber(target.raj);
         }
         if (colorChanged) {
-            this.color.set(target.color);
             await this.playAudio('rang');
             await this.playNumber(target.color);
         }
@@ -187,15 +189,15 @@ export class WaeveComponent implements OnInit {
             await this.playNumber(target.tieEnd);
         }
 
-        this.syncToUnit(target);
         this.playDisabled.set(false);
 
         if (this.autoPlay() && !announceGereh) {
             const tiesCount = target.tieEnd - target.tieStart + 1;
             this.playDisabled.set(true);
             const time = 60 / this.speed();
-            this.timeout = tiesCount * time * 1000;
-            this.timeoutId = window.setTimeout(() => void this.next(), this.timeout);
+            const ms = tiesCount * time * 1000;
+            this.timeout.set(ms);
+            this.timeoutId = window.setTimeout(() => void this.next(), ms);
         }
     }
 
@@ -324,7 +326,7 @@ export class WaeveComponent implements OnInit {
             return;
         }
 
-        const tie = Number(this.tie);
+        const tie = Number(this.tie());
         if (Number.isNaN(tie) || tie <= 0 || tie > this.userPlan.product.tiesWidth) {
             void this.showErrorSnack(
                 `لطفا یک عدد بین یک و ${this.userPlan.product.tiesWidth} وارد نمایید.`
@@ -368,15 +370,15 @@ export class WaeveComponent implements OnInit {
         if (!unit) {
             this.raj.set(0);
             this.color.set(0);
-            this.tie = '';
+            this.tie.set('');
             this.position.set(0);
             return;
         }
         this.raj.set(unit.raj);
         this.color.set(unit.color);
-        this.tie = unit.isInterval
-            ? `${unit.tieStart} - ${unit.tieEnd}`
-            : `${unit.tieStart}`;
+        this.tie.set(
+            unit.isInterval ? `${unit.tieStart} - ${unit.tieEnd}` : `${unit.tieStart}`
+        );
         this.position.set(unit.position);
     }
 

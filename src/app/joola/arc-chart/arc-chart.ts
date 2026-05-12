@@ -19,8 +19,9 @@ export class ArcChartComponent extends ArcRingBase {
             const percent = this.percent();
 
             this.updateGeometry(diameter);
-            this.arc = this.circumference - (percent / 100) * this.circumference;
-            this.label = `${percent}%`;
+            const circ = this.circumference();
+            this.arc.set(circ - (percent / 100) * circ);
+            this.label.set(`${percent}%`);
         });
     }
 }
