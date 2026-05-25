@@ -9,3 +9,8 @@
         border-radius: 0 4px 4px 0;
     }
 }
+
+.back-button {
+    margin-top: auto;
+    margin-bottom: env(safe-area-inset-bottom, 0px);
+}

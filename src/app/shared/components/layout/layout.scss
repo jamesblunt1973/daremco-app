@@ -22,6 +22,7 @@ ion-buttons {
         justify-content: space-between;
         flex-direction: row-reverse;
         align-items: center;
+        padding-bottom: env(safe-area-inset-bottom, 0px);
 
         pre {
             font-style: italic;

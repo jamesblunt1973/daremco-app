@@ -40,7 +40,7 @@ export class GalleryComponent {
             return [];
         }
 
-        return primaryData.attributes.filter(a => !a.link);
+        return primaryData.attributes.filter(a => !a.link && !a.name.startsWith('-'));
     }
 
     private get allProducts(): Product[] {

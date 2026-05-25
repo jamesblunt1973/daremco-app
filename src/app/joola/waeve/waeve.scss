@@ -106,3 +106,8 @@
         margin: 0 1rem;
     }
 }
+
+.back-button {
+    margin-top: auto;
+    margin-bottom: env(safe-area-inset-bottom, 0px);
+}

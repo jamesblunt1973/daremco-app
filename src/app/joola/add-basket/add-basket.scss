@@ -17,3 +17,8 @@
     display: block;
     overflow: hidden;
 }
+
+.back-button {
+    margin-top: auto;
+    margin-bottom: env(safe-area-inset-bottom, 0px);
+}
