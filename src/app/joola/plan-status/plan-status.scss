@@ -1,6 +1,7 @@
 :host {
     display: flex;
     justify-content: space-between;
+    align-items: center;
     width: 100%;
     align-items: anchor-center;
 }
@@ -8,7 +9,7 @@
 .no-overflow {
     white-space: nowrap;
     text-overflow: ellipsis;
-    max-width: 210px;
+    max-width: 145px;
     display: block;
     overflow: hidden;
 }

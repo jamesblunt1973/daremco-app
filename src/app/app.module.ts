@@ -32,6 +32,11 @@ const routes: Routes = [
                 path: 'joola',
                 loadChildren: () => import('./joola/joola.module').then(m => m.JoolaModule),
                 canActivate: [authGuard]
+            },
+            {
+                path: 'contact',
+                loadComponent: () =>
+                    import('./shared/components/contact/contact').then(c => c.ContactComponent)
             }
         ]
     }
